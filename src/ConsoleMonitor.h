@@ -7,8 +7,12 @@
 
 namespace libVMI {
 
-class ConsoleMonitorException;
 
+class ConsoleMonitorException: public std::exception {
+	virtual const char* what() const throw () {
+		return "ConsoleMonitor abort";
+	}
+};
 class ConsoleMonitor {
 	
 	pthread_t thread;
@@ -21,15 +25,15 @@ class ConsoleMonitor {
 	protected:
 		const char * monitorShell;
 		
-		int sendCommand(const char * command);
-		void parseOutput(std::string &output);
+		int sendCommand(const char * command) throw(ConsoleMonitorException);
+		void parseOutput(std::string &output) throw(ConsoleMonitorException);
 	
 	public:
-		ConsoleMonitor(const char* consoleString, const char* shellString);
+		ConsoleMonitor(const char* consoleString, const char* shellString) throw(ConsoleMonitorException);
 		virtual ~ConsoleMonitor();
 
-		void parseCommandOutput(const char *command, std::string &output);
-		void killThread(void);
+		void parseCommandOutput(const char *command, std::string &output) throw(ConsoleMonitorException);
+		void killThread(void) throw(ConsoleMonitorException);
 	
 	private:	
 

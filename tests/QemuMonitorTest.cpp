@@ -23,6 +23,7 @@ void QemuMonitorTest::testConstructor() {
 }
 
 void QemuMonitorTest::testIsRunning() {
+	CPPUNIT_ASSERT_NO_THROW(monitor->isRunning());
 	CPPUNIT_ASSERT_MESSAGE( "Test reports VM is not running. "
 			"Ensure VM is not paused, when running this Test",
 			monitor->isRunning());
@@ -30,11 +31,13 @@ void QemuMonitorTest::testIsRunning() {
 
 void QemuMonitorTest::testPause() {
 	monitor->pauseVM();
+	CPPUNIT_ASSERT_NO_THROW(monitor->isRunning());
 	CPPUNIT_ASSERT(!monitor->isRunning());
 }
 
 void QemuMonitorTest::testResume() {
 	monitor->resumeVM();
+	CPPUNIT_ASSERT_NO_THROW(monitor->isRunning());
 	CPPUNIT_ASSERT(monitor->isRunning());
 }
 
@@ -49,5 +52,4 @@ void QemuMonitorTest::testInfoHelp(){
 	std::string helptext;
 	CPPUNIT_ASSERT_NO_THROW(monitor->infoHelp(helptext));
 	CPPUNIT_ASSERT(!helptext.empty());
-	printf("\n%s\n", helptext.c_str());
 }

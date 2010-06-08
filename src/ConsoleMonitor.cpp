@@ -16,12 +16,6 @@
 
 namespace libVMI {
 
-class ConsoleMonitorException: public std::exception {
-	virtual const char* what() const throw () {
-		return "ConsoleMonitor abort";
-	}
-} myex;
-
 void ConsoleMonitor::signal_handler(int signum) {
 	LIBVMI_DEBUG_MSG("Signalhandler called");
 	pthread_exit(0);
@@ -86,7 +80,7 @@ void *ConsoleMonitor::readMonitor(void *ptr) {
 }
 
 ConsoleMonitor::ConsoleMonitor(const char* consoleString,
-		const char* shellString) {
+		const char* shellString) throw(ConsoleMonitorException) {
 
 	this->consoleName = consoleString;
 	this->monitorShell = shellString;
@@ -108,12 +102,12 @@ ConsoleMonitor::ConsoleMonitor(const char* consoleString,
 
 }
 
-ConsoleMonitor::~ConsoleMonitor() {
+ConsoleMonitor::~ConsoleMonitor(){
 	this->killThread();
 	LIBVMI_DEBUG_MSG("Destructor finished");
 }
 
-void ConsoleMonitor::killThread(void) {
+void ConsoleMonitor::killThread(void) throw(ConsoleMonitorException) {
 	LIBVMI_DEBUG_MSG("Kill Thread");
 	this->threadRunning = false;
 	pthread_kill(this->thread, SIGTERM);
@@ -121,7 +115,7 @@ void ConsoleMonitor::killThread(void) {
 	pthread_mutex_destroy(&(this->queuemutex));
 }
 
-int ConsoleMonitor::sendCommand(const char * command) {
+int ConsoleMonitor::sendCommand(const char * command) throw(ConsoleMonitorException) {
 	if (!this->threadRunning)
 		throw ConsoleMonitorException();
 	int fd_to_qemu;
@@ -136,7 +130,7 @@ int ConsoleMonitor::sendCommand(const char * command) {
 	return 0;
 }
 
-void ConsoleMonitor::parseOutput(std::string &output) {
+void ConsoleMonitor::parseOutput(std::string &output) throw(ConsoleMonitorException){
 	if (!this->threadRunning)
 		throw ConsoleMonitorException();
 	output.clear();
@@ -149,14 +143,13 @@ void ConsoleMonitor::parseOutput(std::string &output) {
 }
 
 void ConsoleMonitor::parseCommandOutput(const char *command,
-		std::string &output) {
+		std::string &output) throw(ConsoleMonitorException){
 	if (!this->threadRunning)
 		throw ConsoleMonitorException();
 	if (this->threadRunning)
 		LIBVMI_DEBUG_MSG("Thread is running...");
 	//Parse everything which was printed before the command was sent.
 
-	usleep(100);
 	while (!this->queuecontainer.empty()) {
 		pthread_mutex_lock(&(this->queuemutex));
 		this->queuecontainer.pop();
@@ -168,16 +161,19 @@ void ConsoleMonitor::parseCommandOutput(const char *command,
 	this->sendCommand(command);
 
 	LIBVMI_DEBUG_MSG("parseCommand...");
-	char last = 'a';
+
+	output.clear();
 	//Delete command from result
-	while (last != '\n') {
+	while (output.size() < strlen(command) && (output.rfind(command) == std::string::npos)) {
 		while (this->queuecontainer.empty())
 			sched_yield();
 		pthread_mutex_lock(&(this->queuemutex));
-		last = this->queuecontainer.front();
+		output.append(&this->queuecontainer.front(), 1);
 		this->queuecontainer.pop();
 		pthread_mutex_unlock(&(this->queuemutex));
 	}
+	output.clear();
+
 	LIBVMI_DEBUG_MSG("parseResult...");
 	while (output.rfind(this->monitorShell) == std::string::npos) {
 		while (this->queuecontainer.empty())

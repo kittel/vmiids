@@ -5,6 +5,20 @@
  *      Author: kittel
  */
 
+/*! \mainpage Documentation of libVMI
+ *
+ * \section intro_sec Introduction
+ *
+ * This is the introduction.
+ *
+ * \section install_sec Installation
+ *
+ * \subsection step1 Step 1: Opening the box
+ *
+ * \section QEMU
+ * etc...
+ */
+
 #ifndef LIBVMI_H_
 #define LIBVMI_H_
 
