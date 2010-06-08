@@ -2,6 +2,14 @@
 
 #include <stdio.h>
 
+#define DEBUG
+
+#ifdef DEBUG
+#define VERBOSE "MonitorParser"
+#endif /* DEBUG */
+#include "Debug.h"
+
+
 namespace libVMI {
 
 #define MONITORDEVICE "/dev/ttyS1"
@@ -12,10 +20,9 @@ MonitorParser::MonitorParser() : ConsoleMonitor(MONITORDEVICE, MONITORSHELL){}
 MonitorParser::~MonitorParser(){}
 
 bool MonitorParser::isRunning(){
-	printf("Test!\n");
+	LIBVMI_DEBUG_MSG("isRunning called");
 	std::string string;
 	this->parseCommandOutput("info status", string);
-	printf("Test2!\n");
 
 	if(string.rfind("running") != std::string::npos){
 		return true;
@@ -24,11 +31,13 @@ bool MonitorParser::isRunning(){
 }
 
 void MonitorParser::pauseVM(){
+	LIBVMI_DEBUG_MSG("pauseVM called");
 	std::string string;
 	this->parseCommandOutput("stop", string);
 }
 
 void MonitorParser::resumeVM(){
+	LIBVMI_DEBUG_MSG("resumeVM called");
 	std::string string;
 	this->parseCommandOutput("c", string);
 }

@@ -9,11 +9,11 @@
 CPPUNIT_TEST_SUITE_REGISTRATION( QemuMonitorTest );
 
 void QemuMonitorTest::setUp() {
-//	monitor = new libVMI::MonitorParser();
+	monitor = new libVMI::MonitorParser();
 }
 
 void QemuMonitorTest::tearDown() {
-//	delete(monitor);
+	delete(monitor);
 }
 
 void QemuMonitorTest::testConstructor() {
@@ -23,28 +23,18 @@ void QemuMonitorTest::testConstructor() {
 }
 
 void QemuMonitorTest::testIsRunning() {
-	CPPUNIT_FAIL("Not Implemented");
-//	printf("Running test.\n");
-//	CPPUNIT_ASSERT_MESSAGE( "Test reports VM is not running. "
-//			"Ensure VM is not paused, when running this Test",
-//			monitor->isRunning());
+	CPPUNIT_ASSERT_MESSAGE( "Test reports VM is not running. "
+			"Ensure VM is not paused, when running this Test",
+			monitor->isRunning());
 }
 
 void QemuMonitorTest::testPause() {
-	CPPUNIT_FAIL("Not Implemented");
-	//	monitor->pauseVM();
-//	CPPUNIT_ASSERT(!monitor->isRunning());
+	monitor->pauseVM();
+	CPPUNIT_ASSERT(!monitor->isRunning());
 }
 
 void QemuMonitorTest::testResume() {
-	CPPUNIT_FAIL("Not Implemented");
-//	monitor->resumeVM();
-//	CPPUNIT_ASSERT(monitor->isRunning());
+	monitor->resumeVM();
+	CPPUNIT_ASSERT(monitor->isRunning());
 }
 
-void QemuMonitorTest::testDestructor() {
-	CPPUNIT_FAIL("Not Implemented");
-//	libVMI::MonitorParser* monitor2;
-//	monitor2 = new libVMI::MonitorParser();
-//	CPPUNIT_ASSERT_NO_THROW( delete(monitor2) );
-}

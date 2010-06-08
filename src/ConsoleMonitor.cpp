@@ -7,26 +7,27 @@
 #include <string.h>
 #include <exception>
 
+//#define DEBUG
+
+#ifdef DEBUG
 #define VERBOSE "ConsoleMonitor"
+#endif /* DEBUG */
 #include "Debug.h"
-
-
 
 namespace libVMI {
 
-class ConsoleMonitorException: public std::exception
-{
-  virtual const char* what() const throw()
-  {
-    return "ConsoleMonitor abort";
-  }
+class ConsoleMonitorException: public std::exception {
+	virtual const char* what() const throw () {
+		return "ConsoleMonitor abort";
+	}
 } myex;
 
-void ConsoleMonitor::signal_handler(int signum){
+void ConsoleMonitor::signal_handler(int signum) {
+	LIBVMI_DEBUG_MSG("Signalhandler called");
 	pthread_exit(0);
 }
 
-void *ConsoleMonitor::readMonitor(void *ptr){
+void *ConsoleMonitor::readMonitor(void *ptr) {
 
 	struct sigaction sa;
 	sa.sa_handler = ConsoleMonitor::signal_handler;
@@ -39,10 +40,10 @@ void *ConsoleMonitor::readMonitor(void *ptr){
 	ConsoleMonitor * arguments = (ConsoleMonitor *) ptr;
 	int fd_to_qemu;
 	char buffer = 0;
-	int readcount;	
+	int readcount;
 
-	fd_to_qemu=open(arguments->consoleName,O_RDONLY);
-	if(fd_to_qemu<0){
+	fd_to_qemu = open(arguments->consoleName, O_RDONLY);
+	if (fd_to_qemu < 0) {
 		LIBVMI_WARN_MSG("Open %s readable failed", arguments->consoleName);
 		arguments->threadRunning = false;
 	}
@@ -66,47 +67,52 @@ void *ConsoleMonitor::readMonitor(void *ptr){
 		tcsetattr(fd_to_qemu, TCSAFLUSH, &tty);
 	}
 
-	while(arguments->threadRunning){
+	while (arguments->threadRunning) {
 		readcount = read(fd_to_qemu, &buffer, 1);
-		if (readcount > 0){
+		if (readcount > 0) {
 			pthread_mutex_lock(&(arguments->queuemutex));
 			arguments->queuecontainer.push(buffer);
 			pthread_mutex_unlock(&(arguments->queuemutex));
-		}else if(readcount < 0){
+		} else if (readcount < 0) {
 			arguments->threadRunning = false;
 			close(fd_to_qemu);
 			pthread_exit(0);
 		}
 	}
-	if(fd_to_qemu > 0) close(fd_to_qemu);
+	if (fd_to_qemu > 0)
+		close(fd_to_qemu);
 	pthread_exit(0);
 }
 
-ConsoleMonitor::ConsoleMonitor(const char* consoleString, const char* shellString){
-	
+ConsoleMonitor::ConsoleMonitor(const char* consoleString,
+		const char* shellString) {
+
 	this->consoleName = consoleString;
 	this->monitorShell = shellString;
 	this->threadStarted = false;
-	
+
 	pthread_mutex_init(&(this->queuemutex), NULL);
 	this->threadRunning = true;
 
-	pthread_create(&(this->thread), NULL, ConsoleMonitor::readMonitor, 
-						 (void *) this);
-	while(!this->threadStarted) { sched_yield();}
+	pthread_create(&(this->thread), NULL, ConsoleMonitor::readMonitor,
+			(void *) this);
+	while (!this->threadStarted) {
+		sched_yield();
+	}
 
-	if(!this->threadRunning) throw ConsoleMonitorException();
+	if (!this->threadRunning)
+		throw ConsoleMonitorException();
 
 	LIBVMI_DEBUG_MSG("Constructor finished");
 
 }
 
-ConsoleMonitor::~ConsoleMonitor(){
+ConsoleMonitor::~ConsoleMonitor() {
 	this->killThread();
-	LIBVMI_DEBUG_MSG("Destructor finished\n");
+	LIBVMI_DEBUG_MSG("Destructor finished");
 }
 
-void ConsoleMonitor::killThread(void){
+void ConsoleMonitor::killThread(void) {
 	LIBVMI_DEBUG_MSG("Kill Thread");
 	this->threadRunning = false;
 	pthread_kill(this->thread, SIGTERM);
@@ -114,71 +120,72 @@ void ConsoleMonitor::killThread(void){
 	pthread_mutex_destroy(&(this->queuemutex));
 }
 
-int ConsoleMonitor::sendCommand(const char * command){
-	if(!this->threadRunning) throw ConsoleMonitorException();
+int ConsoleMonitor::sendCommand(const char * command) {
+	if (!this->threadRunning)
+		throw ConsoleMonitorException();
 	int fd_to_qemu;
 	fd_to_qemu = open(this->consoleName, O_WRONLY);
-	if(fd_to_qemu < 0){
+	if (fd_to_qemu < 0) {
 		LIBVMI_DEBUG_MSG("open %s writeable failed\n", this->consoleName);
 		return -1;
 	}
 	write(fd_to_qemu, command, strlen(command));
 	write(fd_to_qemu, "\n", 1);
-	close(fd_to_qemu);	
+	close(fd_to_qemu);
 	return 0;
 }
 
-void ConsoleMonitor::parseOutput(std::string &output){
-	if(!this->threadRunning) throw ConsoleMonitorException();
+void ConsoleMonitor::parseOutput(std::string &output) {
+	if (!this->threadRunning)
+		throw ConsoleMonitorException();
 	output.clear();
-		while(!this->queuecontainer.empty()){
-				pthread_mutex_lock(&(this->queuemutex));
-				output.append(&this->queuecontainer.front(), 1);
-				this->queuecontainer.pop();
-				pthread_mutex_unlock(&(this->queuemutex));
-		}
+	while (!this->queuecontainer.empty()) {
+		pthread_mutex_lock(&(this->queuemutex));
+		output.append(&this->queuecontainer.front(), 1);
+		this->queuecontainer.pop();
+		pthread_mutex_unlock(&(this->queuemutex));
+	}
 }
 
-void ConsoleMonitor::parseCommandOutput(const char *command, std::string &output){
-	if(!this->threadRunning) throw ConsoleMonitorException();
-	if(this->threadRunning) LIBVMI_DEBUG_MSG("Thread is running...\n");
-	LIBVMI_DEBUG_MSG("parseCommand...\n");
+void ConsoleMonitor::parseCommandOutput(const char *command,
+		std::string &output) {
+	if (!this->threadRunning)
+		throw ConsoleMonitorException();
+	if (this->threadRunning)
+		LIBVMI_DEBUG_MSG("Thread is running...");
 	//Parse everything which was printed before the command was sent.
-	while(!this->queuecontainer.empty()){
-			pthread_mutex_lock(&(this->queuemutex));
-			this->queuecontainer.pop();
-			pthread_mutex_unlock(&(this->queuemutex));
+	while (!this->queuecontainer.empty()) {
+		pthread_mutex_lock(&(this->queuemutex));
+		this->queuecontainer.pop();
+		pthread_mutex_unlock(&(this->queuemutex));
 	}
 
 	//Send command
+	LIBVMI_DEBUG_MSG("sendCommand...");
 	this->sendCommand(command);
-	
-	//Wait until command is executed
-	//TODO
-	sleep(1);	
 
+	LIBVMI_DEBUG_MSG("parseCommand...");
 	char last = 'a';
 	//Delete command from result
-	while(!this->queuecontainer.empty() && last != '\n'){
-			pthread_mutex_lock(&(this->queuemutex));
-			last = this->queuecontainer.front();
-			this->queuecontainer.pop();
-			pthread_mutex_unlock(&(this->queuemutex));
+	while (last != '\n') {
+		while (this->queuecontainer.empty())
+			sched_yield();
+		pthread_mutex_lock(&(this->queuemutex));
+		last = this->queuecontainer.front();
+		this->queuecontainer.pop();
+		pthread_mutex_unlock(&(this->queuemutex));
+	}
+	LIBVMI_DEBUG_MSG("parseResult...");
+	while (output.rfind(this->monitorShell) == std::string::npos) {
+		while (this->queuecontainer.empty())
+			sched_yield();
+		pthread_mutex_lock(&(this->queuemutex));
+		output.append(&this->queuecontainer.front(), 1);
+		this->queuecontainer.pop();
+		pthread_mutex_unlock(&(this->queuemutex));
 	}
 
-	//Save result
-	while(output.length() < strlen(this->monitorShell) || output.rfind(this->monitorShell) == std::string::npos){
-				
-		while(!this->queuecontainer.empty() && output.rfind(this->monitorShell) == std::string::npos){
-				pthread_mutex_lock(&(this->queuemutex));
-				output.append(&this->queuecontainer.front(), 1);
-				this->queuecontainer.pop();
-				pthread_mutex_unlock(&(this->queuemutex));
-		}
-		usleep(100);
-	}
-		
-	output.resize(output.rfind(this->monitorShell));	
+	output.resize(output.rfind(this->monitorShell));
 }
 
 }
