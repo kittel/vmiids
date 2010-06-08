@@ -38,3 +38,16 @@ void QemuMonitorTest::testResume() {
 	CPPUNIT_ASSERT(monitor->isRunning());
 }
 
+
+void QemuMonitorTest::testHelp(){
+	std::string helptext;
+	CPPUNIT_ASSERT_NO_THROW(monitor->help(helptext));
+	CPPUNIT_ASSERT(!helptext.empty());
+}
+
+void QemuMonitorTest::testInfoHelp(){
+	std::string helptext;
+	CPPUNIT_ASSERT_NO_THROW(monitor->infoHelp(helptext));
+	CPPUNIT_ASSERT(!helptext.empty());
+	printf("\n%s\n", helptext.c_str());
+}

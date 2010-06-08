@@ -17,6 +17,8 @@ class QemuMonitorTest : public CppUnit::TestFixture
 {
   CPPUNIT_TEST_SUITE( QemuMonitorTest );
   CPPUNIT_TEST( testConstructor );
+  CPPUNIT_TEST( testHelp );
+  CPPUNIT_TEST( testInfoHelp );
   CPPUNIT_TEST( testIsRunning );
   CPPUNIT_TEST( testPause );
   CPPUNIT_TEST( testResume );
@@ -30,6 +32,8 @@ public:
   void tearDown();
 
   void testConstructor();
+  void testHelp();
+  void testInfoHelp();
   void testIsRunning();
   void testPause();
   void testResume();

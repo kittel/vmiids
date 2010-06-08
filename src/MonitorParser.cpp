@@ -42,5 +42,17 @@ void MonitorParser::resumeVM(){
 	this->parseCommandOutput("c", string);
 }
 
+void MonitorParser::help(std::string &helptext){
+	LIBVMI_DEBUG_MSG("help called");
+	this->parseCommandOutput("help", helptext);
+}
+
+
+void MonitorParser::infoHelp(std::string &helptext){
+	LIBVMI_DEBUG_MSG("infoHelp called");
+	this->parseCommandOutput("info help", helptext);
+}
+
+
 }
 

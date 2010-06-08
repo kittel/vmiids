@@ -48,8 +48,6 @@ void *ConsoleMonitor::readMonitor(void *ptr) {
 		arguments->threadRunning = false;
 	}
 
-	arguments->threadStarted = true;
-
 	if (arguments->threadRunning) {
 		struct termios tty;
 		tcgetattr(fd_to_qemu, &tty);
@@ -66,6 +64,9 @@ void *ConsoleMonitor::readMonitor(void *ptr) {
 
 		tcsetattr(fd_to_qemu, TCSAFLUSH, &tty);
 	}
+
+	lseek(fd_to_qemu, 0,SEEK_END );
+	arguments->threadStarted = true;
 
 	while (arguments->threadRunning) {
 		readcount = read(fd_to_qemu, &buffer, 1);
@@ -154,6 +155,8 @@ void ConsoleMonitor::parseCommandOutput(const char *command,
 	if (this->threadRunning)
 		LIBVMI_DEBUG_MSG("Thread is running...");
 	//Parse everything which was printed before the command was sent.
+
+	usleep(100);
 	while (!this->queuecontainer.empty()) {
 		pthread_mutex_lock(&(this->queuemutex));
 		this->queuecontainer.pop();

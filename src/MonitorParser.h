@@ -13,6 +13,8 @@ class MonitorParser : public ConsoleMonitor {
 		bool isRunning();
 		void pauseVM();
 		void resumeVM();
+		void help(std::string &helptext);
+		void infoHelp(std::string &helptext);
 };
 
 }
