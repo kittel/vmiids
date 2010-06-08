@@ -7,6 +7,8 @@
 
 namespace libVMI {
 
+class ConsoleMonitorException;
+
 class ConsoleMonitor {
 	
 	pthread_t thread;
@@ -14,6 +16,7 @@ class ConsoleMonitor {
 	pthread_mutex_t queuemutex;
 	std::queue <char> queuecontainer;
 	bool threadRunning;
+	bool threadStarted;
 
 	protected:
 		const char * monitorShell;

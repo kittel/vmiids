@@ -7,6 +7,11 @@
 #include <string.h>
 #include <exception>
 
+#define VERBOSE "ConsoleMonitor"
+#include "Debug.h"
+
+
+
 namespace libVMI {
 
 class ConsoleMonitorException: public std::exception
@@ -17,13 +22,20 @@ class ConsoleMonitorException: public std::exception
   }
 } myex;
 
-
 void ConsoleMonitor::signal_handler(int signum){
 	pthread_exit(0);
 }
 
 void *ConsoleMonitor::readMonitor(void *ptr){
-	signal(SIGTERM, signal_handler);
+
+	struct sigaction sa;
+	sa.sa_handler = ConsoleMonitor::signal_handler;
+	sigemptyset(&sa.sa_mask);
+	sigaction(SIGINT, &sa, NULL);
+	sigaction(SIGSEGV, &sa, NULL);
+	sigaction(SIGTERM, &sa, NULL);
+	LIBVMI_DEBUG_MSG("Signalhandler installed");
+
 	ConsoleMonitor * arguments = (ConsoleMonitor *) ptr;
 	int fd_to_qemu;
 	char buffer = 0;
@@ -31,9 +43,11 @@ void *ConsoleMonitor::readMonitor(void *ptr){
 
 	fd_to_qemu=open(arguments->consoleName,O_RDONLY);
 	if(fd_to_qemu<0){
-		printf("open %s readable failed\n", arguments->consoleName);
+		LIBVMI_WARN_MSG("Open %s readable failed", arguments->consoleName);
 		arguments->threadRunning = false;
 	}
+
+	arguments->threadStarted = true;
 
 	if (arguments->threadRunning) {
 		struct termios tty;
@@ -72,20 +86,28 @@ ConsoleMonitor::ConsoleMonitor(const char* consoleString, const char* shellStrin
 	
 	this->consoleName = consoleString;
 	this->monitorShell = shellString;
+	this->threadStarted = false;
 	
 	pthread_mutex_init(&(this->queuemutex), NULL);
 	this->threadRunning = true;
 
 	pthread_create(&(this->thread), NULL, ConsoleMonitor::readMonitor, 
 						 (void *) this);
+	while(!this->threadStarted) { sched_yield();}
+
+	if(!this->threadRunning) throw ConsoleMonitorException();
+
+	LIBVMI_DEBUG_MSG("Constructor finished");
 
 }
 
 ConsoleMonitor::~ConsoleMonitor(){
 	this->killThread();
+	LIBVMI_DEBUG_MSG("Destructor finished\n");
 }
 
 void ConsoleMonitor::killThread(void){
+	LIBVMI_DEBUG_MSG("Kill Thread");
 	this->threadRunning = false;
 	pthread_kill(this->thread, SIGTERM);
 	pthread_join(this->thread, NULL);
@@ -97,7 +119,7 @@ int ConsoleMonitor::sendCommand(const char * command){
 	int fd_to_qemu;
 	fd_to_qemu = open(this->consoleName, O_WRONLY);
 	if(fd_to_qemu < 0){
-		printf("open %s writeable failed\n", this->consoleName);
+		LIBVMI_DEBUG_MSG("open %s writeable failed\n", this->consoleName);
 		return -1;
 	}
 	write(fd_to_qemu, command, strlen(command));
@@ -119,8 +141,8 @@ void ConsoleMonitor::parseOutput(std::string &output){
 
 void ConsoleMonitor::parseCommandOutput(const char *command, std::string &output){
 	if(!this->threadRunning) throw ConsoleMonitorException();
-	if(this->threadRunning) printf("Thread is running...\n");
-	printf("parseCommand...\n");
+	if(this->threadRunning) LIBVMI_DEBUG_MSG("Thread is running...\n");
+	LIBVMI_DEBUG_MSG("parseCommand...\n");
 	//Parse everything which was printed before the command was sent.
 	while(!this->queuecontainer.empty()){
 			pthread_mutex_lock(&(this->queuemutex));
