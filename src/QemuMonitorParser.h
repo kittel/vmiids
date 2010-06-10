@@ -11,7 +11,17 @@ namespace libVMI {
  */
 class QemuMonitorParserException: public std::exception {
 	virtual const char* what() const throw () {
-		return "ConsoleMonitor abort";
+		return "QemuMonitorParser abort";
+	}
+};
+
+/*!
+ * \exception QemuMonitorParserNotImplementedException QemuMonitorParser.h
+ * \brief Exception for QemuMonitorParser.
+ */
+class QemuMonitorParserNotImplementedException: public QemuMonitorParserException {
+	virtual const char* what() const throw () {
+		return "Function not implemented";
 	}
 };
 
@@ -149,24 +159,9 @@ info roms              -- show roms
  */
 class QemuMonitorParser : public ConsoleMonitor {
 	public:
-	QemuMonitorParser() throw(QemuMonitorParserException);
+	QemuMonitorParser(const char* consoleString,
+			const char* shellString) throw(QemuMonitorParserException);
 		virtual ~QemuMonitorParser();
-
-		/**
-		 * \brief Function to get the current vm state.
-		 * @return Returns true when the monitored VM is currently running.
-		 */
-		bool isRunning() throw(QemuMonitorParserException);
-
-		/**
-		 * \brief Function to pause the execution of the monitored VM.
-		 */
-		void pauseVM() throw(QemuMonitorParserException);
-
-		/**
-		 * \brief Function to resume the execution of the monitored VM.
-		 */
-		void resumeVM() throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show the help.
@@ -178,7 +173,7 @@ class QemuMonitorParser : public ConsoleMonitor {
 		 * \brief commit changes to the disk images (if -snapshot is used) or backing files.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 *
-       * commit device|all 				-- commit changes to the disk images (if -snapshot is used) or backing files
+		 * commit device|all 				-- commit changes to the disk images (if -snapshot is used) or backing files
 		 */
 		void cmdCommit(std::string &helptext) throw(QemuMonitorParserException);
 

@@ -25,7 +25,7 @@ class QemuMonitorTest : public CppUnit::TestFixture
   CPPUNIT_TEST_SUITE_END();
 private:
 
-  libVMI::QemuMonitorParser *monitor;
+  libVMI::QemuMonitor *monitor;
 
 public:
   void setUp();

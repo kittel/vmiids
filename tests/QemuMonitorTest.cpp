@@ -9,7 +9,7 @@
 CPPUNIT_TEST_SUITE_REGISTRATION( QemuMonitorTest );
 
 void QemuMonitorTest::setUp() {
-	monitor = new libVMI::QemuMonitorParser();
+	monitor = new libVMI::QemuMonitor();
 }
 
 void QemuMonitorTest::tearDown() {
@@ -17,8 +17,8 @@ void QemuMonitorTest::tearDown() {
 }
 
 void QemuMonitorTest::testConstructor() {
-	libVMI::QemuMonitorParser* monitor2;
-	CPPUNIT_ASSERT_NO_THROW( monitor2 = new libVMI::QemuMonitorParser() );
+	libVMI::QemuMonitor* monitor2;
+	CPPUNIT_ASSERT_NO_THROW( monitor2 = new libVMI::QemuMonitor() );
 	delete(monitor2);
 }
 

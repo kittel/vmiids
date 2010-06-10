@@ -7,7 +7,7 @@
 #include <string.h>
 #include <exception>
 
-//#define DEBUG
+#define DEBUG
 
 #ifdef DEBUG
 #define VERBOSE "ConsoleMonitor"

@@ -33,6 +33,6 @@
 #ifndef LIBVMI_H_
 #define LIBVMI_H_
 
-#include "QemuMonitorParser.h"
+#include "QemuMonitor.h"
 
 #endif /* LIBVMI_H_ */

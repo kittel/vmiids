@@ -9,6 +9,8 @@ libvmi_la_SOURCES = libvmi.cpp \
 					ConsoleMonitor.cpp \
 					QemuMonitorParser.h \
 					QemuMonitorParser.cpp \
+					QemuMonitor.h \
+					QemuMonitor.cpp \
 					Debug.h
 libvmi_la_includedir=$(includedir)/libvmi
 libvmi_la_include_HEADERS = libvmi.h
