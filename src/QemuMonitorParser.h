@@ -35,7 +35,6 @@ class QemuMonitorParserNotImplementedException: public QemuMonitorParserExceptio
  *
  * At the time of implementation the following commands were available:
  *
- * TODO: Implement all commands!
  *
  * <pre>
  help|? [cmd] 					-- show the help

@@ -22,6 +22,11 @@ class QemuMonitorException: public std::exception {
 	}
 };
 
+/*!
+ * \class QemuMonitor QemuMonitor.h
+ *
+ * \brief Parser for the QEmu Monitor Console. Results are parsed to structs.
+ */
 class QemuMonitor: public QemuMonitorParser {
 public:
 	QemuMonitor() throw(QemuMonitorException);

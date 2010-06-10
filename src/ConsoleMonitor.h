@@ -8,11 +8,22 @@
 namespace libVMI {
 
 
+/*!
+ * \exception ConsoleMonitorException ConsoleMonitor.h
+ * \brief Exception for ConsoleMonitor.
+ */
 class ConsoleMonitorException: public std::exception {
 	virtual const char* what() const throw () {
 		return "ConsoleMonitor abort";
 	}
 };
+
+/*!
+ * \class ConsoleMonitor ConsoleMonitor.h
+ *
+ * \brief Backend for Serial Console parsing.
+ *
+ */
 class ConsoleMonitor {
 	
 	pthread_t thread;
