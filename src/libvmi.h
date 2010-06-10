@@ -16,7 +16,18 @@
  * \subsection step1 Step 1: Opening the box
  *
  * \section QEMU
+ *
+ * \section References
+ * <ul>
+ * <li> http://wiki.qemu.org/download/qemu-doc.html
+ * </ul>
  * etc...
+ */
+
+/**
+ * \namespace libVMI
+ *
+ *  \brief All implemented Classes are located in namespace \ref libVMI.
  */
 
 #ifndef LIBVMI_H_
