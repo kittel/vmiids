@@ -44,7 +44,7 @@ void QemuMonitorTest::testResume() {
 
 void QemuMonitorTest::testHelp(){
 	std::string helptext;
-	CPPUNIT_ASSERT_NO_THROW(monitor->help(helptext));
+	CPPUNIT_ASSERT_NO_THROW(monitor->cmdHelp(helptext));
 	CPPUNIT_ASSERT(!helptext.empty());
 }
 

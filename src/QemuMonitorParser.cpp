@@ -41,8 +41,380 @@ void QemuMonitorParser::resumeVM() throw(QemuMonitorParserException){
 	this->parseCommandOutput("c", string);
 }
 
-void QemuMonitorParser::help(std::string &helptext) throw(QemuMonitorParserException){
-	LIBVMI_DEBUG_MSG("help called");
+void QemuMonitorParser::cmdHelp(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdHelp called");
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdCommit(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdCommit called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdInfo(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdInfo called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdQuit(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdQuit called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdEject(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdEject called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdChange(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdChange called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdScreendump(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdScreendump called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdLogfile(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdLogfile called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdLog(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdLog called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdSavevm(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdSavevm called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdLoadvm(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdLoadvm called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdDelvm(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdDelvm called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdSinglestep(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdSinglestep called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdStop(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdStop called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdCont(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdCont called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdGdbserver(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdGdbserver called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdX(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdX called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdXp(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdXp called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdPrint(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdPrint called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdI(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdI called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdO(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdO called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdSendkey(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdSendkey called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdSystem_reset(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdSystem_reset called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdSystem_powerdown(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdSystem_powerdown called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdSum(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdSum called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdUsb_add(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdUsb_add called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdUsb_del(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdUsb_del called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdDevice_add(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdDevice_add called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdDevice_del(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdDevice_del called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdCpu(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdCpu called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdMouse_move(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdMouse_move called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdMouse_button(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdMouse_button called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdMouse_set(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdMouse_set called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdWavecapture(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdWavecapture called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdStopcapture(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdStopcapture called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdMemsave(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdMemsave called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdPmemsave(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdPmemsave called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdBoot_set(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdBoot_set called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdNmi(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdNmi called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdMigrate(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdMigrate called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdMigrate_cancel(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdMigrate_cancel called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdMigrate_set_speed(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdMigrate_set_speed called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdMigrate_set_downtime(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdMigrate_set_speed called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdDrive_add(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdDrive_add called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdPci_add(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdPci_add called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdPci_del(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdPci_del called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdHost_net_add(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdHost_net_add called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdHost_net_remove(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdHost_net_remove called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdHostfwd_add(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdHostfwd_add called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdHostfwd_remove(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdHostfwd_remove called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdBalloon(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdBalloon called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdSet_link(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdSet_link called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdWatchdog_action(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdWatchdog_action called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdAcl_show(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdAcl_show called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdAcl_policy(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdAcl_policy called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdAcl_add(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdAcl_add called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdAcl_remove(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdAcl_remove called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdAcl_reset(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdAcl_reset called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdMce(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdMce called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdGetfd(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdGetfd called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdClosefd(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdClosefd called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdBlock_passwd(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdBlock_passwd called");
+	throw QemuMonitorParserException;
+	this->parseCommandOutput("help", helptext);
+}
+
+void QemuMonitorParser::cmdCpu_set(std::string &helptext) throw(QemuMonitorParserException){
+	LIBVMI_DEBUG_MSG("cmdCpu_set called");
+	throw QemuMonitorParserException;
 	this->parseCommandOutput("help", helptext);
 }
 
