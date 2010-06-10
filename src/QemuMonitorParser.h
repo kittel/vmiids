@@ -1,22 +1,22 @@
-#ifndef _MONITORPARSER_H_
-#define _MONITORPARSER_H_
+#ifndef _QEMUMONITORPARSER_H_
+#define _QEMUMONITORPARSER_H_
 
 #include "ConsoleMonitor.h"
 
 namespace libVMI {
 
 /*!
- * \exception MonitorParserException MonitorParser.h
- * \brief Exception for MonitorParser.
+ * \exception QemuMonitorParserException QemuMonitorParser.h
+ * \brief Exception for QemuMonitorParser.
  */
-class MonitorParserException: public std::exception {
+class QemuMonitorParserException: public std::exception {
 	virtual const char* what() const throw () {
 		return "ConsoleMonitor abort";
 	}
 };
 
 /*!
- * \class MonitorParser MonitorParser.h
+ * \class QemuMonitorParser QemuMonitorParser.h
  *
  * \brief Parser for the QEmu Monitor Console.
  *
@@ -146,250 +146,250 @@ info roms              -- show roms
 </pre>
 
  */
-class MonitorParser : public ConsoleMonitor {
+class QemuMonitorParser : public ConsoleMonitor {
 	public:
-		MonitorParser() throw(MonitorParserException);
-		virtual ~MonitorParser();
+	QemuMonitorParser() throw(QemuMonitorParserException);
+		virtual ~QemuMonitorParser();
 
 		/**
 		 * \brief Function to get the current vm state.
 		 * @return Returns true when the monitored VM is currently running.
 		 */
-		bool isRunning() throw(MonitorParserException);
+		bool isRunning() throw(QemuMonitorParserException);
 
 		/**
 		 * \brief Function to pause the execution of the monitored VM.
 		 */
-		void pauseVM() throw(MonitorParserException);
+		void pauseVM() throw(QemuMonitorParserException);
 
 		/**
 		 * \brief Function to resume the execution of the monitored VM.
 		 */
-		void resumeVM() throw(MonitorParserException);
+		void resumeVM() throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show the help.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void help(std::string &helptext) throw(MonitorParserException);
+		void help(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show the help of the info command.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoHelp(std::string &helptext) throw(MonitorParserException);
+		void infoHelp(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show the version of QEMU.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoVersion(std::string &helptext) throw(MonitorParserException);
+		void infoVersion(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief list QMP available commands.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoCommands(std::string &helptext) throw(MonitorParserException);
+		void infoCommands(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show the network state.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoNetwork(std::string &helptext) throw(MonitorParserException);
+		void infoNetwork(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show the character devices.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoChardev(std::string &helptext) throw(MonitorParserException);
+		void infoChardev(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show the block devices.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoBlock(std::string &helptext) throw(MonitorParserException);
+		void infoBlock(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show block device statistics.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoBlockstats(std::string &helptext) throw(MonitorParserException);
+		void infoBlockstats(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show the cpu registers.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoRegisters(std::string &helptext) throw(MonitorParserException);
+		void infoRegisters(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show infos for each CPU.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoCpus(std::string &helptext) throw(MonitorParserException);
+		void infoCpus(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show the command line history.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoHistory(std::string &helptext) throw(MonitorParserException);
+		void infoHistory(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show the interrupts statistics (if available).
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoIrq(std::string &helptext) throw(MonitorParserException);
+		void infoIrq(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show i8259 (PIC) state.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoPic(std::string &helptext) throw(MonitorParserException);
+		void infoPic(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show PCI info.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoPci(std::string &helptext) throw(MonitorParserException);
+		void infoPci(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show virtual to physical memory mappings.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoTlb(std::string &helptext) throw(MonitorParserException);
+		void infoTlb(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show the active virtual memory mappings.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoMem(std::string &helptext) throw(MonitorParserException);
+		void infoMem(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show state of HPET.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoHpet(std::string &helptext) throw(MonitorParserException);
+		void infoHpet(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show dynamic compiler info.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoJit(std::string &helptext) throw(MonitorParserException);
+		void infoJit(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show KVM information.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoKvm(std::string &helptext) throw(MonitorParserException);
+		void infoKvm(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show NUMA information.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoNuma(std::string &helptext) throw(MonitorParserException);
+		void infoNuma(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show guest USB devices.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoUsb(std::string &helptext) throw(MonitorParserException);
+		void infoUsb(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show host USB devices.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoUsbhost(std::string &helptext) throw(MonitorParserException);
+		void infoUsbhost(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show profiling information.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoProfile(std::string &helptext) throw(MonitorParserException);
+		void infoProfile(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show capture information.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoCapture(std::string &helptext) throw(MonitorParserException);
+		void infoCapture(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show the currently saved VM snapshots.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoSnapshots(std::string &helptext) throw(MonitorParserException);
+		void infoSnapshots(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show the current VM status (running|paused).
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoStatus(std::string &helptext) throw(MonitorParserException);
+		void infoStatus(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show guest PCMCIA status.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoPcmcia(std::string &helptext) throw(MonitorParserException);
+		void infoPcmcia(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show which guest mouse is receiving events.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoMice(std::string &helptext) throw(MonitorParserException);
+		void infoMice(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show the vnc server status.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoVnc(std::string &helptext) throw(MonitorParserException);
+		void infoVnc(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show the current VM name.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoName(std::string &helptext) throw(MonitorParserException);
+		void infoName(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show the current VM UUID.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoUuid(std::string &helptext) throw(MonitorParserException);
+		void infoUuid(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show user network stack connection states.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoUsernet(std::string &helptext) throw(MonitorParserException);
+		void infoUsernet(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show migration status.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoMigrate(std::string &helptext) throw(MonitorParserException);
+		void infoMigrate(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show balloon information.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoBallon(std::string &helptext) throw(MonitorParserException);
+		void infoBallon(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show device tree.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoQtree(std::string &helptext) throw(MonitorParserException);
+		void infoQtree(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show qdev device model list.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoQdm(std::string &helptext) throw(MonitorParserException);
+		void infoQdm(std::string &helptext) throw(QemuMonitorParserException);
 
 		/**
 		 * \brief show roms.
 		 * @param helptext String Buffer in which the result will be returned in.
 		 */
-		void infoRoms(std::string &helptext) throw(MonitorParserException);
+		void infoRoms(std::string &helptext) throw(QemuMonitorParserException);
 
 };
 
 }
-#endif /* _MONITORPARSER_H_ */
+#endif /* _QEMUMONITORPARSER_H_ */

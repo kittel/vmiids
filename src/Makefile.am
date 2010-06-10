@@ -7,8 +7,8 @@ libvmi_la_LDFLAGS = -lpthread
 libvmi_la_SOURCES = libvmi.cpp \
 					ConsoleMonitor.h \
 					ConsoleMonitor.cpp \
-					MonitorParser.h \
-					MonitorParser.cpp \
+					QemuMonitorParser.h \
+					QemuMonitorParser.cpp \
 					Debug.h
 libvmi_la_includedir=$(includedir)/libvmi
 libvmi_la_include_HEADERS = libvmi.h
