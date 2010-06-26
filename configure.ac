@@ -11,6 +11,7 @@ AM_PATH_CPPUNIT(1.12.1)
 
 AC_CONFIG_FILES(Makefile 
 				src/Makefile
+				src/vmiids/Makefile
 				tests/Makefile)
 
 AC_CONFIG_SRCDIR([src/Makefile.am])

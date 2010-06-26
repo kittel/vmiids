@@ -1,3 +1,5 @@
+SUBDIRS=vmiids
+
 bin_PROGRAMS=libvmiMain shell
 libvmiMain_SOURCES=libvmiMain.cpp
 
