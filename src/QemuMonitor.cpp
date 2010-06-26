@@ -33,7 +33,8 @@ bool QemuMonitor::isRunning() throw(QemuMonitorException){
 	this->infoStatus(string);
 	if(string.rfind("running") != std::string::npos) return true;
 	else if(string.rfind("paused") != std::string::npos) return false;
-	throw QemuMonitorParserException();
+	LIBVMI_DEBUG_MSG("Answer invalid! Got: %s", string.c_str());
+	throw QemuMonitorException();
 }
 
 void QemuMonitor::pauseVM() throw(QemuMonitorException){

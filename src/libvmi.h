@@ -35,5 +35,6 @@
 
 #include "QemuMonitor.h"
 #include "ShellParser.h"
+#include "Shell.h"
 
 #endif /* LIBVMI_H_ */

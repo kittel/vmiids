@@ -7,7 +7,7 @@
 #include <string.h>
 #include <exception>
 
-#define DEBUG
+//#define DEBUG
 
 #ifdef DEBUG
 #define VERBOSE "ConsoleMonitor"
@@ -164,7 +164,7 @@ void ConsoleMonitor::parseCommandOutput(const char *command,
 
 	output.clear();
 	//Delete command from result
-	while (output.size() < strlen(command) && (output.rfind(command) == std::string::npos)) {
+	while (output.size() < strlen(command) || (output.rfind(command) == std::string::npos)) {
 		while (this->queuecontainer.empty())
 			sched_yield();
 		pthread_mutex_lock(&(this->queuemutex));
@@ -172,6 +172,7 @@ void ConsoleMonitor::parseCommandOutput(const char *command,
 		this->queuecontainer.pop();
 		pthread_mutex_unlock(&(this->queuemutex));
 	}
+	LIBVMI_DEBUG_MSG("Throwing away:\n%s\n", output.c_str());
 	output.clear();
 
 	LIBVMI_DEBUG_MSG("parseResult...");
@@ -183,8 +184,9 @@ void ConsoleMonitor::parseCommandOutput(const char *command,
 		this->queuecontainer.pop();
 		pthread_mutex_unlock(&(this->queuemutex));
 	}
-
+	LIBVMI_DEBUG_MSG("Complete String:\n%s\n", output.c_str());
 	output.resize(output.rfind(this->monitorShell));
+	LIBVMI_DEBUG_MSG("Truncated String:\n%s\n", output.c_str());
 }
 
 }

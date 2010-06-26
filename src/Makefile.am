@@ -1,4 +1,4 @@
-bin_PROGRAMS=libvmiMain
+bin_PROGRAMS=libvmiMain shell
 libvmiMain_SOURCES=libvmiMain.cpp
 
 lib_LTLIBRARIES = libvmi.la
@@ -13,6 +13,14 @@ libvmi_la_SOURCES = libvmi.cpp \
 					QemuMonitor.cpp \
 					ShellParser.h \
 					ShellParser.cpp \
+					Shell.cpp \
+					Shell.h \
 					Debug.h
 libvmi_la_includedir=$(includedir)/libvmi
 libvmi_la_include_HEADERS = libvmi.h
+
+
+shell_SOURCES= 
+shell_LDADD = $(top_builddir)/src/libvmi.la
+shell_CXXFLAGS = $(CPPUNIT_CFLAGS)
+shell_LDFLAGS = $(CPPUNIT_LIBS) -ldl

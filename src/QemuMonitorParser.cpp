@@ -101,6 +101,8 @@ void QemuMonitorParser::cmdStop(std::string &helptext) throw(QemuMonitorParserEx
 void QemuMonitorParser::cmdCont(std::string &helptext) throw(QemuMonitorParserException){
 	LIBVMI_DEBUG_MSG("cmdCont called");
 	this->parseCommandOutput("cont", helptext);
+	LIBVMI_DEBUG_MSG("%s", helptext.c_str());
+
 }
 
 void QemuMonitorParser::cmdGdbserver(std::string &helptext) throw(QemuMonitorParserException){

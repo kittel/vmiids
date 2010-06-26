@@ -9,10 +9,22 @@
  */
 
 #include <iostream>
+#include "libvmi.h"
 
-using namespace std;
+using namespace std ;
 
-int main(void) {
-	cout << "Hello World!!!" << endl; /* prints Hello World!!! */
+#define DEBUG
+
+#ifdef DEBUG
+#define VERBOSE "ShellParser"
+#endif /* DEBUG */
+#include "Debug.h"
+
+int main(int argc, char ** argv){
+
+	libVMI::Shell shell;
+	shell.startShell();
+
+	shell.stopShell();
 	return 0;
 }
