@@ -7,7 +7,7 @@ Makefile.in
 autom4te.cache/
 config.guess
 config.h
-config.h.in
+config.h.in*
 config.log
 config.status
 config.sub
@@ -15,6 +15,7 @@ configure
 depcomp
 doxygen-doc/
 doxygen.cfg.bak
+compile
 install-sh
 libtool
 ltmain.sh

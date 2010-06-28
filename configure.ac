@@ -12,6 +12,8 @@ AM_PATH_CPPUNIT(1.12.1)
 AC_CONFIG_FILES(Makefile 
 				src/Makefile
 				src/vmiids/Makefile
+				src/libvmi/Makefile
+				src/clientApps/Makefile
 				tests/Makefile)
 
 AC_CONFIG_SRCDIR([src/Makefile.am])
@@ -20,6 +22,7 @@ AC_CONFIG_MACRO_DIR([m4])
 LT_INIT
 
 # Checks for programs.
+AM_PROG_CC_C_O
 AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
