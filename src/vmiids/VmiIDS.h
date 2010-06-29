@@ -31,6 +31,8 @@ class VmiIDS {
 
 		VmiIDS();
 
+		void loadSharedObjects(std::string path);
+
 	public:
 		virtual ~VmiIDS();
 

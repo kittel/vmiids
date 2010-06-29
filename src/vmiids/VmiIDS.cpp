@@ -10,6 +10,8 @@
 #include <pthread.h>
 #include <signal.h>
 #include <stdlib.h>
+#include <dlfcn.h>
+#include <iostream>
 
 #include "vmiids_rpc.h"
 
@@ -158,6 +160,8 @@ int VmiIDS::startIDS(){
 	this->vmiRunning = true;
 	int rpcRet = pthread_create( &rpcThread, NULL, rpcThreadFunction, NULL);
     int vmiidsRet = pthread_create( &vmiidsThread, NULL, VmiIDS::run, (void*)this);
+
+    this->loadSharedObjects("/home/kittel/workspace/libvmi/src/vmiids/.libs/libdynamicdetectionmodule.so");
 }
 
 void * VmiIDS::run(void * this_pointer){
@@ -172,6 +176,17 @@ void * VmiIDS::run(void * this_pointer){
 		sched_yield();
 	}
 
+}
+
+void VmiIDS::loadSharedObjects(std::string path) {
+	printf("Trying to load shared objects");
+
+	void *dlib;
+	dlib = dlopen(path.c_str(), RTLD_NOW);
+	if (dlib == NULL) {
+		std::cerr << dlerror() << std::endl;
+		exit(-1);
+	}
 }
 
 void VmiIDS::waitIDS(){
