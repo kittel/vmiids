@@ -8,7 +8,7 @@
 #ifndef DYNAMICDETECTIONMODULE_H_
 #define DYNAMICDETECTIONMODULE_H_
 
-#include "VmiIDS.h"
+#include "DetectionModule.h";
 
 class DynamicDetectionModule: public DetectionModule {
 public:
@@ -21,21 +21,6 @@ public:
 
 	virtual void getThreadLevel();
 };
-
-extern "C" {
-static DynamicDetectionModule *maker(){
-   return new DynamicDetectionModule;
-}
-class proxy {
-	public:
-	proxy(){
-		// register the maker with the factory
-		VmiIDS::getInstance()->enqueueDetectionModule(new DynamicDetectionModule);
-		//factory["square"] = maker;
-   }
-};
-// our one instance of the proxy
-static proxy p;
-}
+ADDDYNAMICDETECTIONMODULE(DynamicDetectionModule);
 
 #endif /* DYNAMICDETECTIONMODULE_H_ */

@@ -25,5 +25,13 @@ class DetectionModule{
 		virtual void getThreadLevel() = 0;
 };
 
+#include "VmiIDS.h"
+
+#define ADDDYNAMICDETECTIONMODULE(classname) class proxy { \
+	public: \
+	proxy(){ VmiIDS::getInstance()->enqueueDetectionModule(new classname);  } \
+}; \
+static proxy p;
+
 
 #endif /* DETECTIONMODULE_H_ */
