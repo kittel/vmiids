@@ -31,7 +31,7 @@ class VmiIDS {
 
 		VmiIDS();
 
-		void loadSharedObjects(std::string path);
+		void loadSharedObjectsInitial(std::string path);
 
 	public:
 		virtual ~VmiIDS();
@@ -40,6 +40,7 @@ class VmiIDS {
 		int startIDS();
 		void waitIDS();
 		void stopIDS(int signum = 0);
+		void loadSharedObject(std::string path);
 
 		static void * run(void * this_pointer);
 
@@ -49,13 +50,13 @@ class VmiIDS {
 
 
 		void enqueueNotificationModule(NotificationModule *notificationModule);
-		bool enqueueNotificationModule(std::string notificationModule);
-		bool dequeueNotificationModule(std::string notificationModule);
+		bool enqueueNotificationModule(std::string notificationModuleName);
+		bool dequeueNotificationModule(std::string notificationModuleName);
 
 		void enqueueSensorModule(SensorModule *sensorModule);
 
-		NotificationModule *getNotificationModule();
-		SensorModule *getSensorModule();
+		NotificationModule *getNotificationModule(std::string notificationModuleName);
+		SensorModule *getSensorModule(std::string sensorModuleName);
 
 		void collectThreadLevel();
 

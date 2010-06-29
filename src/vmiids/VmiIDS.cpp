@@ -11,6 +11,10 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <dlfcn.h>
+#include <dirent.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include <iostream>
 
 #include "vmiids_rpc.h"
@@ -65,12 +69,6 @@ int main(int argc, char ** argv) {
 
 	VmiIDS::getInstance()->startIDS();
 
-	sleep(2);
-	VmiIDS::getInstance()->enqueueDetectionModule("SimpleDetectionModule");
-	sleep(2);
-	VmiIDS::getInstance()->dequeueDetectionModule("SimpleDetectionModule");
-	sleep(2);
-
 	VmiIDS::getInstance()->waitIDS();
 
 	exit(0);
@@ -105,6 +103,11 @@ bool_t dequeuenotificationmodule_1_svc(char *arg1, int *result,
 void * stopIDSThreadFunction(void * nothing) {
 	sleep(1);
 	VmiIDS::getInstance()->stopIDS(SIGTERM);
+}
+
+bool_t loadsharedobject_1_svc(char *arg1, int *result, struct svc_req *rqstp) {
+	VmiIDS::getInstance()->loadSharedObject(arg1);
+	return 1;
 }
 
 bool_t stopids_1_svc(int *result, struct svc_req *rqstp) {
@@ -169,13 +172,12 @@ int VmiIDS::startIDS() {
 	int rpcRet = pthread_create(&rpcThread, NULL, rpcThreadFunction, NULL);
 	int vmiidsRet = pthread_create(&vmiidsThread, NULL, VmiIDS::run,
 			(void*) this);
-
-	this->loadSharedObjects(
-			"/home/kittel/workspace/libvmi/src/vmiids/.libs/libdynamicdetectionmodule.so");
 }
 
 void * VmiIDS::run(void * this_pointer) {
 	VmiIDS * this_p = (VmiIDS *) this_pointer;
+
+	this_p->loadSharedObjectsInitial("/home/kittel/workspace/libvmi/src/vmiids/.libs");
 
 	while (this_p->vmiRunning) {
 		pthread_mutex_lock(&this_p->detectionModuleMutex);
@@ -191,8 +193,39 @@ void * VmiIDS::run(void * this_pointer) {
 
 }
 
-void VmiIDS::loadSharedObjects(std::string path) {
-	printf("Trying to load shared objects");
+void VmiIDS::loadSharedObjectsInitial(std::string path) {
+
+	DIR *dp;
+	struct dirent *dirp;
+	if ((dp = opendir(path.c_str())) == NULL) {
+		std::cout << "Error opening " << path << std::endl;
+		return;
+	}
+
+	while ((dirp = readdir(dp)) != NULL) {
+		if (strstr(dirp->d_name, ".so") != NULL) {
+			std::string filename = path;
+			filename.append("/");
+			filename.append(dirp->d_name);
+			struct stat fileStat;
+			lstat(filename.c_str(), &fileStat);
+			if (!S_ISLNK(fileStat.st_mode)) {
+				void *dlib;
+				dlib = dlopen(filename.c_str(), RTLD_NOW);
+				if (dlib == NULL) {
+					std::cerr << dlerror() << std::endl;
+					continue;
+				}
+			}
+		}
+	}
+	closedir(dp);
+	return;
+
+}
+
+void VmiIDS::loadSharedObject(std::string path) {
+	printf("Trying to load shared object at: %s\n", path.c_str());
 
 	void *dlib;
 	dlib = dlopen(path.c_str(), RTLD_NOW);
@@ -216,14 +249,14 @@ void VmiIDS::stopIDS(int signum) {
 
 void VmiIDS::enqueueDetectionModule(DetectionModule *detectionModule) {
 	pthread_mutex_lock(&detectionModuleMutex);
-	detectionModules.insert(make_pair(detectionModule->getName(), detectionModule));
+	detectionModules[detectionModule->getName()] = detectionModule;
 	pthread_mutex_unlock(&detectionModuleMutex);
 }
 
 bool VmiIDS::enqueueDetectionModule(std::string detectionModuleName) {
 	if (detectionModuleName.find("SimpleDetectionModule") != std::string::npos) {
 		pthread_mutex_lock(&detectionModuleMutex);
-		detectionModules.insert(make_pair(detectionModuleName, new SimpleDetectionModule()));
+		detectionModules[detectionModuleName] = new SimpleDetectionModule();
 		pthread_mutex_unlock(&detectionModuleMutex);
 	}
 }
@@ -232,7 +265,7 @@ bool VmiIDS::dequeueDetectionModule(std::string detectionModuleName) {
 	pthread_mutex_lock(&detectionModuleMutex);
 	for (std::map<std::string, DetectionModule*>::iterator it =
 			this->detectionModules.begin(); it != this->detectionModules.end(); ++it) {
-		if (it->second->getName().compare(detectionModuleName) == 0) {
+		if (it->first.compare(detectionModuleName) == 0) {
 			this->detectionModules.erase(it);
 		}
 	}
@@ -241,14 +274,14 @@ bool VmiIDS::dequeueDetectionModule(std::string detectionModuleName) {
 
 void VmiIDS::enqueueNotificationModule(NotificationModule *notificationModule) {
 	pthread_mutex_lock(&notificationModuleMutex);
-	notificationModules.insert(make_pair(notificationModule->getName(), notificationModule));
+	notificationModules[notificationModule->getName()] = notificationModule;
 	pthread_mutex_unlock(&notificationModuleMutex);
 }
 
 bool VmiIDS::enqueueNotificationModule(std::string notificationModuleName) {
 	if (notificationModuleName.find("") != std::string::npos) {
 		pthread_mutex_lock(&notificationModuleMutex);
-		//notificationModules.insert(make_pair(notificationModuleName, new SimpleDetectionModule()));
+		//notificationModules[notificationModuleName] = new SimpleDetectionModule();
 		pthread_mutex_unlock(&notificationModuleMutex);
 	}
 }
@@ -258,7 +291,7 @@ bool VmiIDS::dequeueNotificationModule(std::string notificationModuleName) {
 	for (std::map<std::string, NotificationModule*>::iterator it =
 			this->notificationModules.begin(); it
 			!= this->notificationModules.end(); ++it) {
-		if (it->second->getName().compare(notificationModuleName) == 0) {
+		if (it->first.compare(notificationModuleName) == 0) {
 			this->notificationModules.erase(it);
 		}
 	}
@@ -267,13 +300,17 @@ bool VmiIDS::dequeueNotificationModule(std::string notificationModuleName) {
 
 void VmiIDS::enqueueSensorModule(SensorModule *sensorModule) {
 	pthread_mutex_lock(&sensorModuleMutex);
-	sensorModules.insert(make_pair(sensorModule->getName(), sensorModule));
+	sensorModules[sensorModule->getName()] = sensorModule;
 	pthread_mutex_unlock(&sensorModuleMutex);
 }
 
-NotificationModule *VmiIDS::getNotificationModule() {
+NotificationModule *VmiIDS::getNotificationModule(
+		std::string notificationModuleName) {
+	return this->notificationModules[notificationModuleName];
 }
-SensorModule *VmiIDS::getSensorModule() {
+
+SensorModule *VmiIDS::getSensorModule(std::string sensorModuleName) {
+	return this->sensorModules[sensorModuleName];
 }
 
 void VmiIDS::collectThreadLevel() {

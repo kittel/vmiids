@@ -34,6 +34,9 @@ extern  bool_t dequeuenotificationmodule_1_svc(char *, int *, struct svc_req *);
 #define STOPIDS 5
 extern  enum clnt_stat stopids_1(int *, CLIENT *);
 extern  bool_t stopids_1_svc(int *, struct svc_req *);
+#define LOADSHAREDOBJECT 6
+extern  enum clnt_stat loadsharedobject_1(char *, int *, CLIENT *);
+extern  bool_t loadsharedobject_1_svc(char *, int *, struct svc_req *);
 extern int simp_prog_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 
 #else /* K&R C */
@@ -52,6 +55,9 @@ extern  bool_t dequeuenotificationmodule_1_svc();
 #define STOPIDS 5
 extern  enum clnt_stat stopids_1();
 extern  bool_t stopids_1_svc();
+#define LOADSHAREDOBJECT 6
+extern  enum clnt_stat loadsharedobject_1();
+extern  bool_t loadsharedobject_1_svc();
 extern int simp_prog_1_freeresult ();
 #endif /* K&R C */
 

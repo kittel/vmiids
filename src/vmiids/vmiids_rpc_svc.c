@@ -46,6 +46,12 @@ _stopids_1 (void  *argp, void *result, struct svc_req *rqstp)
 	return (stopids_1_svc(result, rqstp));
 }
 
+int
+_loadsharedobject_1 (char * *argp, void *result, struct svc_req *rqstp)
+{
+	return (loadsharedobject_1_svc(*argp, result, rqstp));
+}
+
 static void
 simp_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 {
@@ -54,6 +60,7 @@ simp_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		char *dequeuedetectionmodule_1_arg;
 		char *enqueuenotificationmodule_1_arg;
 		char *dequeuenotificationmodule_1_arg;
+		char *loadsharedobject_1_arg;
 	} argument;
 	union {
 		int enqueuedetectionmodule_1_res;
@@ -61,6 +68,7 @@ simp_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		int enqueuenotificationmodule_1_res;
 		int dequeuenotificationmodule_1_res;
 		int stopids_1_res;
+		int loadsharedobject_1_res;
 	} result;
 	bool_t retval;
 	xdrproc_t _xdr_argument, _xdr_result;
@@ -101,6 +109,12 @@ simp_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		local = (bool_t (*) (char *, void *,  struct svc_req *))_stopids_1;
 		break;
 
+	case LOADSHAREDOBJECT:
+		_xdr_argument = (xdrproc_t) xdr_wrapstring;
+		_xdr_result = (xdrproc_t) xdr_int;
+		local = (bool_t (*) (char *, void *,  struct svc_req *))_loadsharedobject_1;
+		break;
+
 	default:
 		svcerr_noproc (transp);
 		return;
@@ -124,8 +138,7 @@ simp_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 	return;
 }
 
-int
-rpc_main (void)
+void rpc_main (void)
 {
 	register SVCXPRT *transp;
 

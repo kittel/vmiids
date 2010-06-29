@@ -11,7 +11,6 @@
 
 DynamicDetectionModule::DynamicDetectionModule(): DetectionModule("DynamicDetectionModule") {
 	// TODO Auto-generated constructor stub
-
 }
 
 DynamicDetectionModule::~DynamicDetectionModule() {

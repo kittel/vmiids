@@ -53,3 +53,12 @@ stopids_1(int *clnt_res, CLIENT *clnt)
 		TIMEOUT));
 
 }
+
+enum clnt_stat
+loadsharedobject_1(char *arg1, int *clnt_res,  CLIENT *clnt)
+{
+	return (clnt_call(clnt, LOADSHAREDOBJECT,
+		(xdrproc_t) xdr_wrapstring, (caddr_t) &arg1,
+		(xdrproc_t) xdr_int, (caddr_t) clnt_res,
+		TIMEOUT));
+}

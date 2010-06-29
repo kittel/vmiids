@@ -7,5 +7,6 @@ program SIMP_PROG {
      int ENQUEUENOTIFICATIONMODULE(string) = 3;
      int DEQUEUENOTIFICATIONMODULE(string) = 4;
      int STOPIDS(void) = 5;
+     int LOADSHAREDOBJECT(string) = 6;
    } = VERSION_NUMBER;
 } = 555555555;
