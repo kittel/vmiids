@@ -12,16 +12,16 @@
 #include "NotificationModule.h"
 #include "SensorModule.h"
 
-#include <list>
+#include <map>
 #include <string>
 
 class VmiIDS {
 	private:
-		std::list<DetectionModule *> detectionModules;
+		std::map<std::string, DetectionModule *> detectionModules;
 		pthread_mutex_t detectionModuleMutex;
-		std::list<NotificationModule *> notificationModules;
+		std::map<std::string, NotificationModule *> notificationModules;
 		pthread_mutex_t notificationModuleMutex;
-		std::list<SensorModule* > sensorModules;
+		std::map<std::string, SensorModule* > sensorModules;
 		pthread_mutex_t sensorModuleMutex;
 
 		static VmiIDS *instance;

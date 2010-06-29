@@ -8,7 +8,7 @@
 #ifndef DYNAMICDETECTIONMODULE_H_
 #define DYNAMICDETECTIONMODULE_H_
 
-#include "DetectionModule.h";
+#include "DetectionModule.h"
 
 class DynamicDetectionModule: public DetectionModule {
 public:

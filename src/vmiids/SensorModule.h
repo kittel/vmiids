@@ -19,4 +19,12 @@ class SensorModule{
 		std::string getName(){ return this->moduleName; };
 };
 
+#include "VmiIDS.h"
+
+#define ADDDYNAMICSENSORMODULE(classname) class proxy { \
+	public: \
+	proxy(){ VmiIDS::getInstance()->enqueueSensorModule(new classname);  } \
+}; \
+static proxy p;
+
 #endif /* SENSORMODULE_H_ */

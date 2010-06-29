@@ -24,4 +24,12 @@ class NotificationModule{
 		virtual void critical() = 0;
 };
 
+#include "VmiIDS.h"
+
+#define ADDDYNAMICNOTIFICATIONMODULE_H_(classname) class proxy { \
+	public: \
+	proxy(){ VmiIDS::getInstance()->enqueueNotificationModule(new classname);  } \
+}; \
+static proxy p;
+
 #endif /* NOTIFICATIONMODULE_H_ */
