@@ -28,6 +28,5 @@ public:
 
 	virtual void getThreadLevel();
 };
-ADDDYNAMICDETECTIONMODULE(ExampleDetectionModule, __LINE__);
 
 #endif /* EXAMPLEDETECTIONMODULE_H_ */

@@ -9,9 +9,24 @@
 
 #include "ExampleDetectionModule.h"
 
-ExampleDetectionModule::ExampleDetectionModule() : DetectionModule("ExampleDetectionModule"){
-	// TODO Auto-generated constructor stub
+ADDDYNAMICDETECTIONMODULE(ExampleDetectionModule, __LINE__);
 
+ExampleDetectionModule::ExampleDetectionModule() : DetectionModule("ExampleDetectionModule"){
+	notify = VmiIDS::getInstance()->getNotificationModule(
+			"ShellNotificationModule");
+	if (!notify) {
+		printf("Could not load NotificationModule\n");
+		return;
+	}
+
+	qemu = dynamic_cast<QemuMonitorSensorModule *> (VmiIDS::getInstance()->getSensorModule(
+					"QemuMonitorSensorModule"));
+	if (!qemu) {
+		notify->critical("Could not load QemuMonitorSensorModule");
+		return;
+	}
+	this->wasRunning = qemu->isRunning();
+	notify->debug("ExampleDetectionModule initialized");
 }
 
 ExampleDetectionModule::~ExampleDetectionModule() {
@@ -19,28 +34,8 @@ ExampleDetectionModule::~ExampleDetectionModule() {
 }
 
 void ExampleDetectionModule::run(){
-	printf("ExampleDetectionModule running\n");
-	if (!notify) {
-		notify = VmiIDS::getInstance()->getNotificationModule(
-				"ShellNotificationModule");
-		if (!notify) {
-			printf("Could not load NotificationModule\n");
-			return;
-		}
-	}
 
-	if (!qemu) {
-		qemu = dynamic_cast <QemuMonitorSensorModule *>(VmiIDS::getInstance()->getSensorModule(
-				"QemuMonitorSensorModule"));
-		if (!qemu) {
-			notify->critical("Could not load QemuMonitorSensorModule");
-			return;
-		}
-		this->wasRunning = qemu->isRunning();
-	}
-	notify->debug("ExampleDetectionModule initialized");
-
-		bool isRunning;
+	bool isRunning;
 	try{
 		isRunning = qemu->isRunning();
 	}catch(libVMI::QemuMonitorException e){
@@ -49,6 +44,7 @@ void ExampleDetectionModule::run(){
 	}
 
 	if(isRunning != this->wasRunning){
+		this->wasRunning = isRunning;
 		notify->info("VM State Changed!");
 		(isRunning) ? notify->info("\t VM State: running")
 				    : notify->info("\t VM State: stopped");

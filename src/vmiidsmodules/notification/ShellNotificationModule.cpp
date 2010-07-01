@@ -6,11 +6,13 @@
  */
 
 #include <iostream>
+#include <stdio.h>
 
 #include "ShellNotificationModule.h"
 
+ADDDYNAMICNOTIFICATIONMODULE_H_(ShellNotificationModule, __LINE__);
+
 ShellNotificationModule::ShellNotificationModule() : NotificationModule("ShellNotificationModule"){
-	// TODO Auto-generated constructor stub
 
 }
 

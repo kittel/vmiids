@@ -8,7 +8,7 @@
 #include "QemuMonitor.h"
 
 
-#define DEBUG
+//#define DEBUG
 
 #ifdef DEBUG
 #define VERBOSE "QemuMonitor"
@@ -21,10 +21,16 @@ namespace libVMI {
 #define MONITORDEVICE "/dev/ttyS1"
 #define MONITORSHELL  "(qemu)"
 
-QemuMonitor::QemuMonitor()  throw(QemuMonitorException):
-		QemuMonitorParser(MONITORDEVICE, MONITORSHELL){}
+int QemuMonitor::callCount = 0;
 
-QemuMonitor::~QemuMonitor() {}
+QemuMonitor::QemuMonitor()  throw(QemuMonitorException):
+		QemuMonitorParser(MONITORDEVICE, MONITORSHELL){
+	LIBVMI_DEBUG_MSG("Constructor called %i. time", ++callCount);
+}
+
+QemuMonitor::~QemuMonitor() {
+	LIBVMI_DEBUG_MSG("Destructor called");
+}
 
 
 bool QemuMonitor::isRunning() throw(QemuMonitorException){

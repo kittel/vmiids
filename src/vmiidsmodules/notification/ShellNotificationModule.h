@@ -21,6 +21,5 @@ public:
 	virtual void error(std::string message);
 	virtual void critical(std::string message);
 };
-ADDDYNAMICNOTIFICATIONMODULE_H_(ShellNotificationModule, __LINE__);
 
 #endif /* SHELLNOTIFICATIONMODULE_H_ */

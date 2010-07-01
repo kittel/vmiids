@@ -7,9 +7,10 @@
 
 #include "QemuMonitorSensorModule.h"
 
-QemuMonitorSensorModule::QemuMonitorSensorModule() : SensorModule("QemuMonitorSensorModule"){
-	// TODO Auto-generated constructor stub
+ADDDYNAMICSENSORMODULE(QemuMonitorSensorModule, __LINE__);
 
+#include <stdio.h>
+QemuMonitorSensorModule::QemuMonitorSensorModule() : SensorModule("QemuMonitorSensorModule"), QemuMonitor(){
 }
 
 QemuMonitorSensorModule::~QemuMonitorSensorModule() {

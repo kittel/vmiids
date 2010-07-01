@@ -177,11 +177,11 @@ int VmiIDS::startIDS() {
 void * VmiIDS::run(void * this_pointer) {
 	VmiIDS * this_p = (VmiIDS *) this_pointer;
 
-	this_p->enqueueDetectionModule("SimpleDetectionModule");
-	this_p->loadSharedObjectsInitial("/home/kittel/workspace/libvmi/src/vmiids/.libs");
-	//this_p->loadSharedObjectsInitial("/home/kittel/workspace/libvmi/src/vmiidsmodules/sensor/.libs");
-	//this_p->loadSharedObjectsInitial("/home/kittel/workspace/libvmi/src/vmiidsmodules/notification/.libs");
-	//this_p->loadSharedObjectsInitial("/home/kittel/workspace/libvmi/src/vmiidsmodules/detection/.libs");
+	//this_p->enqueueDetectionModule("SimpleDetectionModule");
+	//this_p->loadSharedObjectsInitial("/home/kittel/workspace/libvmi/src/vmiids/.libs");
+	this_p->loadSharedObjectsInitial("/home/kittel/workspace/libvmi/src/vmiidsmodules/sensor/.libs");
+	this_p->loadSharedObjectsInitial("/home/kittel/workspace/libvmi/src/vmiidsmodules/notification/.libs");
+	this_p->loadSharedObjectsInitial("/home/kittel/workspace/libvmi/src/vmiidsmodules/detection/.libs");
 
 	while (this_p->vmiRunning) {
 		pthread_mutex_lock(&this_p->detectionModuleMutex);

@@ -18,6 +18,5 @@ public:
 
 	void initSensorModule();
 };
-ADDDYNAMICSENSORMODULE(QemuMonitorSensorModule, __LINE__);
 
 #endif /* QEMUMONITORSENSORMODULE_H_ */

@@ -28,6 +28,9 @@ class QemuMonitorException: public std::exception {
  * \brief Parser for the QEmu Monitor Console. Results are parsed to structs.
  */
 class QemuMonitor: public QemuMonitorParser {
+private:
+	static int callCount;
+
 public:
 	QemuMonitor() throw(QemuMonitorException);
 	virtual ~QemuMonitor();
