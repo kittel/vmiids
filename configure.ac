@@ -12,6 +12,10 @@ AM_PATH_CPPUNIT(1.12.1)
 AC_CONFIG_FILES(Makefile 
 				src/Makefile
 				src/vmiids/Makefile
+				src/vmiidsmodules/Makefile
+				src/vmiidsmodules/detection/Makefile
+				src/vmiidsmodules/notification/Makefile
+				src/vmiidsmodules/sensor/Makefile
 				src/libvmi/Makefile
 				src/clientApps/Makefile
 				tests/Makefile)

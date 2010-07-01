@@ -177,7 +177,11 @@ int VmiIDS::startIDS() {
 void * VmiIDS::run(void * this_pointer) {
 	VmiIDS * this_p = (VmiIDS *) this_pointer;
 
+	this_p->enqueueDetectionModule("SimpleDetectionModule");
 	this_p->loadSharedObjectsInitial("/home/kittel/workspace/libvmi/src/vmiids/.libs");
+	//this_p->loadSharedObjectsInitial("/home/kittel/workspace/libvmi/src/vmiidsmodules/sensor/.libs");
+	//this_p->loadSharedObjectsInitial("/home/kittel/workspace/libvmi/src/vmiidsmodules/notification/.libs");
+	//this_p->loadSharedObjectsInitial("/home/kittel/workspace/libvmi/src/vmiidsmodules/detection/.libs");
 
 	while (this_p->vmiRunning) {
 		pthread_mutex_lock(&this_p->detectionModuleMutex);
@@ -190,7 +194,6 @@ void * VmiIDS::run(void * this_pointer) {
 		pthread_mutex_unlock(&this_p->detectionModuleMutex);
 		sched_yield();
 	}
-
 }
 
 void VmiIDS::loadSharedObjectsInitial(std::string path) {
@@ -211,7 +214,7 @@ void VmiIDS::loadSharedObjectsInitial(std::string path) {
 			lstat(filename.c_str(), &fileStat);
 			if (!S_ISLNK(fileStat.st_mode)) {
 				void *dlib;
-				dlib = dlopen(filename.c_str(), RTLD_NOW);
+				dlib = dlopen(filename.c_str(), RTLD_NOW | RTLD_GLOBAL);
 				if (dlib == NULL) {
 					std::cerr << dlerror() << std::endl;
 					continue;
@@ -228,7 +231,7 @@ void VmiIDS::loadSharedObject(std::string path) {
 	printf("Trying to load shared object at: %s\n", path.c_str());
 
 	void *dlib;
-	dlib = dlopen(path.c_str(), RTLD_NOW);
+	dlib = dlopen(path.c_str(), RTLD_NOW | RTLD_GLOBAL);
 	if (dlib == NULL) {
 		std::cerr << dlerror() << std::endl;
 		exit(-1);

@@ -16,15 +16,16 @@ class SensorModule{
 
 	public:
 		SensorModule(std::string moduleName){ this->moduleName = moduleName;};
+		virtual void initSensorModule() = 0;
 		std::string getName(){ return this->moduleName; };
 };
 
 #include "VmiIDS.h"
 
-#define ADDDYNAMICSENSORMODULE(classname) class proxy { \
+#define ADDDYNAMICSENSORMODULE(classname, line) class CONCAT(proxy, line) { \
 	public: \
-	proxy(){ VmiIDS::getInstance()->enqueueSensorModule(new classname);  } \
+	CONCAT(proxy, line)(){ VmiIDS::getInstance()->enqueueSensorModule(new classname);  } \
 }; \
-static proxy p;
+static CONCAT(proxy, line) CONCAT(p, line);
 
 #endif /* SENSORMODULE_H_ */

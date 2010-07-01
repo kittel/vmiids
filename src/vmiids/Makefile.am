@@ -11,6 +11,7 @@ vmiids_SOURCES=VmiIDS.cpp \
                ../libvmi/Debug.h
 
 #vmiids_LIBADD = 
+vmiids_LDADD = $(top_builddir)/src/libvmi/libvmi.la
 vmiids_LDFLAGS = -lpthread -lnsl -ldl
 vmiids_CFLAGS = -I $(top_builddir)/src/include
 vmiids_CXXFLAGS = $(CPPUNIT_CFLAGS) -I $(top_builddir)/src/include -rdynamic

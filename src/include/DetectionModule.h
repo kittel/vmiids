@@ -27,11 +27,11 @@ class DetectionModule{
 
 #include "VmiIDS.h"
 
-#define ADDDYNAMICDETECTIONMODULE(classname) class proxy { \
+#define ADDDYNAMICDETECTIONMODULE(classname, line) class CONCAT(proxy, line) { \
 	public: \
-	proxy(){ VmiIDS::getInstance()->enqueueDetectionModule(new classname);  } \
+	CONCAT(proxy, line)(){ VmiIDS::getInstance()->enqueueDetectionModule(new classname);  } \
 }; \
-static proxy p;
+static CONCAT(proxy, line) CONCAT(p, line);
 
 
 #endif /* DETECTIONMODULE_H_ */

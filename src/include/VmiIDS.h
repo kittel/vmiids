@@ -15,6 +15,8 @@
 #include <map>
 #include <string>
 
+#define CONCAT(a, b) a ## b
+
 class VmiIDS {
 	private:
 		std::map<std::string, DetectionModule *> detectionModules;

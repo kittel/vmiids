@@ -1,2 +1,2 @@
-SUBDIRS=vmiids libvmi clientApps
+SUBDIRS=libvmi vmiids vmiidsmodules clientApps 
 

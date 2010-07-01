@@ -33,8 +33,8 @@
 #ifndef LIBVMI_H_
 #define LIBVMI_H_
 
-#include "QemuMonitor.h"
-#include "ShellParser.h"
-#include "Shell.h"
+#include "../libvmi/QemuMonitor.h"
+#include "../libvmi/ShellParser.h"
+#include "../libvmi/Shell.h"
 
 #endif /* LIBVMI_H_ */

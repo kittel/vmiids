@@ -5,5 +5,5 @@ libvmiTest_SOURCES= libvmiTest.cpp \
 					QemuMonitorTest.cpp \
 					libvmi.h
 libvmiTest_LDADD = $(top_builddir)/src/libvmi/libvmi.la
-libvmiTest_CXXFLAGS = $(CPPUNIT_CFLAGS) -I $(top_builddir)/src/libvmi
+libvmiTest_CXXFLAGS = $(CPPUNIT_CFLAGS) -I $(top_builddir)/src/include
 libvmiTest_LDFLAGS = $(CPPUNIT_LIBS) -ldl

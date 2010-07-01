@@ -18,10 +18,11 @@ libvmi_la_SOURCES = libvmi.cpp \
 					Shell.h \
 					Debug.h
 libvmi_la_includedir=$(includedir)/libvmi
-libvmi_la_include_HEADERS = libvmi.h
+libvmi_la_include_HEADERS = ../include/libvmi.h
+libvmi_la_CXXFLAGS = $(CPPUNIT_CFLAGS) -I $(top_builddir)/src/include
 
 
 shell_SOURCES= 
 shell_LDADD = $(top_builddir)/src/libvmi/libvmi.la
-shell_CXXFLAGS = $(CPPUNIT_CFLAGS)
+shell_CXXFLAGS = $(CPPUNIT_CFLAGS) -I $(top_builddir)/src/include
 shell_LDFLAGS = $(CPPUNIT_LIBS) -ldl

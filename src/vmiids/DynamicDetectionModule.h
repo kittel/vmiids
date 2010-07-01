@@ -21,6 +21,6 @@ public:
 
 	virtual void getThreadLevel();
 };
-ADDDYNAMICDETECTIONMODULE(DynamicDetectionModule);
+ADDDYNAMICDETECTIONMODULE(DynamicDetectionModule, __LINE__);
 
 #endif /* DYNAMICDETECTIONMODULE_H_ */
