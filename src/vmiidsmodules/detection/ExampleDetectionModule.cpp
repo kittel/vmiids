@@ -12,21 +12,28 @@
 ADDDYNAMICDETECTIONMODULE(ExampleDetectionModule, __LINE__);
 
 ExampleDetectionModule::ExampleDetectionModule() : DetectionModule("ExampleDetectionModule"){
-	notify = VmiIDS::getInstance()->getNotificationModule(
+	this->notify = VmiIDS::getInstance()->getNotificationModule(
 			"ShellNotificationModule");
-	if (!notify) {
+	if (!this->notify) {
 		printf("Could not load NotificationModule\n");
 		return;
 	}
 
-	qemu = dynamic_cast<QemuMonitorSensorModule *> (VmiIDS::getInstance()->getSensorModule(
+	this->qemu = dynamic_cast<QemuMonitorSensorModule *> (VmiIDS::getInstance()->getSensorModule(
 					"QemuMonitorSensorModule"));
-	if (!qemu) {
-		notify->critical("Could not load QemuMonitorSensorModule");
+	if (!this->qemu) {
+		this->notify->critical("Could not load QemuMonitorSensorModule");
 		return;
 	}
-	this->wasRunning = qemu->isRunning();
-	notify->debug("ExampleDetectionModule initialized");
+	this->wasRunning = this->qemu->isRunning();
+
+	fs = dynamic_cast<FileSystemSensorModule *> (VmiIDS::getInstance()->getSensorModule(
+						"FileSystemSensorModule"));
+		if (!fs) {
+			this->notify->critical("Could not load FileSystemSensorModule");
+			return;
+		}
+		this->notify->debug("ExampleDetectionModule initialized");
 }
 
 ExampleDetectionModule::~ExampleDetectionModule() {
@@ -37,17 +44,29 @@ void ExampleDetectionModule::run(){
 
 	bool isRunning;
 	try{
-		isRunning = qemu->isRunning();
+		isRunning = this->qemu->isRunning();
 	}catch(libVMI::QemuMonitorException e){
-		notify->critical("Could not use QemuMonitorSensorModule");
+		this->notify->critical("Could not use QemuMonitorSensorModule");
 		return;
 	}
 
 	if(isRunning != this->wasRunning){
 		this->wasRunning = isRunning;
-		notify->info("VM State Changed!");
-		(isRunning) ? notify->info("\t VM State: running")
-				    : notify->info("\t VM State: stopped");
+		this->notify->info("VM State Changed!");
+		(isRunning) ? this->notify->info("\t VM State: running")
+				    : this->notify->info("\t VM State: stopped");
+	}
+
+	if(this->fs->fileExists("/etc/hostname")){
+		this->notify->info("File /etc/hostname exists");
+		std::ifstream fileHandle;
+		this->fs->openFileRO("/etc/hostname", &fileHandle);
+		std::string fileContent;
+		std::string line;
+		while(std::getline(fileHandle,line))
+			fileContent += line;
+		this->notify->info(fileContent.insert(0, "\t"));
+		fileHandle.close();
 	}
 }
 

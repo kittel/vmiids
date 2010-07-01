@@ -6,7 +6,6 @@
  */
 
 #include <iostream>
-#include <stdio.h>
 
 #include "ShellNotificationModule.h"
 

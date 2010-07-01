@@ -10,12 +10,14 @@
 
 #include "NotificationModule.h"
 #include "../sensor/QemuMonitorSensorModule.h"
+#include "../sensor/FileSystemSensorModule.h"
 
 
 class ExampleDetectionModule : public DetectionModule{
 private:
 	NotificationModule * notify;
 	QemuMonitorSensorModule * qemu;
+	FileSystemSensorModule * fs;
 	bool wasRunning;
 
 public:
