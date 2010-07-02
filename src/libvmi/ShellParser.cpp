@@ -6,7 +6,7 @@
 #define SHELLDEVICE "/dev/ttyS2"
 #define LOGINSHELL  "login:"
 #define PASSWORDSHELL  "Password:"
-#define COMMANDSHELL  "@rootkitvm:"
+#define COMMANDSHELL  "rootkitvm@rootkitvm:"
 
 #define DEBUG
 
@@ -18,6 +18,7 @@
 namespace libVMI {
 
 ShellParser::ShellParser() : ConsoleMonitor(SHELLDEVICE, LOGINSHELL){
+
 	this->loggedin = false;
 	try {
 		this->loggedin = this->isLoggedin();
@@ -44,7 +45,7 @@ bool ShellParser::isLoggedin(void){
 	std::string lastLine;
 
 	this->sendCommand("");
-	for(int searchCount = 10 ; searchCount > 0; searchCount--){
+	for(int searchCount = 1000 ; searchCount > 0; searchCount--){
 		usleep(1000);
 		parseOutput(replyString);
 		searchString.append(replyString);
