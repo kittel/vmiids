@@ -11,6 +11,7 @@
 #include "NotificationModule.h"
 #include "../sensor/QemuMonitorSensorModule.h"
 #include "../sensor/FileSystemSensorModule.h"
+#include "../sensor/ShellSensorModule.h"
 
 
 class ExampleDetectionModule : public DetectionModule{
@@ -18,6 +19,7 @@ private:
 	NotificationModule * notify;
 	QemuMonitorSensorModule * qemu;
 	FileSystemSensorModule * fs;
+	ShellSensorModule * shell;
 	bool wasRunning;
 
 public:
