@@ -190,6 +190,7 @@ void * VmiIDS::run(void * this_pointer) {
 				this_p->detectionModules.begin(); it
 				!= this_p->detectionModules.end(); ++it) {
 			it->second->run();
+			if(!this_p->vmiRunning)	break;
 		}
 		pthread_mutex_unlock(&this_p->detectionModuleMutex);
 		sched_yield();
