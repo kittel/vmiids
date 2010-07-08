@@ -94,17 +94,17 @@ bool VmiIDSrpc::dequeueNotificationModule(std::string notificationModuleName){
 	return result;
 }
 
-void VmiIDSrpc::stopIDS(int signum){
+bool VmiIDSrpc::stopIDS(int signum){
 	enum clnt_stat retval;
-	void *result;
+	bool_t result;
 
 	retval = clnt_call (this->clnt, STOPIDS, (xdrproc_t) xdr_int, (caddr_t) &signum,
-		(xdrproc_t) xdr_int, (caddr_t) &result,
+		(xdrproc_t) xdr_bool, (caddr_t) &result,
 		TIMEOUT);
 	if (retval != RPC_SUCCESS) {
 		clnt_perror (this->clnt, "call failed");
 	}
-	return;
+	return result;
 }
 
 bool VmiIDSrpc::loadSharedObject(std::string path){

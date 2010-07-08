@@ -9,15 +9,22 @@
 
 #include <pthread.h>
 #include <signal.h>
+#include <rpc/pmap_clnt.h>
+
+#include <iostream>
 #include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <memory.h>
+
 #include <dlfcn.h>
 #include <dirent.h>
+
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
-#include <iostream>
+#include <sys/socket.h>
+#include <netinet/in.h>
 
-#include "vmiids_rpc.h"
 
 #include "SimpleDetectionModule.h"
 
@@ -36,7 +43,10 @@ void terminate_rpcListener(int signum) {
 	pthread_exit(NULL);
 }
 
-extern "C" int rpc_main(void);
+void * stopIDSThreadFunction(void * nothing) {
+	sleep(1);
+	VmiIDS::getInstance()->stopIDS(SIGTERM);
+}
 
 void * rpcThreadFunction(void * argument) {
 	struct sigaction terminate_action;
@@ -50,7 +60,34 @@ void * rpcThreadFunction(void * argument) {
 	sigaction(SIGHUP, &terminate_action, NULL);
 	sigaction(SIGTERM, &terminate_action, NULL);
 
-	rpc_main();
+	register SVCXPRT *transp;
+
+	pmap_unset (VMIIDS_RPC, VMIIDS_RPC_VERSION);
+
+	transp = svcudp_create(RPC_ANYSOCK);
+	if (transp == NULL) {
+		fprintf (stderr, "%s", "cannot create udp service.");
+		exit(1);
+	}
+	if (!svc_register(transp, VMIIDS_RPC, VMIIDS_RPC_VERSION, VmiIDS::dispatchRPC, IPPROTO_UDP)) {
+		fprintf (stderr, "%s", "unable to register (VMIIDS_RPC_PROG, VMIIDS_RPC_VERSION, udp).");
+		exit(1);
+	}
+
+	transp = svctcp_create(RPC_ANYSOCK, 0, 0);
+	if (transp == NULL) {
+		fprintf (stderr, "%s", "cannot create tcp service.");
+		exit(1);
+	}
+	if (!svc_register(transp, VMIIDS_RPC, VMIIDS_RPC_VERSION, VmiIDS::dispatchRPC, IPPROTO_TCP)) {
+		fprintf (stderr, "%s", "unable to register (VMIIDS_RPC_PROG, VMIIDS_RPC_VERSION, tcp).");
+		exit(1);
+	}
+
+	svc_run ();
+	fprintf (stderr, "%s", "svc_run returned");
+	/* NOTREACHED */
+
 	pthread_exit(NULL);
 }
 
@@ -72,59 +109,6 @@ int main(int argc, char ** argv) {
 	VmiIDS::getInstance()->waitIDS();
 
 	exit(0);
-}
-
-#include "vmiids_rpc.h"
-
-bool_t enqueuedetectionmodule_1_svc(char *arg1, int *result,
-		struct svc_req *rqstp) {
-	VmiIDS::getInstance()->enqueueDetectionModule(arg1);
-	return 1;
-}
-
-bool_t dequeuedetectionmodule_1_svc(char *arg1, int *result,
-		struct svc_req *rqstp) {
-	VmiIDS::getInstance()->dequeueDetectionModule(arg1);
-	return 1;
-}
-
-bool_t enqueuenotificationmodule_1_svc(char *arg1, int *result,
-		struct svc_req *rqstp) {
-	VmiIDS::getInstance()->enqueueNotificationModule(arg1);
-	return 1;
-}
-
-bool_t dequeuenotificationmodule_1_svc(char *arg1, int *result,
-		struct svc_req *rqstp) {
-	VmiIDS::getInstance()->dequeueNotificationModule(arg1);
-	return 1;
-}
-
-void * stopIDSThreadFunction(void * nothing) {
-	sleep(1);
-	VmiIDS::getInstance()->stopIDS(SIGTERM);
-}
-
-bool_t loadsharedobject_1_svc(char *arg1, int *result, struct svc_req *rqstp) {
-	VmiIDS::getInstance()->loadSharedObject(arg1);
-	return 1;
-}
-
-bool_t stopids_1_svc(int *result, struct svc_req *rqstp) {
-	pthread_t killThread;
-	pthread_create(&killThread, NULL, &stopIDSThreadFunction, NULL);
-	return 1;
-}
-
-int simp_prog_1_freeresult(SVCXPRT *transp, xdrproc_t xdr_result,
-		caddr_t result) {
-	xdr_free(xdr_result, result);
-
-	/*
-	 * Insert additional freeing code here, if needed
-	 */
-
-	return 1;
 }
 
 VmiIDS* VmiIDS::instance = NULL;
@@ -203,6 +187,108 @@ void * VmiIDS::run(void * this_pointer) {
 	}
 }
 
+void VmiIDS::dispatchRPC(struct svc_req *rqstp, register SVCXPRT *transp){
+	union {
+		char *char_arg;
+	} argument;
+	union {
+		bool_t bool_res;
+	} result;
+	bool_t retval;
+	xdrproc_t _xdr_argument, _xdr_result;
+
+	memset ((char *)&argument, 0, sizeof (argument));
+
+	switch (rqstp->rq_proc) {
+	case NULLPROC:
+		(void) svc_sendreply (transp, (xdrproc_t) xdr_void, (char *)NULL);
+		return;
+
+	case ENQUEUEDETECTIONMODULE:
+		_xdr_argument = (xdrproc_t) xdr_wrapstring;
+		_xdr_result = (xdrproc_t) xdr_bool;
+		if (!svc_getargs (transp, (xdrproc_t) _xdr_argument, (caddr_t) &argument)) {
+			svcerr_decode (transp);
+			return;
+		}
+		retval = 1;
+		VmiIDS::getInstance()->enqueueDetectionModule(argument.char_arg);
+		break;
+
+	case DEQUEUEDETECTIONMODULE:
+		_xdr_argument = (xdrproc_t) xdr_wrapstring;
+		_xdr_result = (xdrproc_t) xdr_bool;
+		if (!svc_getargs (transp, (xdrproc_t) _xdr_argument, (caddr_t) &argument)) {
+			svcerr_decode (transp);
+			return;
+		}
+		retval = 1;
+		VmiIDS::getInstance()->dequeueDetectionModule(argument.char_arg);
+		break;
+
+	case ENQUEUENOTIFICATIONMODULE:
+		_xdr_argument = (xdrproc_t) xdr_wrapstring;
+		_xdr_result = (xdrproc_t) xdr_bool;
+		if (!svc_getargs (transp, (xdrproc_t) _xdr_argument, (caddr_t) &argument)) {
+			svcerr_decode (transp);
+			return;
+		}
+		retval = 1;
+		VmiIDS::getInstance()->enqueueNotificationModule(argument.char_arg);
+		break;
+
+	case DEQUEUENOTIFICATIONMODULE:
+		_xdr_argument = (xdrproc_t) xdr_wrapstring;
+		_xdr_result = (xdrproc_t) xdr_bool;
+		if (!svc_getargs (transp, (xdrproc_t) _xdr_argument, (caddr_t) &argument)) {
+			svcerr_decode (transp);
+			return;
+		}
+		retval = 1;
+		VmiIDS::getInstance()->dequeueNotificationModule(argument.char_arg);
+		break;
+
+	case STOPIDS:
+		_xdr_argument = (xdrproc_t) xdr_int;
+		_xdr_result = (xdrproc_t) xdr_int;
+		if (!svc_getargs (transp, (xdrproc_t) _xdr_argument, (caddr_t) &argument)) {
+			svcerr_decode (transp);
+			return;
+		}
+		retval = 1;
+		pthread_t killThread;
+		pthread_create(&killThread, NULL, &stopIDSThreadFunction, NULL);
+		break;
+
+	case LOADSHAREDOBJECT:
+		_xdr_argument = (xdrproc_t) xdr_wrapstring;
+		_xdr_result = (xdrproc_t) xdr_bool;
+		if (!svc_getargs (transp, (xdrproc_t) _xdr_argument, (caddr_t) &argument)) {
+			svcerr_decode (transp);
+			return;
+		}
+		retval = 1;
+		VmiIDS::getInstance()->loadSharedObject(argument.char_arg);
+		break;
+
+	default:
+		svcerr_noproc (transp);
+		return;
+	}
+	if (retval > 0 && !svc_sendreply(transp, (xdrproc_t) _xdr_result, (char *)&result)) {
+		svcerr_systemerr (transp);
+	}
+	if (!svc_freeargs (transp, (xdrproc_t) _xdr_argument, (caddr_t) &argument)) {
+		fprintf (stderr, "%s", "unable to free arguments");
+		exit (1);
+	}
+	xdr_free(_xdr_result, (caddr_t) &result);
+	//if (!simp_prog_1_freeresult (transp, _xdr_result, (caddr_t) &result))
+	//	fprintf (stderr, "%s", "unable to free results");
+
+	return;
+}
+
 void VmiIDS::loadSharedObjectsPath(std::string path) {
 
 	DIR *dp;
@@ -250,12 +336,13 @@ void VmiIDS::waitIDS() {
 	pthread_join(vmiidsThread, NULL);
 }
 
-void VmiIDS::stopIDS(int signum) {
+bool VmiIDS::stopIDS(int signum) {
 	printf("IDS Stopping\n");
 	this->vmiRunning = false;
 	pthread_kill(this->rpcThread, SIGTERM);
 	pthread_join(this->rpcThread, NULL);
 	pthread_join(this->vmiidsThread, NULL);
+	return true;
 }
 
 void VmiIDS::enqueueDetectionModule(DetectionModule *detectionModule) {

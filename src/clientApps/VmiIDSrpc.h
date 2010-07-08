@@ -12,9 +12,6 @@
 
 #include <rpc/rpc.h>
 
-#define VMIIDS_RPC 			555555555
-#define VMIIDS_RPC_VERSION 	1
-
 class VmiIDSrpc {
 private:
 	CLIENT *clnt;
@@ -31,7 +28,7 @@ public:
 	bool dequeueDetectionModule(std::string detectionModuleName);
 	bool enqueueNotificationModule(std::string notificationModuleName);
 	bool dequeueNotificationModule(std::string notificationModuleName);
-	void stopIDS(int signum = 0);
+	bool stopIDS(int signum = 0);
 	bool loadSharedObject(std::string path);
 };
 

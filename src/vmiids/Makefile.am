@@ -1,8 +1,6 @@
 bin_PROGRAMS=vmiids
 vmiids_SOURCES=VmiIDS.cpp \
                ../include/VmiIDS.h \
-               ../include/vmiids_rpc.h \
-               vmiids_rpc_svc.c \
                ../include/DetectionModule.h \
                ../include/NotificationModule.h \
                ../include/SensorModule.h \
@@ -17,7 +15,6 @@ vmiids_CFLAGS = -I $(top_builddir)/src/include
 vmiids_CXXFLAGS = $(CPPUNIT_CFLAGS) -I $(top_builddir)/src/include -rdynamic
 vmiids_includedir=$(includedir)
 vmiids_include_HEADERS = ../include/VmiIDS.h \
-												 ../include/vmiids_rpc.h \
 												 ../include/DetectionModule.h \
 												 ../include/NotificationModule.h \
 												 ../include/SensorModule.h 

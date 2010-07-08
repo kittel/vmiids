@@ -14,6 +14,7 @@
 
 #include <map>
 #include <string>
+#include <rpc/rpc.h>
 
 typedef enum {
 	ENQUEUEDETECTIONMODULE = 1,
@@ -23,6 +24,10 @@ typedef enum {
 	STOPIDS,
 	LOADSHAREDOBJECT,
 } eRPCFuncs;
+
+#define VMIIDS_RPC 			555555555
+#define VMIIDS_RPC_VERSION 	1
+
 
 #define CONCAT(a, b) a ## b
 
@@ -53,10 +58,12 @@ class VmiIDS {
 		static VmiIDS *getInstance();
 		int startIDS();
 		void waitIDS();
-		void stopIDS(int signum = 0);
-		bool loadSharedObject(std::string path);
+		bool stopIDS(int signum = 0);
 
+		static void dispatchRPC(struct svc_req *rqstp, register SVCXPRT *transp);
 		static void * run(void * this_pointer);
+
+		bool loadSharedObject(std::string path);
 
 		void enqueueDetectionModule(DetectionModule *detectionModule);
 		bool enqueueDetectionModule(std::string detectionModuleName);
