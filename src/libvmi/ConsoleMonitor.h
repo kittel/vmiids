@@ -44,6 +44,8 @@ class ConsoleMonitor {
 		virtual ~ConsoleMonitor();
 
 		void parseCommandOutput(const char *command, std::string &output) throw(ConsoleMonitorException);
+		void parseCommandOutput(std::string command, std::string &output) throw(ConsoleMonitorException);
+
 		void killThread(void) throw(ConsoleMonitorException);
 	
 	private:	

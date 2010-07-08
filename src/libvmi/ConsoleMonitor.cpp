@@ -124,6 +124,7 @@ int ConsoleMonitor::sendCommand(const char * command) throw(ConsoleMonitorExcept
 		LIBVMI_DEBUG_MSG("open %s writeable failed\n", this->consoleName);
 		return -1;
 	}
+	LIBVMI_DEBUG_MSG("Writing command: %s", command);
 	write(fd_to_qemu, command, strlen(command));
 	write(fd_to_qemu, "\n", 1);
 	close(fd_to_qemu);
@@ -140,6 +141,11 @@ void ConsoleMonitor::parseOutput(std::string &output) throw(ConsoleMonitorExcept
 		this->queuecontainer.pop();
 		pthread_mutex_unlock(&(this->queuemutex));
 	}
+}
+
+void ConsoleMonitor::parseCommandOutput(std::string command,
+		std::string &output) throw(ConsoleMonitorException){
+	this->parseCommandOutput(command.c_str(), output);
 }
 
 void ConsoleMonitor::parseCommandOutput(const char *command,
@@ -161,7 +167,6 @@ void ConsoleMonitor::parseCommandOutput(const char *command,
 	this->sendCommand(command);
 
 	LIBVMI_DEBUG_MSG("parseCommand...");
-
 	output.clear();
 	//Delete command from result
 	while (output.size() < strlen(command) || (output.rfind(command) == std::string::npos)) {
@@ -169,6 +174,8 @@ void ConsoleMonitor::parseCommandOutput(const char *command,
 			sched_yield();
 		pthread_mutex_lock(&(this->queuemutex));
 		output.append(&this->queuecontainer.front(), 1);
+		int crString;
+		if((crString = output.rfind(" \r")) != std::string::npos) output.replace(crString, 2, "");
 		this->queuecontainer.pop();
 		pthread_mutex_unlock(&(this->queuemutex));
 	}

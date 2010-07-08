@@ -15,12 +15,24 @@
 #include <map>
 #include <string>
 
+typedef enum {
+	ENQUEUEDETECTIONMODULE = 1,
+	DEQUEUEDETECTIONMODULE,
+	ENQUEUENOTIFICATIONMODULE,
+	DEQUEUENOTIFICATIONMODULE,
+	STOPIDS,
+	LOADSHAREDOBJECT,
+} eRPCFuncs;
+
 #define CONCAT(a, b) a ## b
 
 class VmiIDS {
 	private:
+
 		std::map<std::string, DetectionModule *> detectionModules;
 		pthread_mutex_t detectionModuleMutex;
+		std::map<std::string, DetectionModule *> activeDetectionModules;
+		pthread_mutex_t activeDetectionModuleMutex;
 		std::map<std::string, NotificationModule *> notificationModules;
 		pthread_mutex_t notificationModuleMutex;
 		std::map<std::string, SensorModule* > sensorModules;
@@ -33,7 +45,7 @@ class VmiIDS {
 
 		VmiIDS();
 
-		void loadSharedObjectsInitial(std::string path);
+		void loadSharedObjectsPath(std::string path);
 
 	public:
 		virtual ~VmiIDS();
@@ -42,7 +54,7 @@ class VmiIDS {
 		int startIDS();
 		void waitIDS();
 		void stopIDS(int signum = 0);
-		void loadSharedObject(std::string path);
+		bool loadSharedObject(std::string path);
 
 		static void * run(void * this_pointer);
 

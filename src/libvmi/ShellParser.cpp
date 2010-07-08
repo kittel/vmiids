@@ -8,7 +8,7 @@
 #define PASSWORDSHELL  "Password:"
 #define COMMANDSHELL  "rootkitvm@rootkitvm:"
 
-#define DEBUG
+//#define DEBUG
 
 #ifdef DEBUG
 #define VERBOSE "ShellParser"

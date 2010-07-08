@@ -12,6 +12,7 @@
 
 class ShellNotificationModule : public NotificationModule {
 public:
+
 	ShellNotificationModule();
 	virtual ~ShellNotificationModule();
 
