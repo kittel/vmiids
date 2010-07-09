@@ -80,7 +80,7 @@ void RkHunterDetectionModule::initializeVariables() {
 
 	bool lineInteresting = false;
 
-	int result;
+	size_t result;
 	regex_t rxReturn;
 	regex_t rxDoSystemCheck;
 	regex_t rxEmptyLine;
@@ -144,7 +144,7 @@ void RkHunterDetectionModule::initializeVariables() {
 				}
 				if (regexec(&rxVariables, currentLine.c_str(), 10, matches, 0)
 						== 0) {
-					for (int i = 0; i <= rxVariables.re_nsub; i++) {
+					for (size_t i = 0; i <= rxVariables.re_nsub; i++) {
 						if (matches[i].rm_so != -1) {
 							std::multimap<std::string, std::string>::iterator
 									it;
@@ -175,7 +175,7 @@ void RkHunterDetectionModule::initializeVariables() {
 						== ' ')
 					currentVariableContent.replace(
 							currentVariableContent.size() - 1, 1, "");
-				for (int i = 0; i < currentVariableContent.size(); i++) {
+				for (size_t i = 0; i < currentVariableContent.size(); i++) {
 					if (currentVariableContent[i] == '\\') {
 						currentVariableContent.replace(i, 1, "\\\\");
 						i++;
@@ -187,7 +187,7 @@ void RkHunterDetectionModule::initializeVariables() {
 							currentVariableContent.size() - 1, 1, "");
 				if (regexec(&rxVariables, currentLine.c_str(), 10, matches, 0)
 						== 0) {
-					for (int i = 0; i <= rxVariables.re_nsub; i++) {
+					for (size_t i = 0; i <= rxVariables.re_nsub; i++) {
 						if (matches[i].rm_so != -1) {
 							std::multimap<std::string, std::string>::iterator
 									it;
@@ -353,7 +353,7 @@ void RkHunterDetectionModule::performSharedLibrariesCheck() {
 	variablesToCheck.push_back("LD_AOUT_PRELOAD");
 	variablesToCheck.push_back("LD_ELF_PRELOAD");
 
-	int crString;
+	size_t crString;
 	while (!variablesToCheck.empty()) {
 		command.str("");
 		commandOutput.clear();
@@ -636,13 +636,13 @@ void RkHunterDetectionModule::performFilePropertiesCheck() {
 	 /home/kittel/Download/rkhunter-1.3.6/files/rkhunter.conf[1C[ [0;32mOK[0;39m ]
 	 */
 
-	bool testResult;
+/*	bool testResult;
 	bool whitelistResult;
 	bool skipAttr, skipHash, skipImmut, skipScript;
 	bool useDatFile = true;
 	bool skiptImmutOS = false;
 	int propFileListCount = 0;
-
+*/
 	/*
 
 	#

@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <exception>
+#include <inttypes.h>
 
 //#define DEBUG
 
@@ -18,6 +19,7 @@ namespace libVMI {
 
 void ConsoleMonitor::signal_handler(int signum) {
 	LIBVMI_DEBUG_MSG("Signalhandler called");
+	signum = 0;
 	pthread_exit(0);
 }
 
@@ -174,7 +176,7 @@ void ConsoleMonitor::parseCommandOutput(const char *command,
 			sched_yield();
 		pthread_mutex_lock(&(this->queuemutex));
 		output.append(&this->queuecontainer.front(), 1);
-		int crString;
+		size_t crString;
 		if((crString = output.rfind(" \r")) != std::string::npos) output.replace(crString, 2, "");
 		this->queuecontainer.pop();
 		pthread_mutex_unlock(&(this->queuemutex));

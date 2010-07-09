@@ -1,3 +1,7 @@
+AM_CPPFLAGS = -Wall -Wextra -Werror
+AM_CXXFLAGS = -fpic -I $(top_builddir)/src/include
+AM_CFLAGS = -fpic  -I $(top_builddir)/src/include
+
 bin_PROGRAMS=vmiids
 vmiids_SOURCES=VmiIDS.cpp \
                ../include/VmiIDS.h \
@@ -11,8 +15,6 @@ vmiids_SOURCES=VmiIDS.cpp \
 #vmiids_LIBADD = 
 vmiids_LDADD = $(top_builddir)/src/libvmi/libvmi.la
 vmiids_LDFLAGS = -lpthread -lnsl -ldl
-vmiids_CFLAGS = -I $(top_builddir)/src/include
-vmiids_CXXFLAGS = $(CPPUNIT_CFLAGS) -I $(top_builddir)/src/include -rdynamic
 vmiids_includedir=$(includedir)
 vmiids_include_HEADERS = ../include/VmiIDS.h \
 												 ../include/DetectionModule.h \
@@ -24,8 +26,5 @@ libdynamicdetectionmodule_la_LIBADD =
 libdynamicdetectionmodule_la_LDFLAGS =
 libdynamicdetectionmodule_la_SOURCES = DynamicDetectionModule.h \
 					DynamicDetectionModule.cpp 
-libdynamicdetectionmodule_la_CFLAGS = -I $(top_builddir)/src/include
-libdynamicdetectionmodule_la_CXXFLAGS = $(CPPUNIT_CFLAGS) -I $(top_builddir)/src/include
-#libdynamicdetectionmodule_la_includedir=$(includedir)/libvmi
-#libdynamicdetectionmodule_la_include_HEADERS = libvmi.h
+
 

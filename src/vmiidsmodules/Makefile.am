@@ -1,2 +1,1 @@
-
 SUBDIRS = detection notification sensor

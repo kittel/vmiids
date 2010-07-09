@@ -1,3 +1,6 @@
+AM_CPPFLAGS = -Wall -Wextra -Werror
+AM_CXXFLAGS = -fpic -I $(top_builddir)/src/include
+AM_CFLAGS = -fpic  -I $(top_builddir)/src/include
 
 bin_PROGRAMS=libvmiMain shell
 libvmiMain_SOURCES=libvmiMain.cpp
@@ -19,10 +22,8 @@ libvmi_la_SOURCES = libvmi.cpp \
 					Debug.h
 libvmi_la_includedir=$(includedir)/libvmi
 libvmi_la_include_HEADERS = ../include/libvmi.h
-libvmi_la_CXXFLAGS = $(CPPUNIT_CFLAGS) -I $(top_builddir)/src/include
 
 
 shell_SOURCES= 
 shell_LDADD = $(top_builddir)/src/libvmi/libvmi.la
-shell_CXXFLAGS = $(CPPUNIT_CFLAGS) -I $(top_builddir)/src/include
 shell_LDFLAGS = $(CPPUNIT_LIBS) -ldl

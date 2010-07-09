@@ -37,6 +37,10 @@ AC_LIBTOOL_DLOPEN
 # Checks for header files.
 AC_CHECK_HEADERS([stdlib.h])
 
+PKG_CHECK_MODULES([LIBCONFIGXX], [libconfig++ >= 1.3],,
+	AC_MSG_ERROR([libconfig++ 1.3 or newer not found.])
+)
+
 # Checks for typedefs, structures, and compiler characteristics.
 
 # Checks for library functions.

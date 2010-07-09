@@ -18,8 +18,7 @@ void QemuMonitorTest::tearDown() {
 
 void QemuMonitorTest::testConstructor() {
 	libVMI::QemuMonitor* monitor2;
-	CPPUNIT_ASSERT_NO_THROW( monitor2 = new libVMI::QemuMonitor() );
-	delete(monitor2);
+	CPPUNIT_ASSERT_NO_THROW( monitor2 = new libVMI::QemuMonitor() ; delete(monitor2););
 }
 
 void QemuMonitorTest::testIsRunning() {

@@ -1,18 +1,16 @@
+AM_CPPFLAGS = -Wall -Wextra -Werror
+AM_CXXFLAGS = -fpic -I $(top_builddir)/src/include
+AM_CFLAGS = -fpic  -I $(top_builddir)/src/include
+
 bin_PROGRAMS=VMIstop VMImodule
 VMIstop_SOURCES=vmistop.cpp \
 							VmiIDSrpc.h \
 							VmiIDSrpc.cpp
-
-VMIstop_CFLAGS = -I $(top_builddir)/src/include
-VMIstop_CXXFLAGS = $(CPPUNIT_CFLAGS) -I $(top_builddir)/src/include
 VMIstop_LDFLAGS = -lpthread -lnsl
 
 VMImodule_SOURCES=vmimodule.cpp \
 							VmiIDSrpc.h \
 							VmiIDSrpc.cpp
-
-VMImodule_CFLAGS = -I $(top_builddir)/src/include
-VMImodule_CXXFLAGS = $(CPPUNIT_CFLAGS) -I $(top_builddir)/src/include
 VMImodule_LDFLAGS = -lpthread -lnsl
 
 

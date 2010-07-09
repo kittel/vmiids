@@ -26,6 +26,7 @@ Shell::~Shell(){
 }
 
 void Shell::signal_handler(int signum){
+	signum = 0;
 	pthread_exit(NULL);
 }
 

@@ -8,7 +8,7 @@
 #include "VmiIDSrpc.h"
 
 int
-main (int argc, char *argv[])
+main ()
 {
 	VmiIDSrpc::getInstance()->stopIDS();
 }

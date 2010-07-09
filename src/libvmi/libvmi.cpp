@@ -20,7 +20,7 @@ using namespace std ;
 #endif /* DEBUG */
 #include "Debug.h"
 
-int main(int argc, char ** argv){
+int main(){
 
 	libVMI::Shell shell;
 	shell.startShell();
