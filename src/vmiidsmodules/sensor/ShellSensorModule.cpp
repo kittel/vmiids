@@ -44,7 +44,7 @@ ShellSensorModule::ShellSensorModule() :
 		output.str("");
 		output
 				<< "Could not parse Options. Please add the following section to the config file:"
-				<< std::endl << "ShellSensorModule = {" << std::endl
+				<< std::endl << this->getName() << " = {" << std::endl
 				<< "\tconsoleName   =  \"<shell device>\";        e.g. \"/dev/ttyS2\""
 				<< std::endl
 				<< "\tmonitorShell  =  \"<shell identifier>\";    e.g. \"rootkitvm@rootkitvm:"

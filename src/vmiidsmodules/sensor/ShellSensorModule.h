@@ -13,12 +13,12 @@
 #include "libvmi.h"
 
 /*!
- * \exception ShellParserException ShellParser.h
- * \brief Exception for ShellParser.
+ * \exception ShellParserException ShellSensorModule.h
+ * \brief Exception for ShellSensorModule.
  */
 class ShellParserException: public std::exception {
 	virtual const char* what() const throw () {
-		return "ShellParser abort";
+		return "ShellSensorModule abort";
 	}
 };
 
