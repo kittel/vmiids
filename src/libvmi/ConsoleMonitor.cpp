@@ -38,10 +38,12 @@ void *ConsoleMonitor::readMonitor(void *ptr) {
 	char buffer = 0;
 	int readcount;
 
-	fd_to_qemu = open(arguments->consoleName, O_RDONLY);
+	fd_to_qemu = open(arguments->consoleName.c_str(), O_RDONLY);
 	if (fd_to_qemu < 0) {
-		LIBVMI_WARN_MSG("Open %s readable failed", arguments->consoleName);
+		LIBVMI_WARN_MSG("Open %s readable failed", arguments->consoleName.c_str());
 		arguments->threadRunning = false;
+	}else{
+		LIBVMI_WARN_MSG("Open %s readable successfull", arguments->consoleName.c_str());
 	}
 
 	if (arguments->threadRunning) {
@@ -81,8 +83,25 @@ void *ConsoleMonitor::readMonitor(void *ptr) {
 	pthread_exit(0);
 }
 
-ConsoleMonitor::ConsoleMonitor(const char* consoleString,
-		const char* shellString) throw(ConsoleMonitorException) {
+ConsoleMonitor::ConsoleMonitor() throw(ConsoleMonitorException) {
+
+	this->threadStarted = false;
+
+	LIBVMI_DEBUG_MSG("Empty Constructor finished");
+}
+
+
+ConsoleMonitor::ConsoleMonitor(std::string consoleString,
+		std::string shellString) throw(ConsoleMonitorException) {
+
+	this->initConsoleMonitor(consoleString, shellString);
+
+	LIBVMI_DEBUG_MSG("Constructor finished");
+
+}
+
+void ConsoleMonitor::initConsoleMonitor(std::string consoleString,
+		std::string shellString) throw(ConsoleMonitorException) {
 
 	this->consoleName = consoleString;
 	this->monitorShell = shellString;
@@ -100,8 +119,7 @@ ConsoleMonitor::ConsoleMonitor(const char* consoleString,
 	if (!this->threadRunning)
 		throw ConsoleMonitorException();
 
-	LIBVMI_DEBUG_MSG("Constructor finished");
-
+	LIBVMI_DEBUG_MSG("Initialize finished");
 }
 
 ConsoleMonitor::~ConsoleMonitor(){
@@ -121,9 +139,9 @@ int ConsoleMonitor::sendCommand(const char * command) throw(ConsoleMonitorExcept
 	if (!this->threadRunning)
 		throw ConsoleMonitorException();
 	int fd_to_qemu;
-	fd_to_qemu = open(this->consoleName, O_WRONLY);
+	fd_to_qemu = open(this->consoleName.c_str(), O_WRONLY);
 	if (fd_to_qemu < 0) {
-		LIBVMI_DEBUG_MSG("open %s writeable failed\n", this->consoleName);
+		LIBVMI_DEBUG_MSG("open %s writeable failed\n", this->consoleName.c_str());
 		return -1;
 	}
 	LIBVMI_DEBUG_MSG("Writing command: %s", command);

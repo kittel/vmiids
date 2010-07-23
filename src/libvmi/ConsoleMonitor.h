@@ -27,21 +27,24 @@ class ConsoleMonitorException: public std::exception {
 class ConsoleMonitor {
 	
 	pthread_t thread;
-	const char * consoleName;
+
 	pthread_mutex_t queuemutex;
 	std::queue <char> queuecontainer;
 	bool threadRunning;
 	bool threadStarted;
 
 	protected:
-		const char * monitorShell;
-		
+		std::string monitorShell;
+
 		int sendCommand(const char * command) throw(ConsoleMonitorException);
 		void parseOutput(std::string &output) throw(ConsoleMonitorException);
 	
 	public:
-		ConsoleMonitor(const char* consoleString, const char* shellString) throw(ConsoleMonitorException);
+		ConsoleMonitor() throw(ConsoleMonitorException);
+		ConsoleMonitor(std::string consoleString,std::string shellString) throw(ConsoleMonitorException);
 		virtual ~ConsoleMonitor();
+
+		void initConsoleMonitor(std::string consoleString, std::string shellString) throw(ConsoleMonitorException);
 
 		void parseCommandOutput(const char *command, std::string &output) throw(ConsoleMonitorException);
 		void parseCommandOutput(std::string command, std::string &output) throw(ConsoleMonitorException);
@@ -49,6 +52,7 @@ class ConsoleMonitor {
 		void killThread(void) throw(ConsoleMonitorException);
 	
 	private:	
+		std::string consoleName;
 
 		static void signal_handler(int signum);
 		static void* readMonitor(void *ptr);

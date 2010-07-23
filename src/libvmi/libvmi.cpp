@@ -22,9 +22,9 @@ using namespace std ;
 
 int main(){
 
-	libVMI::Shell shell;
-	shell.startShell();
+//	libVMI::Shell shell;
+//	shell.startShell();
 
-	shell.stopShell();
+//	shell.stopShell();
 	return 0;
 }

@@ -30,10 +30,10 @@
 		} \
 	} while (0)
 
-#define LIBVMI_DEBUG_MSG(msg, ...) do { printf("\n" VERBOSE ": " msg, ##__VA_ARGS__); } while (0)
+#define LIBVMI_DEBUG_MSG(msg, ...) do { printf(VERBOSE ": " msg "\n", ##__VA_ARGS__); } while (0)
 #define LIBVMI_DEBUG_MSG_N(msg, ...) do { printf(VERBOSE ": " msg, ##__VA_ARGS__); } while (0)
 
-#define LIBVMI_WARN_MSG(msg, ...) do { printf("\n" VERBOSE ": " msg, ##__VA_ARGS__); printf("\n"); } while (0)
+#define LIBVMI_WARN_MSG(msg, ...) do { printf(VERBOSE ": " msg "\n", ##__VA_ARGS__); printf("\n"); } while (0)
 
 #else // !VERBOSE
 #define LIBVMI_ERROR(text) do { abort(); } while (0)
