@@ -15,7 +15,15 @@
 
 #include <sys/stat.h>
 
-#define FILESYSTEMPATH "/media/rootkitvm"
+/*!
+ * \exception FileSystemSensorModule FileSystemSensorModule.h
+ * \brief Exception for FileSystemSensorModule.
+ */
+class FileSystemSensorException: public std::exception {
+	virtual const char* what() const throw () {
+		return "FileSystemSensorModule abort";
+	}
+};
 
 class FileSystemSensorModule : public SensorModule{
 public:
@@ -28,6 +36,11 @@ public:
 	void openFileRO(std::string absolutePath, std::ifstream *fileHandle);
 
 private:
+	NotificationModule * notify;
+
+	std::string clearfscacheCommand;
+	std::string fileSystemPath;
+
 	bool clearFSCache();
 };
 

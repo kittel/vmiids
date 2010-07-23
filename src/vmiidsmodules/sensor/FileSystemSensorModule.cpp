@@ -7,46 +7,82 @@
 
 #include "FileSystemSensorModule.h"
 
-#include <stdlib.h>
+#include <cstdlib>
+#include <sstream>
 
-ADDDYNAMICSENSORMODULE(FileSystemSensorModule, __LINE__);
+ADDDYNAMICSENSORMODULE(FileSystemSensorModule, __LINE__)
+;
 
-FileSystemSensorModule::FileSystemSensorModule() : SensorModule("FileSystemSensorModule"){
-	// TODO Auto-generated constructor stub
+#define FILESYSTEMPATH "/media/rootkitvm"
 
+FileSystemSensorModule::FileSystemSensorModule() :
+	SensorModule("FileSystemSensorModule") {
+	//Get NotificationModule
+	this->notify = VmiIDS::getInstance()->getNotificationModule(
+			"ShellNotificationModule");
+	if (!this->notify) {
+		printf("Could not load NotificationModule\n");
+		return;
+	}
+
+	libconfig::Setting *setting = VmiIDS::getInstance()->getSetting(
+			this->getName());
+
+	std::stringstream output;
+
+	if (setting == NULL || !setting->lookupValue("clearfsconfigCommand",
+			this->clearfscacheCommand) || !setting->lookupValue(
+			"fileSystemPath", this->fileSystemPath)) {
+		output.str("");
+		output
+				<< "Could not parse Options. Please add the following section to the config file:"
+				<< std::endl << this->getName() << " = {" << std::endl
+				<< "\tclearfsconfigCommand  =  \"<path to clearfscacheCommand>\";      e.g. \"/usr/bin/clearfscache\""
+				<< std::endl
+				<< "\tfileSystemPath        =  \"<path to introspected filesystem>\";  e.g. \"/media/rootkitvm\""
+				<< std::endl << "};";
+
+		this->notify->critical(output.str());
+		throw FileSystemSensorException();
+	}
 }
 
 FileSystemSensorModule::~FileSystemSensorModule() {
 	// TODO Auto-generated destructor stub
 }
 
-void FileSystemSensorModule::initSensorModule(){
+void FileSystemSensorModule::initSensorModule() {
 
 }
 
-bool FileSystemSensorModule::fileExists(std::string absolutePath, struct stat * stFileInfo){
+bool FileSystemSensorModule::fileExists(std::string absolutePath,
+		struct stat * stFileInfo) {
 
 	this->clearFSCache();
 
-	if(!stFileInfo){
+	if (!stFileInfo) {
 		struct stat FileInfo;
 		stFileInfo = &FileInfo;
 	}
-	if (stat(absolutePath.insert(0, FILESYSTEMPATH).c_str(), stFileInfo) == 0){
+	if (stat(absolutePath.insert(0, this->fileSystemPath).c_str(), stFileInfo) == 0) {
 		return true;
 	}
 	return false;
 }
 
-void FileSystemSensorModule::openFileRO(std::string absolutePath, std::ifstream *fileHandle){
+void FileSystemSensorModule::openFileRO(std::string absolutePath,
+		std::ifstream *fileHandle) {
 	this->clearFSCache();
 
-	fileHandle->open(absolutePath.insert(0, FILESYSTEMPATH).c_str() , std::ifstream::in);
+	fileHandle->open(absolutePath.insert(0, this->fileSystemPath).c_str(),
+			std::ifstream::in);
 }
 
-bool FileSystemSensorModule::clearFSCache(){
+bool FileSystemSensorModule::clearFSCache() {
+	bool result = true;
+
 	// To clear the file system cache and get the latest version of the rootkitvms file system.
-	int result = system("sync; echo 3 > /proc/sys/vm/drop_caches");
-	if (result == -1) return false;
-	return true;
+	result = (system("sync") == -1) ? false : true;
+	result = (system(this->clearfscacheCommand.c_str()) == -1) ? false : true;
+	return result;
 }
