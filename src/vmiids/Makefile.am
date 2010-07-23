@@ -1,5 +1,5 @@
 AM_CPPFLAGS = -Wall -Wextra -Werror
-AM_CXXFLAGS = -fpic -I $(top_builddir)/src/include
+AM_CXXFLAGS = -fpic -I $(top_builddir)/src/include -rdynamic
 AM_CFLAGS = -fpic  -I $(top_builddir)/src/include
 
 bin_PROGRAMS=vmiids
@@ -14,7 +14,7 @@ vmiids_SOURCES=VmiIDS.cpp \
 
 #vmiids_LIBADD = 
 vmiids_LDADD = $(top_builddir)/src/libvmi/libvmi.la
-vmiids_LDFLAGS = -lpthread -lnsl -ldl
+vmiids_LDFLAGS = -lpthread -lnsl -ldl -lconfig++
 vmiids_includedir=$(includedir)
 vmiids_include_HEADERS = ../include/VmiIDS.h \
 												 ../include/DetectionModule.h \

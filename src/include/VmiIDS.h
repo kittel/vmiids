@@ -15,6 +15,7 @@
 #include <map>
 #include <string>
 #include <rpc/rpc.h>
+#include <libconfig.h++>
 
 typedef enum {
 	ENQUEUEDETECTIONMODULE = 1,
@@ -45,6 +46,8 @@ class VmiIDS {
 
 		static VmiIDS *instance;
 		pthread_t rpcThread, vmiidsThread;
+
+		libconfig::Config config;
 
 		bool vmiRunning;
 
@@ -78,6 +81,8 @@ class VmiIDS {
 
 		NotificationModule *getNotificationModule(std::string notificationModuleName);
 		SensorModule *getSensorModule(std::string sensorModuleName);
+
+		libconfig::Setting *getSetting(std::string settingName);
 
 		void collectThreadLevel();
 

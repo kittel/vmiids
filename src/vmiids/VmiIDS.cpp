@@ -118,12 +118,25 @@ int main() {
 VmiIDS* VmiIDS::instance = NULL;
 
 VmiIDS::VmiIDS() :
-	detectionModules(), notificationModules(), sensorModules() {
+	detectionModules(), notificationModules(), sensorModules(), config() {
 	this->vmiRunning = false;
 	pthread_mutex_init(&detectionModuleMutex, NULL);
 	pthread_mutex_init(&activeDetectionModuleMutex, NULL);
 	pthread_mutex_init(&notificationModuleMutex, NULL);
 	pthread_mutex_init(&sensorModuleMutex, NULL);
+
+	FILE * configFile;
+
+	if( ((configFile = fopen ("vmiids.cfg" , "r")) != NULL) ||
+		((configFile = fopen ("/etc/vmiids.cfg" , "r")) != NULL)    ){
+
+		try {
+			config.read(configFile);
+			fclose (configFile);
+		}catch(libconfig::ParseException){
+			printf("Could not read config file\n");
+		}
+	}
 }
 
 VmiIDS::~VmiIDS() {
@@ -172,12 +185,39 @@ int VmiIDS::startIDS() {
 void * VmiIDS::run(void * this_pointer) {
 	VmiIDS * this_p = (VmiIDS *) this_pointer;
 
-	this_p->detectionModules["SimpleDetectionModule"] = new SimpleDetectionModule();
+	//
+	// Load Modules by Path Name
+	//
+	try {
+		for(int i = 0 ;  i < this_p->config.lookup("initialModuleByPath").getLength() ; i++){
+			this_p->loadSharedObjectsPath(this_p->config.lookup("initialModuleByPath")[i]);
+		}
+	}catch(libconfig::SettingNotFoundException e){
+			printf("No Modules loaded by Path ...\n");
+	}
 
-	//this_p->loadSharedObjectsPath("/home/kittel/workspace/libvmi/src/vmiids/.libs");
-	this_p->loadSharedObjectsPath("/home/kittel/workspace/libvmi/src/vmiidsmodules/sensor/.libs");
-	this_p->loadSharedObjectsPath("/home/kittel/workspace/libvmi/src/vmiidsmodules/notification/.libs");
-	this_p->loadSharedObjectsPath("/home/kittel/workspace/libvmi/src/vmiidsmodules/detection/.libs");
+	//
+	// Load Modules by So Path
+	//
+	try {
+	for(int i = 0 ;  i < this_p->config.lookup("initialModuleBySoPath").getLength() ; i++){
+			this_p->loadSharedObject(this_p->config.lookup("initialModuleBySoPath")[i]);
+		}
+	}catch(libconfig::SettingNotFoundException e){
+		printf("No Modules loaded by So Path ...\n");
+	}
+
+	//
+	// Start DetectionModules by Name
+	//
+	try {
+	for(int i = 0 ;  i < this_p->config.lookup("startModules").getLength() ; i++){
+			this_p->enqueueDetectionModule(this_p->config.lookup("startModules")[i]);
+		}
+	}catch(libconfig::SettingNotFoundException e){
+		printf("No Modules started ...\n");
+	}
+
 
 	while (this_p->vmiRunning) {
 		pthread_mutex_lock(&this_p->activeDetectionModuleMutex);
@@ -434,6 +474,14 @@ NotificationModule *VmiIDS::getNotificationModule(
 
 SensorModule *VmiIDS::getSensorModule(std::string sensorModuleName) {
 	return this->sensorModules[sensorModuleName];
+}
+
+libconfig::Setting *VmiIDS::getSetting(std::string settingName){
+	try {
+		return &(this->config.lookup(settingName));
+	}catch(libconfig::SettingNotFoundException e){
+			return NULL;
+	}
 }
 
 void VmiIDS::collectThreadLevel() {
