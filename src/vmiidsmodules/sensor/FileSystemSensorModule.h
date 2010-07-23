@@ -27,6 +27,8 @@ public:
 	bool fileExists(std::string absolutePath, struct stat * stFileInfo = NULL);
 	void openFileRO(std::string absolutePath, std::ifstream *fileHandle);
 
+private:
+	bool clearFSCache();
 };
 
 #endif /* FILESYSTEMSENSORMODULE_H_ */
