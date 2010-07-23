@@ -13,8 +13,6 @@
 ADDDYNAMICSENSORMODULE(FileSystemSensorModule, __LINE__)
 ;
 
-#define FILESYSTEMPATH "/media/rootkitvm"
-
 FileSystemSensorModule::FileSystemSensorModule() :
 	SensorModule("FileSystemSensorModule") {
 	//Get NotificationModule

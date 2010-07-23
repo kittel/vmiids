@@ -69,7 +69,7 @@ ShellSensorModule::ShellSensorModule() :
 			<< "optionPasswordShell: " << optionPasswordShell << std::endl
 			<< "optionUsername: " << optionUsername << std::endl
 			<< "optionPassword: " << optionPassword;
-	this->notify->info(output.str());
+	//this->notify->info(output.str());
 
 	this->initConsoleMonitor(optionConsoleName.c_str(),
 			optionMonitorShell.c_str());
