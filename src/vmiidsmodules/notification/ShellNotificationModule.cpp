@@ -20,21 +20,21 @@ ShellNotificationModule::~ShellNotificationModule() {
 }
 
 void ShellNotificationModule::warn(std::string message){
-	std::cout << "Warning:    " << message << std::endl;
+	std::cout << "Warning:     " << message << std::endl;
 }
 
 void ShellNotificationModule::info(std::string message){
-	std::cout << "Information " << message << std::endl;
+	std::cout << "Information: " << message << std::endl;
 }
 
 void ShellNotificationModule::debug(std::string message){
-	std::cout << "Debug:      " << message << std::endl;
+	std::cout << "Debug:       " << message << std::endl;
 }
 
 void ShellNotificationModule::error(std::string message){
-	std::cout << "Error:      " << message << std::endl;
+	std::cout << "Error:       " << message << std::endl;
 }
 
 void ShellNotificationModule::critical(std::string message){
-	std::cout << "Critical:   " << message << std::endl;
+	std::cout << "Critical:    " << message << std::endl;
 }
