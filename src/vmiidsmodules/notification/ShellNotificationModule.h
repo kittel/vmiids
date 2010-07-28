@@ -21,6 +21,7 @@ public:
 	virtual void debug(std::string message);
 	virtual void error(std::string message);
 	virtual void critical(std::string message);
+	virtual void alert(std::string message);
 };
 
 #endif /* SHELLNOTIFICATIONMODULE_H_ */

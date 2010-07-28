@@ -38,7 +38,7 @@ public:
 private:
 	NotificationModule * notify;
 
-	std::string clearfscacheCommand;
+	std::string clearCacheCommand;
 	std::string fileSystemPath;
 
 	bool clearFSCache();

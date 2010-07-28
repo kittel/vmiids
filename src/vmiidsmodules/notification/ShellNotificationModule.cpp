@@ -38,3 +38,7 @@ void ShellNotificationModule::error(std::string message){
 void ShellNotificationModule::critical(std::string message){
 	std::cout << "Critical:    " << message << std::endl;
 }
+
+void ShellNotificationModule::alert(std::string message){
+	std::cout << "Alert:    " << message << std::endl;
+}

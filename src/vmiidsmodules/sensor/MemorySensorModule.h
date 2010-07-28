@@ -10,6 +10,8 @@
 
 #include "SensorModule.h"
 
+#include <map>
+
 /*!
  * \exception MemorySensorModuleException MemorySensorModule.h
  * \brief Exception for MemorySensorModule.
@@ -20,13 +22,17 @@ class MemorySensorModuleException: public std::exception {
 	}
 };
 
+typedef struct{
+	uint32_t pid;
+	std::string processName;
+} MemtoolProcess;
+
 class MemorySensorModule : public SensorModule{
 public:
 	MemorySensorModule();
 	virtual ~MemorySensorModule();
 
-	void getProcessList(std::string &processList);
-
+	std::map<uint32_t, MemtoolProcess> getProcessList();
 
 	void initSensorModule();
 
@@ -39,7 +45,10 @@ private:
 	std::string savedDebugingSymbols;
 	std::string memdumpFile;
 
+	std::string clearCacheCommand;
+
 	void runScript(std::string &scriptResult, std::string scriptName);
+	bool clearFSCache();
 
 };
 

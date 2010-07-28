@@ -28,14 +28,14 @@ FileSystemSensorModule::FileSystemSensorModule() :
 
 	std::stringstream output;
 
-	if (setting == NULL || !setting->lookupValue("clearfsconfigCommand",
-			this->clearfscacheCommand) || !setting->lookupValue(
+	if (setting == NULL || !setting->lookupValue("clearCacheCommand",
+			this->clearCacheCommand) || !setting->lookupValue(
 			"fileSystemPath", this->fileSystemPath)) {
 		output.str("");
 		output
 				<< "Could not parse Options. Please add the following section to the config file:"
 				<< std::endl << this->getName() << " = {" << std::endl
-				<< "\tclearfsconfigCommand  =  \"<path to clearfscacheCommand>\";      e.g. \"/usr/bin/clearfscache\""
+				<< "\tclearCacheCommand  =  \"<path to clearCacheCommand>\";      e.g. \"/usr/bin/clearfscache\""
 				<< std::endl
 				<< "\tfileSystemPath        =  \"<path to introspected filesystem>\";  e.g. \"/media/rootkitvm\""
 				<< std::endl << "};";
@@ -81,6 +81,6 @@ bool FileSystemSensorModule::clearFSCache() {
 
 	// To clear the file system cache and get the latest version of the rootkitvms file system.
 	result = (system("sync") == -1) ? false : true;
-	result = (system(this->clearfscacheCommand.c_str()) == -1) ? false : true;
+	result = (system(this->clearCacheCommand.c_str()) == -1) ? false : true;
 	return result;
 }

@@ -22,6 +22,7 @@ class NotificationModule{
 		virtual void debug(std::string message) = 0;
 		virtual void error(std::string message) = 0;
 		virtual void critical(std::string message) = 0;
+		virtual void alert(std::string message) = 0;
 };
 
 #include "VmiIDS.h"

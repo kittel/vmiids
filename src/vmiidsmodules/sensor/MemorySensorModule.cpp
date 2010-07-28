@@ -34,7 +34,8 @@ MemorySensorModule::MemorySensorModule() :
 			!setting->lookupValue("memtoolPath", this->memtoolPath) ||
 			!setting->lookupValue("memtoolScriptPath", this->memtoolScriptPath) ||
 			!setting->lookupValue("savedDebugingSymbols", this->savedDebugingSymbols) ||
-			!setting->lookupValue("memdumpFile", this->memdumpFile))	{
+			!setting->lookupValue("memdumpFile", this->memdumpFile) ||
+			!setting->lookupValue("clearCacheCommand", this->clearCacheCommand)){
 
 		output.str("");
 		output
@@ -47,7 +48,10 @@ MemorySensorModule::MemorySensorModule() :
 				<< "\tsavedDebugingSymbols  =  \"<path to saved debuging symbols>\";    e.g. \"/home/idsvm/symbols.dump\""
 				<< std::endl
 				<< "\tmemdumpFile           =  \"<path to memdump file>\";    e.g. \"/dev/vda\""
-				<< std::endl<< "};";
+				<< std::endl
+				<< "\tclearCacheCommand  =  \"<path to clearCacheCommand>\";      e.g. \"/usr/bin/clearfscache\""
+				<< std::endl
+				<< "};";
 
 		this->notify->critical(output.str());
 		throw MemorySensorModuleException();
@@ -91,14 +95,45 @@ void MemorySensorModule::runScript(std::string &scriptResult, std::string script
 	scriptResult.append(data, firstChar, lastChar - firstChar);
 }
 
-void MemorySensorModule::getProcessList(std::string &processList){
+std::map<uint32_t, MemtoolProcess> MemorySensorModule::getProcessList(){
 	std::string scriptResult;
+
+	this->clearFSCache();
 
 	this->runScript(scriptResult, "tasklist.js");
 
-	int firstChar = scriptResult.find("\n");
-	firstChar = scriptResult.find("\n", firstChar);
-	firstChar = scriptResult.find("\n", firstChar); //Find the third line ...
-	firstChar++;
-	processList.append(scriptResult, firstChar, scriptResult.size()-firstChar);
+	std::map<uint32_t, MemtoolProcess> memtoolProcessMap;
+
+	size_t oldNewlineSeparator = 0;
+	size_t newlineSeparator = 0;
+
+	oldNewlineSeparator = scriptResult.find("\n");
+	oldNewlineSeparator = scriptResult.find("\n", oldNewlineSeparator + 1); //Find the third line ...
+
+	size_t position1 = 0;
+
+	std::string currentLine;
+
+	oldNewlineSeparator = scriptResult.find("\n", oldNewlineSeparator) + 1;
+	while((newlineSeparator = scriptResult.find("\n", oldNewlineSeparator)) != std::string::npos){
+		currentLine = scriptResult.substr(oldNewlineSeparator, newlineSeparator - oldNewlineSeparator);
+		MemtoolProcess process;
+		process.pid = atoi(currentLine.substr(5, 8).c_str());
+		process.processName = currentLine.substr(23, 17);
+		position1 = process.processName.find("\"");
+		process.processName = process.processName.substr(0, position1);
+		memtoolProcessMap.insert(std::pair<uint32_t, MemtoolProcess>(process.pid, process));
+		oldNewlineSeparator = newlineSeparator+1;
+	}
+	return memtoolProcessMap;
+}
+
+
+bool MemorySensorModule::clearFSCache() {
+	bool result = true;
+
+	// To clear the file system cache and get the latest version of the rootkitvms file system.
+	result = (system("sync") == -1) ? false : true;
+	result = (system(this->clearCacheCommand.c_str()) == -1) ? false : true;
+	return result;
 }

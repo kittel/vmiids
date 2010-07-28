@@ -20,6 +20,9 @@ class ProcessListDetectionModule : public DetectionModule{
 	ShellSensorModule * shell;
 	MemorySensorModule * memory;
 
+	std::map<uint32_t, MemtoolProcess> globalMemtoolProcessMap;
+	std::map<uint32_t, ShellProcess> globalPsProcessMap;
+
 public:
 	ProcessListDetectionModule();
 	virtual ~ProcessListDetectionModule();

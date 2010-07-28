@@ -22,6 +22,10 @@ class ShellParserException: public std::exception {
 	}
 };
 
+typedef struct{
+	uint32_t pid;
+	std::string processName;
+} ShellProcess;
 
 /*!
  * \class ShellSensorModule ShellSensorModule.h
@@ -47,6 +51,8 @@ public:
 	virtual ~ShellSensorModule();
 
 	void initSensorModule();
+
+	std::map<uint32_t, ShellProcess> getProcessList();
 };
 
 #endif /* SHELLSENSORMODULE_H_ */
