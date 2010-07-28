@@ -38,7 +38,7 @@ libvmiTest
 VMIstop
 VMImodule
 shell
-vmiids
+#vmiids
 vmiids-clearfscache
 
 core
