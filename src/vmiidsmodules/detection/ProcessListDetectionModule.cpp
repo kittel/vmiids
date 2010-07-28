@@ -7,9 +7,7 @@
 
 #include "ProcessListDetectionModule.h"
 
-#include <map>
 #include <sstream>
-#include <iostream>
 
 ADDDYNAMICDETECTIONMODULE(ProcessListDetectionModule, __LINE__)
 ;

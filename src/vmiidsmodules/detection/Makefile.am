@@ -6,7 +6,8 @@ AM_CFLAGS = -fpic  -I $(top_builddir)/src/include
 lib_LTLIBRARIES = libexampledetectionmodule.la \
                   libstatechangerdetectionmodule.la \
                   librkhunterdetectionmodule.la \
-                  libprocesslistdetectionmodule.la
+                  libprocesslistdetectionmodule.la \
+                  libfilelistdetectionmodule.la
                   
 
 libexampledetectionmodule_la_SOURCES = ExampleDetectionModule.h \
@@ -24,4 +25,7 @@ librkhunterdetectionmodule_la_SOURCES = RkHunterDetectionModule.h \
 
 libprocesslistdetectionmodule_la_SOURCES = ProcessListDetectionModule.h \
 					ProcessListDetectionModule.cpp 
+
+libfilelistdetectionmodule_la_SOURCES = FileListDetectionModule.h \
+					FileListDetectionModule.cpp 
 					

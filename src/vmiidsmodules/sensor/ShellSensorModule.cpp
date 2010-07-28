@@ -212,3 +212,25 @@ std::map<uint32_t, ShellProcess> ShellSensorModule::getProcessList(){
 	}
 	return shellProcessMap;
 }
+
+std::set<std::string> ShellSensorModule::getFileList(std::string directory){
+	std::set<std::string> directories;
+
+	std::string findResult;
+	this->parseCommandOutput(directory.insert(0, "find ").c_str(), findResult);
+
+	while (findResult[0] == '\n' || findResult[0] == '\r')
+		findResult.erase(0, 1);
+
+	std::string currentLine;
+
+	size_t newLine = 0;
+	size_t oldLine = 0;
+
+	while ((newLine = findResult.find("\r\n", oldLine + 1)) != std::string::npos) {
+		currentLine = findResult.substr(oldLine, newLine - oldLine);
+		directories.insert(currentLine);
+		oldLine = newLine + 2;
+	}
+	return directories;
+}

@@ -12,6 +12,9 @@
 #include "NotificationModule.h"
 #include "libvmi.h"
 
+#include <map>
+#include <set>
+
 /*!
  * \exception ShellParserException ShellSensorModule.h
  * \brief Exception for ShellSensorModule.
@@ -53,6 +56,7 @@ public:
 	void initSensorModule();
 
 	std::map<uint32_t, ShellProcess> getProcessList();
+	std::set<std::string> getFileList(std::string directory);
 };
 
 #endif /* SHELLSENSORMODULE_H_ */

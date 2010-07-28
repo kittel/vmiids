@@ -10,11 +10,12 @@
 #include <cstdlib>
 #include <sstream>
 
+#include <dirent.h>
+
 ADDDYNAMICSENSORMODULE(FileSystemSensorModule, __LINE__)
 ;
 
-FileSystemSensorModule::FileSystemSensorModule() :
-	SensorModule("FileSystemSensorModule") {
+FileSystemSensorModule::FileSystemSensorModule() : SensorModule("FileSystemSensorModule") {
 	//Get NotificationModule
 	this->notify = VmiIDS::getInstance()->getNotificationModule(
 			"ShellNotificationModule");
@@ -74,6 +75,36 @@ void FileSystemSensorModule::openFileRO(std::string absolutePath,
 
 	fileHandle->open(absolutePath.insert(0, this->fileSystemPath).c_str(),
 			std::ifstream::in);
+}
+
+std::set<std::string> FileSystemSensorModule::getFileList(std::string directory){
+	DIR *d;
+	struct dirent *dir;
+
+	std::set<std::string> directories;
+
+	this->clearFSCache();
+	d = opendir(std::string().insert(0, this->fileSystemPath).append("/").append(directory).c_str());
+	if (d == NULL) {
+		return directories;
+	}
+	directories.insert(directory);
+	while ((dir = readdir(d))) {
+		if (strcmp(dir->d_name, ".") == 0 || strcmp(dir->d_name, "..") == 0) {
+			continue;
+		}
+		if (dir->d_type == DT_DIR) {
+			std::set<std::string> subdir =
+					this->getFileList(std::string(dir->d_name).insert(0, "/").insert(0,
+							directory));
+			directories.insert(subdir.begin(), subdir.end());
+		} else {
+			directories.insert(
+					std::string(dir->d_name).insert(0, "/").insert(0, directory));
+		}
+	}
+	closedir(d);
+	return directories;
 }
 
 bool FileSystemSensorModule::clearFSCache() {

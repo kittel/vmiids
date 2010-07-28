@@ -15,6 +15,8 @@
 
 #include <sys/stat.h>
 
+#include <set>
+
 /*!
  * \exception FileSystemSensorModule FileSystemSensorModule.h
  * \brief Exception for FileSystemSensorModule.
@@ -34,6 +36,7 @@ public:
 	void initSensorModule();
 	bool fileExists(std::string absolutePath, struct stat * stFileInfo = NULL);
 	void openFileRO(std::string absolutePath, std::ifstream *fileHandle);
+	std::set<std::string> getFileList(std::string directory);
 
 private:
 	NotificationModule * notify;
