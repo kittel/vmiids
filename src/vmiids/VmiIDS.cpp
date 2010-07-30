@@ -36,7 +36,7 @@
 #include "../libvmi/Debug.h"
 
 void terminate_handler(int signum) {
-	VmiIDS::getInstance()->stopIDS(signum);
+	vmi::VmiIDS::getInstance()->stopIDS(signum);
 }
 
 void terminate_rpcListener(int signum) {
@@ -47,7 +47,7 @@ void terminate_rpcListener(int signum) {
 void * stopIDSThreadFunction(void * nothing) {
 	nothing = NULL;
 	sleep(1);
-	VmiIDS::getInstance()->stopIDS(SIGTERM);
+	vmi::VmiIDS::getInstance()->stopIDS(SIGTERM);
 	return NULL;
 }
 
@@ -73,7 +73,7 @@ void * rpcThreadFunction(void * argument) {
 		fprintf (stderr, "%s", "cannot create udp service.");
 		exit(1);
 	}
-	if (!svc_register(transp, VMIIDS_RPC, VMIIDS_RPC_VERSION, VmiIDS::dispatchRPC, IPPROTO_UDP)) {
+	if (!svc_register(transp, VMIIDS_RPC, VMIIDS_RPC_VERSION, vmi::VmiIDS::dispatchRPC, IPPROTO_UDP)) {
 		fprintf (stderr, "%s", "unable to register (VMIIDS_RPC_PROG, VMIIDS_RPC_VERSION, udp).");
 		exit(1);
 	}
@@ -83,7 +83,7 @@ void * rpcThreadFunction(void * argument) {
 		fprintf (stderr, "%s", "cannot create tcp service.");
 		exit(1);
 	}
-	if (!svc_register(transp, VMIIDS_RPC, VMIIDS_RPC_VERSION, VmiIDS::dispatchRPC, IPPROTO_TCP)) {
+	if (!svc_register(transp, VMIIDS_RPC, VMIIDS_RPC_VERSION, vmi::VmiIDS::dispatchRPC, IPPROTO_TCP)) {
 		fprintf (stderr, "%s", "unable to register (VMIIDS_RPC_PROG, VMIIDS_RPC_VERSION, tcp).");
 		exit(1);
 	}
@@ -108,16 +108,16 @@ int main() {
 	sigaction(SIGHUP, &terminate_action, NULL);
 	sigaction(SIGTERM, &terminate_action, NULL);
 
-	VmiIDS::getInstance()->startIDS();
+	vmi::VmiIDS::getInstance()->startIDS();
 
-	VmiIDS::getInstance()->waitIDS();
+	vmi::VmiIDS::getInstance()->waitIDS();
 
 	exit(0);
 }
 
-VmiIDS* VmiIDS::instance = NULL;
+vmi::VmiIDS* vmi::VmiIDS::instance = NULL;
 
-VmiIDS::VmiIDS() :
+vmi::VmiIDS::VmiIDS() :
 	detectionModules(), notificationModules(), sensorModules(), config() {
 	this->vmiRunning = false;
 	pthread_mutex_init(&detectionModuleMutex, NULL);
@@ -139,7 +139,7 @@ VmiIDS::VmiIDS() :
 	}
 }
 
-VmiIDS::~VmiIDS() {
+vmi::VmiIDS::~VmiIDS() {
 	pthread_mutex_lock(&detectionModuleMutex);
 	pthread_mutex_lock(&activeDetectionModuleMutex);
 	pthread_mutex_lock(&notificationModuleMutex);
@@ -163,13 +163,13 @@ VmiIDS::~VmiIDS() {
 	}
 }
 
-VmiIDS *VmiIDS::getInstance() {
+vmi::VmiIDS *vmi::VmiIDS::getInstance() {
 	if (!instance)
 		instance = new VmiIDS();
 	return instance;
 }
 
-int VmiIDS::startIDS() {
+int vmi::VmiIDS::startIDS() {
 	if (this->vmiRunning == true) {
 		printf("IDS already running");
 		return 0;
@@ -182,7 +182,7 @@ int VmiIDS::startIDS() {
 	return 0;
 }
 
-void * VmiIDS::run(void * this_pointer) {
+void * vmi::VmiIDS::run(void * this_pointer) {
 	VmiIDS * this_p = (VmiIDS *) this_pointer;
 
 	//
@@ -233,7 +233,7 @@ void * VmiIDS::run(void * this_pointer) {
 	return NULL;
 }
 
-void VmiIDS::dispatchRPC(struct svc_req *rqstp, register SVCXPRT *transp){
+void vmi::VmiIDS::dispatchRPC(struct svc_req *rqstp, register SVCXPRT *transp){
 	union {
 		char *char_arg;
 	} argument;
@@ -335,7 +335,7 @@ void VmiIDS::dispatchRPC(struct svc_req *rqstp, register SVCXPRT *transp){
 	return;
 }
 
-void VmiIDS::loadSharedObjectsPath(std::string path) {
+void vmi::VmiIDS::loadSharedObjectsPath(std::string path) {
 
 	DIR *dp;
 	struct dirent *dirp;
@@ -366,7 +366,7 @@ void VmiIDS::loadSharedObjectsPath(std::string path) {
 
 }
 
-bool VmiIDS::loadSharedObject(std::string path) {
+bool vmi::VmiIDS::loadSharedObject(std::string path) {
 	printf("Trying to load shared object at: %s\n", path.c_str());
 
 	void *dlib;
@@ -378,11 +378,11 @@ bool VmiIDS::loadSharedObject(std::string path) {
 	return true;
 }
 
-void VmiIDS::waitIDS() {
+void vmi::VmiIDS::waitIDS() {
 	pthread_join(vmiidsThread, NULL);
 }
 
-bool VmiIDS::stopIDS(int signum) {
+bool vmi::VmiIDS::stopIDS(int signum) {
 	signum = 0;
 	printf("IDS Stopping\n");
 	this->vmiRunning = false;
@@ -392,13 +392,13 @@ bool VmiIDS::stopIDS(int signum) {
 	return true;
 }
 
-void VmiIDS::enqueueDetectionModule(DetectionModule *detectionModule) {
+void vmi::VmiIDS::enqueueDetectionModule(DetectionModule *detectionModule) {
 	pthread_mutex_lock(&detectionModuleMutex);
 	detectionModules[detectionModule->getName()] = detectionModule;
 	pthread_mutex_unlock(&detectionModuleMutex);
 }
 
-bool VmiIDS::enqueueDetectionModule(std::string detectionModuleName) {
+bool vmi::VmiIDS::enqueueDetectionModule(std::string detectionModuleName) {
 	bool success = false;
 	pthread_mutex_lock(&detectionModuleMutex);
 	pthread_mutex_lock(&activeDetectionModuleMutex);
@@ -411,7 +411,7 @@ bool VmiIDS::enqueueDetectionModule(std::string detectionModuleName) {
 	return success;
 }
 
-bool VmiIDS::dequeueDetectionModule(std::string detectionModuleName) {
+bool vmi::VmiIDS::dequeueDetectionModule(std::string detectionModuleName) {
 	bool success = false;
 	pthread_mutex_lock(&activeDetectionModuleMutex);
 	for (std::map<std::string, DetectionModule*>::iterator it =
@@ -425,13 +425,13 @@ bool VmiIDS::dequeueDetectionModule(std::string detectionModuleName) {
 	return success;
 }
 
-void VmiIDS::enqueueNotificationModule(NotificationModule *notificationModule) {
+void vmi::VmiIDS::enqueueNotificationModule(NotificationModule *notificationModule) {
 	pthread_mutex_lock(&notificationModuleMutex);
 	notificationModules[notificationModule->getName()] = notificationModule;
 	pthread_mutex_unlock(&notificationModuleMutex);
 }
 
-bool VmiIDS::enqueueNotificationModule(std::string notificationModuleName) {
+bool vmi::VmiIDS::enqueueNotificationModule(std::string notificationModuleName) {
 	bool success = false;
 	if (notificationModuleName.find("") != std::string::npos) {
 		pthread_mutex_lock(&notificationModuleMutex);
@@ -446,7 +446,7 @@ bool VmiIDS::enqueueNotificationModule(std::string notificationModuleName) {
  * @param notificationModuleName
  * @return
  */
-bool VmiIDS::dequeueNotificationModule(std::string notificationModuleName) {
+bool vmi::VmiIDS::dequeueNotificationModule(std::string notificationModuleName) {
 	bool success = false;
 	pthread_mutex_lock(&notificationModuleMutex);
 	for (std::map<std::string, NotificationModule*>::iterator it =
@@ -461,22 +461,22 @@ bool VmiIDS::dequeueNotificationModule(std::string notificationModuleName) {
 	return success;
 }
 
-void VmiIDS::enqueueSensorModule(SensorModule *sensorModule) {
+void vmi::VmiIDS::enqueueSensorModule(SensorModule *sensorModule) {
 	pthread_mutex_lock(&sensorModuleMutex);
 	sensorModules[sensorModule->getName()] = sensorModule;
 	pthread_mutex_unlock(&sensorModuleMutex);
 }
 
-NotificationModule *VmiIDS::getNotificationModule(
+vmi::NotificationModule *vmi::VmiIDS::getNotificationModule(
 		std::string notificationModuleName) {
 	return this->notificationModules[notificationModuleName];
 }
 
-SensorModule *VmiIDS::getSensorModule(std::string sensorModuleName) {
+vmi::SensorModule *vmi::VmiIDS::getSensorModule(std::string sensorModuleName) {
 	return this->sensorModules[sensorModuleName];
 }
 
-libconfig::Setting *VmiIDS::getSetting(std::string settingName){
+libconfig::Setting *vmi::VmiIDS::getSetting(std::string settingName){
 	try {
 		return &(this->config.lookup(settingName));
 	}catch(libconfig::SettingNotFoundException e){
@@ -484,5 +484,5 @@ libconfig::Setting *VmiIDS::getSetting(std::string settingName){
 	}
 }
 
-void VmiIDS::collectThreadLevel() {
+void vmi::VmiIDS::collectThreadLevel() {
 }

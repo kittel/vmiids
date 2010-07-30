@@ -11,9 +11,9 @@
 #include "NotificationModule.h"
 #include "../sensor/QemuMonitorSensorModule.h"
 
-class StateChangerDetectionModule : public DetectionModule{
+class StateChangerDetectionModule : public vmi::DetectionModule{
 private:
-	NotificationModule * notify;
+	vmi::NotificationModule * notify;
 	QemuMonitorSensorModule * qemu;
 
 	static int runCounter;

@@ -32,16 +32,18 @@ typedef enum {
 
 #define CONCAT(a, b) a ## b
 
+namespace vmi {
+
 class VmiIDS {
 	private:
 
-		std::map<std::string, DetectionModule *> detectionModules;
+		std::map<std::string, vmi::DetectionModule *> detectionModules;
 		pthread_mutex_t detectionModuleMutex;
-		std::map<std::string, DetectionModule *> activeDetectionModules;
+		std::map<std::string, vmi::DetectionModule *> activeDetectionModules;
 		pthread_mutex_t activeDetectionModuleMutex;
-		std::map<std::string, NotificationModule *> notificationModules;
+		std::map<std::string, vmi::NotificationModule *> notificationModules;
 		pthread_mutex_t notificationModuleMutex;
-		std::map<std::string, SensorModule* > sensorModules;
+		std::map<std::string, vmi::SensorModule* > sensorModules;
 		pthread_mutex_t sensorModuleMutex;
 
 		static VmiIDS *instance;
@@ -68,24 +70,28 @@ class VmiIDS {
 
 		bool loadSharedObject(std::string path);
 
-		void enqueueDetectionModule(DetectionModule *detectionModule);
+		void enqueueDetectionModule(vmi::DetectionModule *detectionModule);
 		bool enqueueDetectionModule(std::string detectionModuleName);
 		bool dequeueDetectionModule(std::string detectionModuleName);
 
 
-		void enqueueNotificationModule(NotificationModule *notificationModule);
+		void enqueueNotificationModule(vmi::NotificationModule *notificationModule);
 		bool enqueueNotificationModule(std::string notificationModuleName);
 		bool dequeueNotificationModule(std::string notificationModuleName);
 
-		void enqueueSensorModule(SensorModule *sensorModule);
+		void enqueueSensorModule(vmi::SensorModule *sensorModule);
 
-		NotificationModule *getNotificationModule(std::string notificationModuleName);
-		SensorModule *getSensorModule(std::string sensorModuleName);
+		vmi::NotificationModule *getNotificationModule(std::string notificationModuleName);
+		vmi::SensorModule *getSensorModule(std::string sensorModuleName);
 
 		libconfig::Setting *getSetting(std::string settingName);
 
 		void collectThreadLevel();
 
 };
+
+}
+
+using vmi::VmiIDS;
 
 #endif /* VMIIDS_H_ */

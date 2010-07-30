@@ -27,7 +27,7 @@ typedef struct{
 	std::string processName;
 } MemtoolProcess;
 
-class MemorySensorModule : public SensorModule{
+class MemorySensorModule : public vmi::SensorModule{
 public:
 	MemorySensorModule();
 	virtual ~MemorySensorModule();
@@ -37,7 +37,7 @@ public:
 	void initSensorModule();
 
 private:
-	NotificationModule * notify;
+	vmi::NotificationModule * notify;
 
 	std::string memtoolPath;
 	std::string memtoolScriptPath;

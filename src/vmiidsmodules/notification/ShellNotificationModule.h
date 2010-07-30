@@ -10,7 +10,7 @@
 
 #include "NotificationModule.h"
 
-class ShellNotificationModule : public NotificationModule {
+class ShellNotificationModule : public vmi::NotificationModule {
 public:
 
 	ShellNotificationModule();

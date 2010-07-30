@@ -8,16 +8,13 @@
 #ifndef DETECTIONMODULE_H_
 #define DETECTIONMODULE_H_
 
-#include <string>
+#include "Module.h"
 
-class DetectionModule{
+namespace vmi {
 
-	private:
-		std::string moduleName;
-
+class DetectionModule : public vmi::Module {
 	public:
-		DetectionModule(std::string moduleName){ this->moduleName = moduleName;};
-		std::string getName(){ return this->moduleName; };
+		DetectionModule(std::string moduleName) : vmi::Module(moduleName) {};
 		virtual void run() = 0;
 		virtual void runTime() = 0;
 		virtual void runEvent() = 0;
@@ -25,11 +22,13 @@ class DetectionModule{
 		virtual void getThreadLevel() = 0;
 };
 
+}
+
 #include "VmiIDS.h"
 
 #define ADDDYNAMICDETECTIONMODULE(classname, line) class CONCAT(proxy, line) { \
 	public: \
-	CONCAT(proxy, line)(){ VmiIDS::getInstance()->enqueueDetectionModule(new classname);  } \
+	CONCAT(proxy, line)(){ vmi::VmiIDS::getInstance()->enqueueDetectionModule(new classname);  } \
 }; \
 static CONCAT(proxy, line) CONCAT(p, line);
 

@@ -11,7 +11,7 @@
 #include "SensorModule.h"
 #include "libvmi.h"
 
-class QemuMonitorSensorModule: public SensorModule , public libVMI::QemuMonitor {
+class QemuMonitorSensorModule: public vmi::SensorModule , public libVMI::QemuMonitor {
 public:
 	QemuMonitorSensorModule();
 	virtual ~QemuMonitorSensorModule();

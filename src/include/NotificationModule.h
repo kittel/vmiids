@@ -8,16 +8,16 @@
 #ifndef NOTIFICATIONMODULE_H_
 #define NOTIFICATIONMODULE_H_
 
-#include <string>
+#include "Module.h"
+
 #include <ostream>
 
-class NotificationModule{
-	private:
-		std::string moduleName;
+namespace vmi {
+
+class NotificationModule : public vmi::Module{
 
 	public:
-		NotificationModule(std::string moduleName){ this->moduleName = moduleName;};
-		std::string getName(){ return this->moduleName; };
+		NotificationModule(std::string moduleName) : vmi::Module(moduleName) {};
 
 		virtual void info(std::string message) = 0;
 		virtual void debug(std::string message) = 0;
@@ -34,11 +34,13 @@ class NotificationModule{
 		virtual std::ostream& alert() = 0;
 };
 
+}
+
 #include "VmiIDS.h"
 
 #define ADDDYNAMICNOTIFICATIONMODULE_H_(classname, line) class CONCAT(proxy, line) { \
 	public: \
-	CONCAT(proxy, line)(){ VmiIDS::getInstance()->enqueueNotificationModule(new classname);  } \
+	CONCAT(proxy, line)(){ vmi::VmiIDS::getInstance()->enqueueNotificationModule(new classname);  } \
 }; \
 static CONCAT(proxy, line) CONCAT(p, line);
 

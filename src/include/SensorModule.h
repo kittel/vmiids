@@ -8,23 +8,23 @@
 #ifndef SENSORMODULE_H_
 #define SENSORMODULE_H_
 
-#include <string>
+#include "Module.h"
 
-class SensorModule{
-	private:
-		std::string moduleName;
+namespace vmi {
 
+class SensorModule : public vmi::Module{
 	public:
-		SensorModule(std::string moduleName){ this->moduleName = moduleName;};
+		SensorModule(std::string moduleName) : vmi::Module(moduleName) {};
 		virtual void initSensorModule() = 0;
-		std::string getName(){ return this->moduleName; };
 };
+
+}
 
 #include "VmiIDS.h"
 
 #define ADDDYNAMICSENSORMODULE(classname, line) class CONCAT(proxy, line) { \
 	public: \
-	CONCAT(proxy, line)(){ VmiIDS::getInstance()->enqueueSensorModule(new classname);  } \
+	CONCAT(proxy, line)(){ vmi::VmiIDS::getInstance()->enqueueSensorModule(new classname);  } \
 }; \
 static CONCAT(proxy, line) CONCAT(p, line);
 

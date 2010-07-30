@@ -35,9 +35,9 @@ typedef struct{
  *
  * \brief Parser for a Serial Shell Session.
  */
-class ShellSensorModule : public SensorModule , public libVMI::ConsoleMonitor {
+class ShellSensorModule : public vmi::SensorModule , public libVMI::ConsoleMonitor {
 private:
-	NotificationModule * notify;
+	vmi::NotificationModule * notify;
 
 	std::string optionMonitorShell;
 	std::string optionLoginShell;

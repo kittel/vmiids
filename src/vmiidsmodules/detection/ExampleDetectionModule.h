@@ -14,9 +14,9 @@
 #include "../sensor/ShellSensorModule.h"
 
 
-class ExampleDetectionModule : public DetectionModule{
+class ExampleDetectionModule : public vmi::DetectionModule{
 private:
-	NotificationModule * notify;
+	vmi::NotificationModule * notify;
 	QemuMonitorSensorModule * qemu;
 	FileSystemSensorModule * fs;
 	ShellSensorModule * shell;

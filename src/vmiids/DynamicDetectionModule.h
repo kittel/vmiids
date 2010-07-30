@@ -10,7 +10,7 @@
 
 #include "DetectionModule.h"
 
-class DynamicDetectionModule: public DetectionModule {
+class DynamicDetectionModule: public vmi::DetectionModule {
 public:
 	DynamicDetectionModule();
 	virtual ~DynamicDetectionModule();

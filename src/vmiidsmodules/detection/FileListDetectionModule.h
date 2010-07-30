@@ -24,10 +24,10 @@ class FileListDetectionModuleException: public std::exception {
 	}
 };
 
-class FileListDetectionModule : public DetectionModule{
+class FileListDetectionModule : public vmi::DetectionModule{
 
 private:
-	NotificationModule * notify;
+	vmi::NotificationModule * notify;
 	QemuMonitorSensorModule * qemu;
 	ShellSensorModule * shell;
 	FileSystemSensorModule * fs;

@@ -27,7 +27,7 @@ class FileSystemSensorException: public std::exception {
 	}
 };
 
-class FileSystemSensorModule : public SensorModule{
+class FileSystemSensorModule : public vmi::SensorModule{
 public:
 	FileSystemSensorModule();
 	virtual ~FileSystemSensorModule();
@@ -39,7 +39,7 @@ public:
 	std::set<std::string> getFileList(std::string directory);
 
 private:
-	NotificationModule * notify;
+	vmi::NotificationModule * notify;
 
 	std::string clearCacheCommand;
 	std::string fileSystemPath;

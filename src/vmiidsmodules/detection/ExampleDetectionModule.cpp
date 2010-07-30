@@ -14,7 +14,7 @@ ADDDYNAMICDETECTIONMODULE(ExampleDetectionModule, __LINE__)
 
 ExampleDetectionModule::ExampleDetectionModule() :
 	DetectionModule("ExampleDetectionModule") {
-	this->notify = VmiIDS::getInstance()->getNotificationModule(
+	this->notify = vmi::VmiIDS::getInstance()->getNotificationModule(
 			"ShellNotificationModule");
 	if (!this->notify) {
 		printf("Could not load NotificationModule\n");
@@ -22,7 +22,7 @@ ExampleDetectionModule::ExampleDetectionModule() :
 	}
 
 	this->qemu
-			= dynamic_cast<QemuMonitorSensorModule *> (VmiIDS::getInstance()->getSensorModule(
+			= dynamic_cast<QemuMonitorSensorModule *> (vmi::VmiIDS::getInstance()->getSensorModule(
 					"QemuMonitorSensorModule"));
 	if (!this->qemu) {
 		this->notify->critical("Could not load QemuMonitorSensorModule");
@@ -31,7 +31,7 @@ ExampleDetectionModule::ExampleDetectionModule() :
 	this->wasRunning = this->qemu->isRunning();
 
 	this->fs
-			= dynamic_cast<FileSystemSensorModule *> (VmiIDS::getInstance()->getSensorModule(
+			= dynamic_cast<FileSystemSensorModule *> (vmi::VmiIDS::getInstance()->getSensorModule(
 					"FileSystemSensorModule"));
 	if (!this->fs) {
 		this->notify->critical("Could not load FileSystemSensorModule");
@@ -39,7 +39,7 @@ ExampleDetectionModule::ExampleDetectionModule() :
 	}
 
 	this->shell
-			= dynamic_cast<ShellSensorModule *> (VmiIDS::getInstance()->getSensorModule(
+			= dynamic_cast<ShellSensorModule *> (vmi::VmiIDS::getInstance()->getSensorModule(
 					"ShellSensorModule"));
 	if (!this->shell) {
 		this->notify->critical("Could not load ShellSensorModule");

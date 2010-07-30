@@ -16,9 +16,9 @@
 #include <map>
 #include <string>
 
-class RkHunterDetectionModule : public DetectionModule {
+class RkHunterDetectionModule : public vmi::DetectionModule {
 private:
-	NotificationModule * notify;
+	vmi::NotificationModule * notify;
 	QemuMonitorSensorModule * qemu;
 	FileSystemSensorModule * fs;
 	ShellSensorModule * shell;

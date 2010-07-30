@@ -14,8 +14,8 @@
 #include "../sensor/MemorySensorModule.h"
 #include "../sensor/ShellSensorModule.h"
 
-class ProcessListDetectionModule : public DetectionModule{
-	NotificationModule * notify;
+class ProcessListDetectionModule : public vmi::DetectionModule{
+	vmi::NotificationModule * notify;
 	QemuMonitorSensorModule * qemu;
 	ShellSensorModule * shell;
 	MemorySensorModule * memory;

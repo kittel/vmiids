@@ -14,14 +14,14 @@ ADDDYNAMICDETECTIONMODULE(StateChangerDetectionModule, __LINE__);
 int StateChangerDetectionModule::runCounter = 0;
 
 StateChangerDetectionModule::StateChangerDetectionModule()  : DetectionModule("StateChangerDetectionModule"){
-	notify = VmiIDS::getInstance()->getNotificationModule(
+	notify = vmi::VmiIDS::getInstance()->getNotificationModule(
 			"ShellNotificationModule");
 	if (!notify) {
 		printf("Could not load NotificationModule\n");
 		return;
 	}
 
-	qemu = dynamic_cast<QemuMonitorSensorModule *> (VmiIDS::getInstance()->getSensorModule(
+	qemu = dynamic_cast<QemuMonitorSensorModule *> (vmi::VmiIDS::getInstance()->getSensorModule(
 					"QemuMonitorSensorModule"));
 	if (!qemu) {
 		notify->critical("Could not load QemuMonitorSensorModule");
