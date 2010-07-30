@@ -19,19 +19,19 @@ class NotificationModule : public vmi::Module{
 	public:
 		NotificationModule(std::string moduleName) : vmi::Module(moduleName) {};
 
-		virtual void info(std::string message) = 0;
-		virtual void debug(std::string message) = 0;
-		virtual void warn(std::string message) = 0;
-		virtual void error(std::string message) = 0;
-		virtual void critical(std::string message) = 0;
-		virtual void alert(std::string message) = 0;
+		virtual void info(Module *module, std::string message) = 0;
+		virtual void debug(Module *module, std::string message) = 0;
+		virtual void warn(Module *module, std::string message) = 0;
+		virtual void error(Module *module, std::string message) = 0;
+		virtual void critical(Module *module, std::string message) = 0;
+		virtual void alert(Module *module, std::string message) = 0;
 
-		virtual std::ostream& info() = 0;
-		virtual std::ostream& debug() = 0;
-		virtual std::ostream& warn() = 0;
-		virtual std::ostream& error() = 0;
-		virtual std::ostream& critical() = 0;
-		virtual std::ostream& alert() = 0;
+		virtual std::ostream& info(Module *module) = 0;
+		virtual std::ostream& debug(Module *module) = 0;
+		virtual std::ostream& warn(Module *module) = 0;
+		virtual std::ostream& error(Module *module) = 0;
+		virtual std::ostream& critical(Module *module) = 0;
+		virtual std::ostream& alert(Module *module) = 0;
 };
 
 }

@@ -24,10 +24,10 @@ StateChangerDetectionModule::StateChangerDetectionModule()  : DetectionModule("S
 	qemu = dynamic_cast<QemuMonitorSensorModule *> (vmi::VmiIDS::getInstance()->getSensorModule(
 					"QemuMonitorSensorModule"));
 	if (!qemu) {
-		notify->critical("Could not load QemuMonitorSensorModule");
+		notify->critical(this, "Could not load QemuMonitorSensorModule");
 		return;
 	}
-	notify->debug("StateChangerDetectionModule initialized");
+	notify->debug(this, "StateChangerDetectionModule initialized");
 }
 
 StateChangerDetectionModule::~StateChangerDetectionModule() {
@@ -39,15 +39,15 @@ void StateChangerDetectionModule::run(){
 	this->runCounter++;
 	try{
 		if(this->runCounter == 25){
-			notify->info("Pausing VM");
+			notify->info(this, "Pausing VM");
 			qemu->pauseVM();
 		}else if(this->runCounter == 50){
 			this->runCounter = 0;
-			notify->info("Resuming VM");
+			notify->info(this, "Resuming VM");
 			qemu->resumeVM();
 		}
 	}catch(libVMI::QemuMonitorException e){
-		notify->critical("Could not use QemuMonitorSensorModule");
+		notify->critical(this, "Could not use QemuMonitorSensorModule");
 		return;
 	}
 }

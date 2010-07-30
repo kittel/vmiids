@@ -7,8 +7,6 @@
 
 #include "ShellSensorModule.h"
 
-#include <sstream>
-
 ADDDYNAMICSENSORMODULE(ShellSensorModule, __LINE__)
 ;
 
@@ -16,16 +14,14 @@ ShellSensorModule::ShellSensorModule() :
 	SensorModule("ShellSensorModule"), ConsoleMonitor() {
 
 	//Get NotificationModule
-	this->notify = VmiIDS::getInstance()->getNotificationModule(
+	notify = VmiIDS::getInstance()->getNotificationModule(
 			"ShellNotificationModule");
-	if (!this->notify) {
+	if (!notify) {
 		printf("Could not load NotificationModule\n");
 		return;
 	}
 
-	std::stringstream output;
-
-	this->notify->info("ShellSensorModule: Constructor called\n");
+	notify->info(this, "Constructor called\n");
 
 	std::string optionConsoleName;
 	std::string optionUsername;
@@ -41,8 +37,7 @@ ShellSensorModule::ShellSensorModule() :
 			optionPasswordShell) || !setting->lookupValue("username",
 			optionUsername)
 			|| !setting->lookupValue("password", optionPassword)) {
-		output.str("");
-		output
+		notify->critical(this)
 				<< "Could not parse Options. Please add the following section to the config file:"
 				<< std::endl << this->getName() << " = {" << std::endl
 				<< "\tconsoleName   =  \"<shell device>\";        e.g. \"/dev/ttyS2\""
@@ -58,18 +53,8 @@ ShellSensorModule::ShellSensorModule() :
 				<< "\tpassword      =  \"<password>\";            e.g. \"rootkitvm\""
 				<< std::endl << "};";
 
-		this->notify->critical(output.str());
 		throw ShellParserException();
 	}
-
-	output.str("");
-	output << "optionConsoleName: " << optionConsoleName << std::endl
-			<< "optionMonitorShell: " << optionMonitorShell << std::endl
-			<< "optionLoginShell: " << optionLoginShell << std::endl
-			<< "optionPasswordShell: " << optionPasswordShell << std::endl
-			<< "optionUsername: " << optionUsername << std::endl
-			<< "optionPassword: " << optionPassword;
-	//this->notify->info(output.str());
 
 	this->initConsoleMonitor(optionConsoleName.c_str(),
 			optionMonitorShell.c_str());
@@ -79,16 +64,14 @@ ShellSensorModule::ShellSensorModule() :
 		this->loggedin = this->isLoggedin();
 
 		if (!this->loggedin) {
-			this->notify->info("ShellSensorModule: Trying to login\n");
+			notify->info(this, "Trying to login\n");
 			this->loggedin = this->login(optionUsername, optionPassword);
 		} else {
-			this->notify->info("ShellSensorModule: Already logged in\n");
+			notify->info(this, "Already logged in\n");
 			this->monitorShell = optionMonitorShell.c_str();
 		}
 	} catch (const char * exception) {
-		std::stringstream message("ShellSensorModule: %s\n");
-		message << exception;
-		this->notify->info(message.str());
+		notify->info(this) << exception << std::endl;
 	}
 }
 
@@ -127,11 +110,9 @@ bool ShellSensorModule::isLoggedin(void) {
 }
 
 bool ShellSensorModule::login(std::string username, std::string password) {
-	this->notify->info("ShellSensorModule: Login");
-	std::stringstream output;
-	output << "username: " << username << std::endl << "password: " << password;
+	notify->info(this, "Login");
+	notify->info(this) << "username: " << username << std::endl << "password: " << password;
 	this->monitorShell = optionLoginShell.c_str();
-	this->notify->info(output.str());
 	std::string string;
 	this->parseCommandOutput("", string);
 	string.clear();

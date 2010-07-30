@@ -7,17 +7,15 @@
 
 #include "FileListDetectionModule.h"
 
-#include <sstream>
-
 ADDDYNAMICDETECTIONMODULE(FileListDetectionModule, __LINE__)
 ;
 
 
 FileListDetectionModule::FileListDetectionModule() :
 					DetectionModule("FileListDetectionModule") {
-	this->notify = VmiIDS::getInstance()->getNotificationModule(
+	notify = VmiIDS::getInstance()->getNotificationModule(
 			"ShellNotificationModule");
-	if (!this->notify) {
+	if (!notify) {
 		printf("Could not load NotificationModule\n");
 		return;
 	}
@@ -26,7 +24,7 @@ FileListDetectionModule::FileListDetectionModule() :
 			= dynamic_cast<QemuMonitorSensorModule *> (VmiIDS::getInstance()->getSensorModule(
 					"QemuMonitorSensorModule"));
 	if (!this->qemu) {
-		this->notify->critical("Could not load QemuMonitorSensorModule");
+		notify->critical(this, "Could not load QemuMonitorSensorModule");
 		return;
 	}
 
@@ -34,7 +32,7 @@ FileListDetectionModule::FileListDetectionModule() :
 			= dynamic_cast<ShellSensorModule *> (VmiIDS::getInstance()->getSensorModule(
 					"ShellSensorModule"));
 	if (!this->shell) {
-		this->notify->critical("Could not load ShellSensorModule");
+		notify->critical(this, "Could not load ShellSensorModule");
 		return;
 	}
 
@@ -42,26 +40,22 @@ FileListDetectionModule::FileListDetectionModule() :
 			= dynamic_cast<FileSystemSensorModule *> (VmiIDS::getInstance()->getSensorModule(
 					"FileSystemSensorModule"));
 	if (!this->fs) {
-		this->notify->critical("Could not load FileSystemSensorModule");
+		notify->critical(this, "Could not load FileSystemSensorModule");
 		return;
 	}
 
 	libconfig::Setting *setting = VmiIDS::getInstance()->getSetting(
 			this->getName());
 
-	std::stringstream output;
-
 	if (setting == NULL || !setting->lookupValue("directory",
 			this->directory) ) {
 
-		output.str("");
-		output
+		notify->critical(this)
 				<< "Could not parse Options. Please add the following section to the config file:"
 				<< std::endl << this->getName() << " = {" << std::endl
 				<< "\tdirectory             =  \"<directory to compare>\"; e.g. \"/home/vm\""
 				<< std::endl << "};";
 
-		this->notify->critical(output.str());
 		throw FileListDetectionModuleException();
 	}
 	while(directory.size() > 1 &&directory[directory.size()-1] == '/')
@@ -79,7 +73,7 @@ void FileListDetectionModule::run() {
 	try {
 		isRunning = this->qemu->isRunning();
 	} catch (libVMI::QemuMonitorException e) {
-		this->notify->critical("Could not use QemuMonitorSensorModule");
+		notify->critical(this, "Could not use QemuMonitorSensorModule");
 		return;
 	}
 
@@ -106,9 +100,7 @@ void FileListDetectionModule::run() {
 	//Find files in find not listed in FileSystem
 	for (s_it = shellFileList.begin(); s_it != shellFileList.end(); s_it++) {
 		if (fsFileList.find(*s_it) == fsFileList.end()) {
-			std::stringstream output;
-			output << "File not found on FileSystem: " << *s_it << std::endl;
-			this->notify->critical(output.str());
+			notify->critical(this) << "File not found on FileSystem: " << *s_it << std::endl;
 		} else {
 			fsFileList.erase(fsFileList.find(*s_it));
 			shellFileList.erase(s_it);
@@ -116,18 +108,14 @@ void FileListDetectionModule::run() {
 	}
 
 	for (f_it = fsFileList.begin(); f_it != fsFileList.end(); f_it++){
-		std::stringstream output;
-				output << "File not found with find command: " << *f_it << std::endl;
-				this->notify->critical(output.str());
+		notify->critical(this) << "File not found with find command: " << *f_it << std::endl;
 	}
 
 	//Compare with results of last run
 	//FileSystem results
 	for (f_it = fsFileList.begin(); f_it != fsFileList.end(); f_it++) {
 		if (this->globalFsFileList.find(*f_it) != this->globalFsFileList.end()) {
-			std::stringstream output;
-			output << "Hidden file detected: " << (*f_it) << std::endl;
-			this->notify->alert(output.str());
+			notify->alert(this) << "Hidden file detected: " << (*f_it) << std::endl;
 		}
 	}
 	this->globalFsFileList = fsFileList;
@@ -135,9 +123,7 @@ void FileListDetectionModule::run() {
 	//find results
 	for (s_it = shellFileList.begin(); s_it != shellFileList.end(); s_it++) {
 		if (this->globalShellFileList.find(*s_it) != this->globalShellFileList.end()) {
-			std::stringstream output;
-			output << "Virtual file detected: " << (*s_it) << std::endl;
-			this->notify->alert(output.str());
+			notify->alert(this) << "Virtual file detected: " << (*s_it) << std::endl;
 		}
 	}
 	this->globalShellFileList = shellFileList;

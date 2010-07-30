@@ -8,7 +8,6 @@
 #include "FileSystemSensorModule.h"
 
 #include <cstdlib>
-#include <sstream>
 
 #include <dirent.h>
 
@@ -17,9 +16,9 @@ ADDDYNAMICSENSORMODULE(FileSystemSensorModule, __LINE__)
 
 FileSystemSensorModule::FileSystemSensorModule() : SensorModule("FileSystemSensorModule") {
 	//Get NotificationModule
-	this->notify = VmiIDS::getInstance()->getNotificationModule(
+	notify = VmiIDS::getInstance()->getNotificationModule(
 			"ShellNotificationModule");
-	if (!this->notify) {
+	if (!notify) {
 		printf("Could not load NotificationModule\n");
 		return;
 	}
@@ -27,21 +26,16 @@ FileSystemSensorModule::FileSystemSensorModule() : SensorModule("FileSystemSenso
 	libconfig::Setting *setting = VmiIDS::getInstance()->getSetting(
 			this->getName());
 
-	std::stringstream output;
-
 	if (setting == NULL || !setting->lookupValue("clearCacheCommand",
 			this->clearCacheCommand) || !setting->lookupValue(
 			"fileSystemPath", this->fileSystemPath)) {
-		output.str("");
-		output
+		notify->critical(this)
 				<< "Could not parse Options. Please add the following section to the config file:"
 				<< std::endl << this->getName() << " = {" << std::endl
 				<< "\tclearCacheCommand  =  \"<path to clearCacheCommand>\";      e.g. \"/usr/bin/clearfscache\""
 				<< std::endl
 				<< "\tfileSystemPath        =  \"<path to introspected filesystem>\";  e.g. \"/media/rootkitvm\""
 				<< std::endl << "};";
-
-		this->notify->critical(output.str());
 		throw FileSystemSensorException();
 	}
 }

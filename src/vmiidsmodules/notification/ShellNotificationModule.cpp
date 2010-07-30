@@ -19,56 +19,56 @@ ShellNotificationModule::~ShellNotificationModule() {
 	// TODO Auto-generated destructor stub
 }
 
-void ShellNotificationModule::info(std::string message){
-	this->info() << message << std::endl;
+void ShellNotificationModule::info(vmi::Module *module, std::string message){
+	this->info(module) << message << std::endl;
 }
 
-std::ostream& info(){
-	std::cout << "Information: ";
+std::ostream& info(vmi::Module *module){
+	std::cout << "Information: " << module->getName() << ": ";
 	return std::cout;
 }
 
-void ShellNotificationModule::debug(std::string message){
-	this->debug() << message << std::endl;
+void ShellNotificationModule::debug(vmi::Module *module, std::string message){
+	this->debug(module) << message << std::endl;
 }
 
-std::ostream& debug(){
-	std::cout << "Debug:       ";
+std::ostream& debug(vmi::Module *module){
+	std::cout << "Debug:       " << module->getName() << ": ";
 	return std::cout;
 }
 
-void ShellNotificationModule::warn(std::string message){
-	this->warn() << message << std::endl;
+void ShellNotificationModule::warn(vmi::Module *module, std::string message){
+	this->warn(module) << message << std::endl;
 }
 
-std::ostream& warn(){
-	std::cout << "Warning:     ";
+std::ostream& warn(vmi::Module *module){
+	std::cout << "Warning:     " << module->getName() << ": ";
 	return std::cout;
 }
 
-void ShellNotificationModule::error(std::string message){
-	this->error() << message << std::endl;
+void ShellNotificationModule::error(vmi::Module *module, std::string message){
+	this->error(module) << message << std::endl;
 }
 
-std::ostream& error(){
-	std::cout << "Error:       ";
+std::ostream& error(vmi::Module *module){
+	std::cout << "Error:       " << module->getName() << ": ";
 	return std::cout;
 }
 
-void ShellNotificationModule::critical(std::string message){
-	this->critical() << message << std::endl;
+void ShellNotificationModule::critical(vmi::Module *module, std::string message){
+	this->critical(module) << message << std::endl;
 }
 
-std::ostream& critical(){
-	std::cout << "Critical:    ";
+std::ostream& critical(vmi::Module *module){
+	std::cout << "Critical:    " << module->getName() << ": ";
 	return std::cout;
 }
 
-void ShellNotificationModule::alert(std::string message){
-	this->alert() << message << std::endl;
+void ShellNotificationModule::alert(vmi::Module *module, std::string message){
+	this->alert(module) << message << std::endl;
 }
 
-std::ostream& alert(){
-	std::cout << "Alert:    ";
+std::ostream& alert(vmi::Module *module){
+	std::cout << "Alert:       " << module->getName() << ": ";
 	return std::cout;
 }

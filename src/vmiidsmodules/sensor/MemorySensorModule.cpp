@@ -7,9 +7,7 @@
 
 #include "MemorySensorModule.h"
 
-#include <string>
 #include <sstream>
-#include <iostream>
 
 ADDDYNAMICSENSORMODULE(MemorySensorModule, __LINE__)
 ;
@@ -18,17 +16,15 @@ MemorySensorModule::MemorySensorModule() :
 			SensorModule("MemorySensorModule") {
 
 	//Get NotificationModule
-	this->notify = VmiIDS::getInstance()->getNotificationModule(
+	notify = VmiIDS::getInstance()->getNotificationModule(
 			"ShellNotificationModule");
-	if (!this->notify) {
+	if (!notify) {
 		printf("Could not load NotificationModule\n");
 		return;
 	}
 
 	libconfig::Setting *setting = VmiIDS::getInstance()->getSetting(
 			this->getName());
-
-	std::stringstream output;
 
 	if (setting == NULL ||
 			!setting->lookupValue("memtoolPath", this->memtoolPath) ||
@@ -37,8 +33,7 @@ MemorySensorModule::MemorySensorModule() :
 			!setting->lookupValue("memdumpFile", this->memdumpFile) ||
 			!setting->lookupValue("clearCacheCommand", this->clearCacheCommand)){
 
-		output.str("");
-		output
+		notify->critical(this)
 				<< "Could not parse Options. Please add the following section to the config file:"
 				<< std::endl << this->getName() << " = {" << std::endl
 				<< "\tmemtoolPath           =  \"<path to memtool executable>\"; e.g. \"/usr/bin/memtool\""
@@ -53,7 +48,6 @@ MemorySensorModule::MemorySensorModule() :
 				<< std::endl
 				<< "};";
 
-		this->notify->critical(output.str());
 		throw MemorySensorModuleException();
 	}
 }

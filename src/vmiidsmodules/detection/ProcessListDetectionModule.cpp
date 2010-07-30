@@ -7,17 +7,15 @@
 
 #include "ProcessListDetectionModule.h"
 
-#include <sstream>
-
 ADDDYNAMICDETECTIONMODULE(ProcessListDetectionModule, __LINE__)
 ;
 
 ProcessListDetectionModule::ProcessListDetectionModule() :
 			DetectionModule("ProcessListDetectionModule") {
 
-	this->notify = VmiIDS::getInstance()->getNotificationModule(
+	notify = VmiIDS::getInstance()->getNotificationModule(
 			"ShellNotificationModule");
-	if (!this->notify) {
+	if (!notify) {
 		printf("Could not load NotificationModule\n");
 		return;
 	}
@@ -26,7 +24,7 @@ ProcessListDetectionModule::ProcessListDetectionModule() :
 			= dynamic_cast<QemuMonitorSensorModule *> (VmiIDS::getInstance()->getSensorModule(
 					"QemuMonitorSensorModule"));
 	if (!this->qemu) {
-		this->notify->critical("Could not load QemuMonitorSensorModule");
+		notify->critical(this, "Could not load QemuMonitorSensorModule");
 		return;
 	}
 
@@ -34,7 +32,7 @@ ProcessListDetectionModule::ProcessListDetectionModule() :
 			= dynamic_cast<ShellSensorModule *> (VmiIDS::getInstance()->getSensorModule(
 					"ShellSensorModule"));
 	if (!this->shell) {
-		this->notify->critical("Could not load ShellSensorModule");
+		notify->critical(this, "Could not load ShellSensorModule");
 		return;
 	}
 
@@ -42,7 +40,7 @@ ProcessListDetectionModule::ProcessListDetectionModule() :
 			= dynamic_cast<MemorySensorModule *> (VmiIDS::getInstance()->getSensorModule(
 					"MemorySensorModule"));
 	if (!this->memory) {
-		this->notify->critical("Could not load MemorySensorModule");
+		notify->critical(this, "Could not load MemorySensorModule");
 		return;
 	}
 }
@@ -57,7 +55,7 @@ void ProcessListDetectionModule::run() {
 	try {
 		isRunning = this->qemu->isRunning();
 	} catch (libVMI::QemuMonitorException e) {
-		this->notify->critical("Could not use QemuMonitorSensorModule");
+		notify->critical(this, "Could not use QemuMonitorSensorModule");
 		return;
 	}
 
@@ -87,9 +85,7 @@ void ProcessListDetectionModule::run() {
 		if(psProcessMap.find((*m_it).first) == psProcessMap.end() ||
 			psProcessMap.find((*m_it).first)->second.processName.compare(0, (*m_it).second.processName.length(),
 					(*m_it).second.processName) != 0){
-			std::stringstream output;
-			output << "Process not found in ps: PID: " << (*m_it).first << " Proccess: " << (*m_it).second.processName << std::endl;
-			this->notify->critical(output.str());
+			notify->critical(this) << "Process not found in ps: PID: " << (*m_it).first << " Proccess: " << (*m_it).second.processName << std::endl;
 		}else{
 			psProcessMap.erase((*m_it).first);
 			memtoolProcessMap.erase(m_it);
@@ -101,10 +97,8 @@ void ProcessListDetectionModule::run() {
 	    bool seenps = false;
 		if(!seenps && (*p_it).second.processName.compare(0,2,"ps") != 0){
 	    	seenps = true;
-			std::stringstream output;
-	    	output << "Process not found in memtool: PID: " << (*p_it).first
+	    	notify->critical(this) << "Process not found in memtool: PID: " << (*p_it).first
 	    			<< " Proccess: " << (*p_it).second.processName << std::endl;
-	    	this->notify->critical(output.str());
 	    }else{
 	    	psProcessMap.erase(p_it);
 	    }
@@ -118,10 +112,8 @@ void ProcessListDetectionModule::run() {
 				&& globalPsProcessMap.find((*p_it).first)->second.processName.compare(
 						0, (*p_it).second.processName.length(),
 						(*p_it).second.processName) == 0) {
-			std::stringstream output;
-			output << "Virtual process detected: PID: " << (*p_it).first
+			notify->alert(this) << "Virtual process detected: PID: " << (*p_it).first
 					<< " Proccess: " << (*p_it).second.processName << std::endl;
-			this->notify->alert(output.str());
 		}
 	}
 	this->globalPsProcessMap = psProcessMap;
@@ -132,10 +124,8 @@ void ProcessListDetectionModule::run() {
 				&& globalMemtoolProcessMap.find((*m_it).first)->second.processName.compare(
 						0, (*m_it).second.processName.length(),
 						(*m_it).second.processName) == 0) {
-			std::stringstream output;
-			output << "Hidden process detected: PID: " << (*m_it).first
+			notify->alert(this) << "Hidden process detected: PID: " << (*m_it).first
 					<< " Proccess: " << (*m_it).second.processName << std::endl;
-			this->notify->alert(output.str());
 		}
 	}
 	this->globalMemtoolProcessMap = memtoolProcessMap;
