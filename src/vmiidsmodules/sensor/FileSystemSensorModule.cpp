@@ -71,16 +71,14 @@ void FileSystemSensorModule::openFileRO(std::string absolutePath,
 			std::ifstream::in);
 }
 
-std::set<std::string> FileSystemSensorModule::getFileList(std::string directory){
+void FileSystemSensorModule::getFileList(std::string &directory, std::set<std::string> &directories){
 	DIR *d;
 	struct dirent *dir;
-
-	std::set<std::string> directories;
 
 	this->clearFSCache();
 	d = opendir(std::string().insert(0, this->fileSystemPath).append("/").append(directory).c_str());
 	if (d == NULL) {
-		return directories;
+		return;
 	}
 	directories.insert(directory);
 	while ((dir = readdir(d))) {
@@ -88,17 +86,15 @@ std::set<std::string> FileSystemSensorModule::getFileList(std::string directory)
 			continue;
 		}
 		if (dir->d_type == DT_DIR) {
-			std::set<std::string> subdir =
-					this->getFileList(std::string(dir->d_name).insert(0, "/").insert(0,
-							directory));
-			directories.insert(subdir.begin(), subdir.end());
+			this->getFileList(std::string(dir->d_name).insert(0, "/").insert(0,
+							directory), directories);
 		} else {
 			directories.insert(
 					std::string(dir->d_name).insert(0, "/").insert(0, directory));
 		}
 	}
 	closedir(d);
-	return directories;
+	return;
 }
 
 bool FileSystemSensorModule::clearFSCache() {

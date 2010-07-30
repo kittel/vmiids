@@ -89,14 +89,12 @@ void MemorySensorModule::runScript(std::string &scriptResult, std::string script
 	scriptResult.append(data, firstChar, lastChar - firstChar);
 }
 
-std::map<uint32_t, MemtoolProcess> MemorySensorModule::getProcessList(){
+void MemorySensorModule::getProcessList(std::map<uint32_t, MemtoolProcess> &memtoolProcessMap){
 	std::string scriptResult;
 
 	this->clearFSCache();
 
 	this->runScript(scriptResult, "tasklist.js");
-
-	std::map<uint32_t, MemtoolProcess> memtoolProcessMap;
 
 	size_t oldNewlineSeparator = 0;
 	size_t newlineSeparator = 0;
@@ -119,7 +117,7 @@ std::map<uint32_t, MemtoolProcess> MemorySensorModule::getProcessList(){
 		memtoolProcessMap.insert(std::pair<uint32_t, MemtoolProcess>(process.pid, process));
 		oldNewlineSeparator = newlineSeparator+1;
 	}
-	return memtoolProcessMap;
+	return;
 }
 
 

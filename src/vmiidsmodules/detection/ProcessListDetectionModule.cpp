@@ -61,7 +61,7 @@ void ProcessListDetectionModule::run() {
 
 	//Get processlist from memtool
 	std::map<uint32_t, MemtoolProcess> memtoolProcessMap;
-	memtoolProcessMap = this->memory->getProcessList();
+	this->memory->getProcessList(memtoolProcessMap);
 
 	if (!isRunning) {
 		this->qemu->resumeVM();
@@ -69,7 +69,7 @@ void ProcessListDetectionModule::run() {
 
 	//Get processlist from ps
 	std::map<uint32_t, ShellProcess> psProcessMap;
-	psProcessMap = this->shell->getProcessList();
+	this->shell->getProcessList(psProcessMap);
 
 	if (!isRunning) {
 		this->qemu->pauseVM();

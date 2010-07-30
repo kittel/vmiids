@@ -7,6 +7,8 @@
 
 #include "ShellSensorModule.h"
 
+#include <sstream>
+
 ADDDYNAMICSENSORMODULE(ShellSensorModule, __LINE__)
 ;
 
@@ -146,7 +148,7 @@ void ShellSensorModule::logout() {
 	}
 }
 
-std::map<uint32_t, ShellProcess> ShellSensorModule::getProcessList(){
+void ShellSensorModule::getProcessList(std::map<uint32_t, ShellProcess> &shellProcessMap){
 	std::string psResult;
 	this->parseCommandOutput("ps -A --no-headers", psResult);
 
@@ -167,7 +169,6 @@ std::map<uint32_t, ShellProcess> ShellSensorModule::getProcessList(){
 			- oldNewlineSeparator);
 
 	ShellProcess process;
-	std::map<uint32_t, ShellProcess> shellProcessMap;
 
 	position1 = currentLine.find("1", 2);
 	process.pid = atoi(currentLine.substr(1, position1).c_str());
@@ -191,14 +192,13 @@ std::map<uint32_t, ShellProcess> ShellSensorModule::getProcessList(){
 		oldNewlineSeparator = newlineSeparator + 1;
 		shellProcessMap.insert(std::pair<uint32_t, ShellProcess>(process.pid, process));
 	}
-	return shellProcessMap;
+	return;
 }
 
-std::set<std::string> ShellSensorModule::getFileList(std::string directory){
-	std::set<std::string> directories;
-
+void ShellSensorModule::getFileList(std::string &directory, std::set<std::string> &directories){
 	std::string findResult;
-	this->parseCommandOutput(directory.insert(0, "find ").c_str(), findResult);
+	std::command = directory;
+	this->parseCommandOutput(command.insert(0, "find ").c_str(), findResult);
 
 	while (findResult[0] == '\n' || findResult[0] == '\r')
 		findResult.erase(0, 1);
@@ -213,5 +213,15 @@ std::set<std::string> ShellSensorModule::getFileList(std::string directory){
 		directories.insert(currentLine);
 		oldLine = newLine + 2;
 	}
-	return directories;
+	return;
+}
+
+void getFileContent(std::string &fileName, std::vector<char> &fileContent){
+	std::string hexdumpResult;
+	std::stringstream command;
+	command << "test -e " << fileName << " && hexdump -v -e '1/1 \"%02X\"' " << fileName;
+	this->parseCommandOutput(command.str(), hexdumpResult);
+	std::cout << hexdumpResult << std::endl;
+
+	return;
 }

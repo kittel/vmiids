@@ -79,7 +79,7 @@ void FileListDetectionModule::run() {
 
 	//Get filelist from fs
 	std::set<std::string> fsFileList;
-	fsFileList = this->fs->getFileList(this->directory);
+	this->fs->getFileList(this->directory, fsFileList);
 
 	if (!isRunning) {
 		this->qemu->resumeVM();
@@ -87,7 +87,7 @@ void FileListDetectionModule::run() {
 
 	//Get filelist from ls
 	std::set<std::string> shellFileList;
-	shellFileList = this->shell->getFileList(this->directory);
+	this->shell->getFileList(this->directory, shellFileList);
 
 	if (!isRunning) {
 		this->qemu->pauseVM();

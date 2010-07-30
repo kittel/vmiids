@@ -55,8 +55,9 @@ public:
 
 	void initSensorModule();
 
-	std::map<uint32_t, ShellProcess> getProcessList();
-	std::set<std::string> getFileList(std::string directory);
+	void getProcessList(std::map<uint32_t, ShellProcess> &shellProcessMap);
+	void getFileList(std::string &directory, std::set<std::string> &directories);
+	void getFileContent(std::string &fileName, std::vector<char> &fileContent);
 };
 
 #endif /* SHELLSENSORMODULE_H_ */

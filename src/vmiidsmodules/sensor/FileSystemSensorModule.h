@@ -36,7 +36,7 @@ public:
 	void initSensorModule();
 	bool fileExists(std::string absolutePath, struct stat * stFileInfo = NULL);
 	void openFileRO(std::string absolutePath, std::ifstream *fileHandle);
-	std::set<std::string> getFileList(std::string directory);
+	void getFileList(std::string &directory, std::set<std::string> &directories);
 
 private:
 	vmi::NotificationModule * notify;

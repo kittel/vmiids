@@ -32,7 +32,7 @@ public:
 	MemorySensorModule();
 	virtual ~MemorySensorModule();
 
-	std::map<uint32_t, MemtoolProcess> getProcessList();
+	void getProcessList(std::map<uint32_t, MemtoolProcess> &memtoolProcessMap);
 
 	void initSensorModule();
 
