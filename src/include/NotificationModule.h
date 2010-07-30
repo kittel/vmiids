@@ -9,6 +9,7 @@
 #define NOTIFICATIONMODULE_H_
 
 #include <string>
+#include <ostream>
 
 class NotificationModule{
 	private:
@@ -17,12 +18,20 @@ class NotificationModule{
 	public:
 		NotificationModule(std::string moduleName){ this->moduleName = moduleName;};
 		std::string getName(){ return this->moduleName; };
-		virtual void warn(std::string message) = 0;
+
 		virtual void info(std::string message) = 0;
 		virtual void debug(std::string message) = 0;
+		virtual void warn(std::string message) = 0;
 		virtual void error(std::string message) = 0;
 		virtual void critical(std::string message) = 0;
 		virtual void alert(std::string message) = 0;
+
+		virtual std::ostream& info() = 0;
+		virtual std::ostream& debug() = 0;
+		virtual std::ostream& warn() = 0;
+		virtual std::ostream& error() = 0;
+		virtual std::ostream& critical() = 0;
+		virtual std::ostream& alert() = 0;
 };
 
 #include "VmiIDS.h"

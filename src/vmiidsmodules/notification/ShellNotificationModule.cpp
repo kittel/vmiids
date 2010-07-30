@@ -19,26 +19,56 @@ ShellNotificationModule::~ShellNotificationModule() {
 	// TODO Auto-generated destructor stub
 }
 
-void ShellNotificationModule::warn(std::string message){
-	std::cout << "Warning:     " << message << std::endl;
+void ShellNotificationModule::info(std::string message){
+	this->info() << message << std::endl;
 }
 
-void ShellNotificationModule::info(std::string message){
-	std::cout << "Information: " << message << std::endl;
+virtual std::ostream& info(){
+	std::cout << "Information: ";
+	return std::cout;
 }
 
 void ShellNotificationModule::debug(std::string message){
-	std::cout << "Debug:       " << message << std::endl;
+	this->debug() << message << std::endl;
+}
+
+virtual std::ostream& debug(){
+	std::cout << "Debug:       ";
+	return std::cout;
+}
+
+void ShellNotificationModule::warn(std::string message){
+	this->warn() << message << std::endl;
+}
+
+virtual std::ostream& warn(){
+	std::cout << "Warning:     ";
+	return std::cout;
 }
 
 void ShellNotificationModule::error(std::string message){
-	std::cout << "Error:       " << message << std::endl;
+	this->error() << message << std::endl;
+}
+
+virtual std::ostream& error(){
+	std::cout << "Error:       ";
+	return std::cout;
 }
 
 void ShellNotificationModule::critical(std::string message){
-	std::cout << "Critical:    " << message << std::endl;
+	this->critical() << message << std::endl;
+}
+
+virtual std::ostream& critical(){
+	std::cout << "Critical:    ";
+	return std::cout;
 }
 
 void ShellNotificationModule::alert(std::string message){
-	std::cout << "Alert:    " << message << std::endl;
+	this->alert() << message << std::endl;
+}
+
+virtual std::ostream& alert(){
+	std::cout << "Alert:    ";
+	return std::cout;
 }
