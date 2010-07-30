@@ -111,7 +111,7 @@ bool ShellSensorModule::isLoggedin(void) {
 
 bool ShellSensorModule::login(std::string username, std::string password) {
 	notify->info(this, "Login");
-	notify->info(this) << "username: " << username << std::endl << "password: " << password;
+	notify->info(this) << "username: " << username << std::endl << "password: " << password << std::endl;
 	this->monitorShell = optionLoginShell.c_str();
 	std::string string;
 	this->parseCommandOutput("", string);
