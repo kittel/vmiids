@@ -56,8 +56,9 @@ public:
 	void initSensorModule();
 
 	void getProcessList(std::map<uint32_t, ShellProcess> &shellProcessMap);
-	void getFileList(std::string &directory, std::set<std::string> &directories);
-	void getFileContent(std::string &fileName, std::vector<char> &fileContent);
+	void getFileList(const std::string &directory, std::set<std::string> &directories);
+	void getFileContent(const std::string &fileName, std::vector<char> &fileContent);
+	void getFileSHA1Sum(const std::string &fileName, std::string &sha1Sum);
 };
 
 #endif /* SHELLSENSORMODULE_H_ */

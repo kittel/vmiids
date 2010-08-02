@@ -7,7 +7,8 @@ lib_LTLIBRARIES = libexampledetectionmodule.la \
                   libstatechangerdetectionmodule.la \
                   librkhunterdetectionmodule.la \
                   libprocesslistdetectionmodule.la \
-                  libfilelistdetectionmodule.la
+                  libfilelistdetectionmodule.la \
+                  libfilecontentdetectionmodule.la
                   
 
 libexampledetectionmodule_la_SOURCES = ExampleDetectionModule.h \
@@ -28,4 +29,7 @@ libprocesslistdetectionmodule_la_SOURCES = ProcessListDetectionModule.h \
 
 libfilelistdetectionmodule_la_SOURCES = FileListDetectionModule.h \
 					FileListDetectionModule.cpp 
+					
+libfilecontentdetectionmodule_la_SOURCES = FileContentDetectionModule.h \
+					FileContentDetectionModule.cpp 
 					

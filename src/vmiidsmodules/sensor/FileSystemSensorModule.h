@@ -34,9 +34,10 @@ public:
 
 
 	void initSensorModule();
-	bool fileExists(std::string absolutePath, struct stat * stFileInfo = NULL);
-	void openFileRO(std::string absolutePath, std::ifstream *fileHandle);
-	void getFileList(std::string &directory, std::set<std::string> &directories);
+	bool fileExists(const std::string absolutePath, struct stat * stFileInfo = NULL);
+	void openFileRO(const std::string absolutePath, std::ifstream *fileHandle);
+	void getFileList(const std::string &directory, std::set<std::string> &directories, bool withdirs = true);
+	void getFileSHA1Sum(const std::string &fileName, std::string &sha1Sum);
 
 private:
 	vmi::NotificationModule * notify;

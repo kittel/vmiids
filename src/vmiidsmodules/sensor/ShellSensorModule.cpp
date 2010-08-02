@@ -8,6 +8,7 @@
 #include "ShellSensorModule.h"
 
 #include <sstream>
+#include <cstdlib>
 
 ADDDYNAMICSENSORMODULE(ShellSensorModule, __LINE__)
 ;
@@ -152,9 +153,6 @@ void ShellSensorModule::getProcessList(std::map<uint32_t, ShellProcess> &shellPr
 	std::string psResult;
 	this->parseCommandOutput("ps -A --no-headers", psResult);
 
-	while (psResult[0] == '\n' || psResult[0] == '\r')
-		psResult.erase(0, 1);
-
 	//Parse process list retured by "ps -A --no-headers"
 	size_t oldNewlineSeparator = 1;
 	size_t newlineSeparator = 1;
@@ -195,13 +193,10 @@ void ShellSensorModule::getProcessList(std::map<uint32_t, ShellProcess> &shellPr
 	return;
 }
 
-void ShellSensorModule::getFileList(std::string &directory, std::set<std::string> &directories){
+void ShellSensorModule::getFileList(const std::string &directory, std::set<std::string> &directories){
 	std::string findResult;
-	std::command = directory;
+	std::string command = directory;
 	this->parseCommandOutput(command.insert(0, "find ").c_str(), findResult);
-
-	while (findResult[0] == '\n' || findResult[0] == '\r')
-		findResult.erase(0, 1);
 
 	std::string currentLine;
 
@@ -216,12 +211,27 @@ void ShellSensorModule::getFileList(std::string &directory, std::set<std::string
 	return;
 }
 
-void getFileContent(std::string &fileName, std::vector<char> &fileContent){
+void ShellSensorModule::getFileContent(const std::string &fileName, std::vector<char> &fileContent){
 	std::string hexdumpResult;
 	std::stringstream command;
-	command << "test -e " << fileName << " && hexdump -v -e '1/1 \"%02X\"' " << fileName;
+	command << "test -e " << fileName << " && hexdump -v -e '1/1 \"%02X\" \" \"' " << fileName;
 	this->parseCommandOutput(command.str(), hexdumpResult);
-	std::cout << hexdumpResult << std::endl;
 
+	fileContent.reserve(hexdumpResult.size() / 3);
+	char * ePtr = 0;
+	fileContent.push_back(strtol(hexdumpResult.c_str(),&ePtr,16));
+	char temp;
+	while((temp = (char) strtol(ePtr,&ePtr,16)) != 0){
+		fileContent.push_back(temp);
+	}
+	return;
+}
+
+void ShellSensorModule::getFileSHA1Sum(const std::string &fileName, std::string &sha1Sum){
+	std::stringstream command;
+	command << "test -e " << fileName
+			<< " && sha1sum " << fileName;
+	this->parseCommandOutput(command.str(), sha1Sum);
+	sha1Sum.erase(sha1Sum.find(" "));
 	return;
 }

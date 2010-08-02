@@ -211,6 +211,10 @@ void ConsoleMonitor::parseCommandOutput(const char *command,
 		this->queuecontainer.pop();
 		pthread_mutex_unlock(&(this->queuemutex));
 	}
+
+	while (output[0] == '\n' || output[0] == '\r')
+		output.erase(0, 1);
+
 	LIBVMI_DEBUG_MSG("Complete String:\n%s\n", output.c_str());
 	output.resize(output.rfind(this->monitorShell));
 	LIBVMI_DEBUG_MSG("Truncated String:\n%s\n", output.c_str());

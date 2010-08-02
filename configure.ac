@@ -45,6 +45,14 @@ PKG_CHECK_MODULES([LIBCONFIGXX], [libconfig++ >= 1.3],,
 
 # Checks for library functions.
 
+
+AM_PATH_LIBGCRYPT(1.4.5,
+                  , AC_MSG_ERROR([libgcrypt 1.4 or newer not found.]))
+
+dnl AM_PATH_LIBGCRYPT ([1.4],[],
+dnl 	AC_MSG_ERROR([libgcrypt 1.4 or newer not found.])
+dnl)
+
 if test $cross_compiling = no; then
   AM_MISSING_PROG(HELP2MAN, help2man)
 else
