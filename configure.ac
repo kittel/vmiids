@@ -16,9 +16,7 @@ AC_CONFIG_FILES(Makefile
 				src/vmiidsmodules/detection/Makefile
 				src/vmiidsmodules/notification/Makefile
 				src/vmiidsmodules/sensor/Makefile
-				src/libvmi/Makefile
-				src/clientApps/Makefile
-				tests/Makefile)
+				src/clientApps/Makefile)
 
 AC_CONFIG_SRCDIR([src/Makefile.am])
 AC_CONFIG_HEADERS([config.h])

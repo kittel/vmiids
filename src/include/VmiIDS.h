@@ -88,10 +88,6 @@ class VmiIDS : public Module{
 
 		void collectThreadLevel();
 
-		pthread_t &getMainThread(){ return this->mainThread; };
-		pthread_t &getRpcThread(){ return this->rpcThread; };
-		pthread_t &getVmiidsThread(){ return this->vmiidsThread; };
-
 };
 
 }

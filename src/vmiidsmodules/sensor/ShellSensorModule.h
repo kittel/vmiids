@@ -10,7 +10,7 @@
 
 #include "SensorModule.h"
 #include "NotificationModule.h"
-#include "libvmi.h"
+#include "ConsoleMonitor.h"
 
 #include <map>
 #include <set>
@@ -35,7 +35,7 @@ typedef struct{
  *
  * \brief Parser for a Serial Shell Session.
  */
-class ShellSensorModule : public vmi::SensorModule , public libVMI::ConsoleMonitor {
+class ShellSensorModule : public vmi::SensorModule , public vmi::ConsoleMonitor {
 private:
 	vmi::NotificationModule * notify;
 

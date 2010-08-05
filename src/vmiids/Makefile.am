@@ -8,11 +8,11 @@ vmiids_SOURCES=VmiIDS.cpp \
                ../include/DetectionModule.h \
                ../include/NotificationModule.h \
                ../include/SensorModule.h \
-               ../libvmi/Debug.h
+               ./Debug.h \
+               ./ConsoleMonitor.cpp \
+               ../include/ConsoleMonitor.h
                
                
-               
-
 #vmiids_LIBADD = 
 vmiids_LDADD = $(top_builddir)/src/libvmi/libvmi.la
 vmiids_LDFLAGS = -lpthread -lnsl -ldl -lconfig++
@@ -20,5 +20,6 @@ vmiids_includedir=$(includedir)
 vmiids_include_HEADERS = ../include/VmiIDS.h \
 												 ../include/DetectionModule.h \
 												 ../include/NotificationModule.h \
-												 ../include/SensorModule.h 
+												 ../include/SensorModule.h \
+												 ../include/ConsoleMonitor.h
 vmiids_clearfscache_SOURCES=clearfscache.cpp

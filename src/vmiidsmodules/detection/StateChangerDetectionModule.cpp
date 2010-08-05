@@ -45,7 +45,7 @@ void StateChangerDetectionModule::run(){
 			notify->info(this, "Resuming VM");
 			qemu->resumeVM();
 		}
-	}catch(libVMI::QemuMonitorException e){
+	}catch(vmi::ModuleException e){
 		notify->critical(this, "Could not use QemuMonitorSensorModule");
 		return;
 	}

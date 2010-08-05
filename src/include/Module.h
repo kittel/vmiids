@@ -9,8 +9,33 @@
 #define MODULE_H_
 
 #include <string>
+#include <exception>
+#include <iostream>
 
 namespace vmi {
+
+class ModuleException: public std::exception {
+private:
+	std::string message;
+public:
+	ModuleException(){ this->message = ""; }
+	ModuleException(std::string text){ this->message = text; }
+	virtual ~ModuleException() throw(){};
+	virtual const char* what() const throw () {
+		return "MemorySensorModule abort";
+	}
+	virtual void printException(){ std::cerr << what() << " " << this->message << std::endl; }
+};
+
+/*!
+ * \exception QemuMonitorParserNotImplementedException QemuMonitorParser.h
+ * \brief Exception for QemuMonitorParser.
+ */
+class FunctionNotImplementedException: public ModuleException {
+	virtual const char* what() const throw () {
+		return "Function not implemented";
+	}
+};
 
 class Module{
 	private:

@@ -24,8 +24,11 @@ class SensorModule : public vmi::Module{
 
 #define ADDDYNAMICSENSORMODULE(classname, line) class CONCAT(proxy, line) { \
 	public: \
-	CONCAT(proxy, line)(){ vmi::VmiIDS::getInstance()->enqueueSensorModule(new classname);  } \
-}; \
+	CONCAT(proxy, line)(){ try { vmi::VmiIDS::getInstance()->enqueueSensorModule(new classname); } \
+	                       catch (vmi::ModuleException e){ e.printException(); } \
+	                       catch (std::exception e){ std::cerr << e.what() << std::endl; } \
+	                     } \
+	}; \
 static CONCAT(proxy, line) CONCAT(p, line);
 
 #endif /* SENSORMODULE_H_ */

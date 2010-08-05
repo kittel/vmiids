@@ -30,15 +30,6 @@
 #include <ucontext.h>
 #include <cxxabi.h>
 
-#include "SimpleDetectionModule.h"
-
-#define DEBUG
-
-#ifdef DEBUG
-#define VERBOSE "VmiIDS"
-#endif /* DEBUG */
-#include "../libvmi/Debug.h"
-
 // rpcthread SIGTERM
 	//pthread_exit(NULL);
 
@@ -50,15 +41,19 @@
 	//blacklist module
 	//pthread_exit()
 
+int signal_handler_sigint = 0;
+
 void signal_handler(int sig_num, siginfo_t * info, void * ucontext) {
 	if (sig_num == SIGINT) {
-		printf("sigint_handler called\n");
-		vmi::VmiIDS::getInstance()->stopIDS(sig_num);
+		if(!signal_handler_sigint) {
+			vmi::VmiIDS::getInstance()->stopIDS(sig_num);
+			signal_handler_sigint++;
+		}else{
+			pthread_exit(NULL);
+		}
 	}else if (sig_num == SIGTERM) {
-		printf("sigterm_handler called\n");
 			pthread_exit(NULL);
 	} else if (sig_num == SIGSEGV) {
-		printf("sigsegv_handler called\n");
 		void * array[50];
 		void * caller_address;
 		char ** messages;

@@ -56,7 +56,7 @@ void ExampleDetectionModule::run() {
 	bool isRunning;
 	try {
 		isRunning = this->qemu->isRunning();
-	} catch (libVMI::QemuMonitorException e) {
+	} catch (vmi::ModuleException e) {
 		notify->critical(this, "Could not use QemuMonitorSensorModule");
 		return;
 	}

@@ -5,8 +5,7 @@
 #include <queue>
 #include <string>
 
-namespace libVMI {
-
+namespace vmi {
 
 /*!
  * \exception ConsoleMonitorException ConsoleMonitor.h
@@ -31,7 +30,7 @@ class ConsoleMonitor {
 	pthread_mutex_t queuemutex;
 	std::queue <char> queuecontainer;
 	bool threadRunning;
-	bool threadStarted;
+	int threadStarted;
 
 	protected:
 		std::string monitorShell;
