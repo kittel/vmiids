@@ -14,7 +14,6 @@ vmiids_SOURCES=VmiIDS.cpp \
                
                
 #vmiids_LIBADD = 
-vmiids_LDADD = $(top_builddir)/src/libvmi/libvmi.la
 vmiids_LDFLAGS = -lpthread -lnsl -ldl -lconfig++
 vmiids_includedir=$(includedir)
 vmiids_include_HEADERS = ../include/VmiIDS.h \
