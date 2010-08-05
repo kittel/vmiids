@@ -34,7 +34,7 @@ typedef enum {
 
 namespace vmi {
 
-class VmiIDS {
+class VmiIDS : public Module{
 	private:
 
 		std::map<std::string, vmi::DetectionModule *> detectionModules;
@@ -47,7 +47,7 @@ class VmiIDS {
 		pthread_mutex_t sensorModuleMutex;
 
 		static VmiIDS *instance;
-		pthread_t rpcThread, vmiidsThread;
+		pthread_t mainThread, rpcThread, vmiidsThread;
 
 		libconfig::Config config;
 
@@ -87,6 +87,10 @@ class VmiIDS {
 		libconfig::Setting *getSetting(std::string settingName);
 
 		void collectThreadLevel();
+
+		pthread_t &getMainThread(){ return this->mainThread; };
+		pthread_t &getRpcThread(){ return this->rpcThread; };
+		pthread_t &getVmiidsThread(){ return this->vmiidsThread; };
 
 };
 

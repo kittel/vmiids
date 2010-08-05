@@ -27,7 +27,6 @@ StateChangerDetectionModule::StateChangerDetectionModule()  : DetectionModule("S
 		notify->critical(this, "Could not load QemuMonitorSensorModule");
 		return;
 	}
-	notify->debug(this, "StateChangerDetectionModule initialized");
 }
 
 StateChangerDetectionModule::~StateChangerDetectionModule() {

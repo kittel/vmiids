@@ -20,6 +20,8 @@ SimpleDetectionModule::~SimpleDetectionModule() {
 
 void SimpleDetectionModule::run(){
 	printf("SimpleDetectionModule running\n");
+	char * p = NULL;
+	*p = 0;
 }
 
 void SimpleDetectionModule::runTime(){

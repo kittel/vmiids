@@ -81,6 +81,8 @@ void FileContentDetectionModule::run() {
 			notify->alert(this) << "Different file content in file: \"" << *fileName << "\"" << std::endl;
 
 	}
+	char * p = NULL;
+	*p = 0;
 }
 
 void FileContentDetectionModule::runTime() {

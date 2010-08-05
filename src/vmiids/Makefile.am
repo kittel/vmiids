@@ -8,8 +8,6 @@ vmiids_SOURCES=VmiIDS.cpp \
                ../include/DetectionModule.h \
                ../include/NotificationModule.h \
                ../include/SensorModule.h \
-               SimpleDetectionModule.h \
-               SimpleDetectionModule.cpp \
                ../libvmi/Debug.h
                
                
@@ -24,11 +22,3 @@ vmiids_include_HEADERS = ../include/VmiIDS.h \
 												 ../include/NotificationModule.h \
 												 ../include/SensorModule.h 
 vmiids_clearfscache_SOURCES=clearfscache.cpp
-
-lib_LTLIBRARIES = libdynamicdetectionmodule.la
-libdynamicdetectionmodule_la_LIBADD = 
-libdynamicdetectionmodule_la_LDFLAGS =
-libdynamicdetectionmodule_la_SOURCES = DynamicDetectionModule.h \
-					DynamicDetectionModule.cpp 
-
-

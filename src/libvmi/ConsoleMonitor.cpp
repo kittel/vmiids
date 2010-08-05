@@ -17,21 +17,7 @@
 
 namespace libVMI {
 
-void ConsoleMonitor::signal_handler(int signum) {
-	LIBVMI_DEBUG_MSG("Signalhandler called");
-	signum = 0;
-	pthread_exit(0);
-}
-
 void *ConsoleMonitor::readMonitor(void *ptr) {
-
-	struct sigaction sa;
-	sa.sa_handler = ConsoleMonitor::signal_handler;
-	sigemptyset(&sa.sa_mask);
-	sigaction(SIGINT, &sa, NULL);
-	sigaction(SIGSEGV, &sa, NULL);
-	sigaction(SIGTERM, &sa, NULL);
-	LIBVMI_DEBUG_MSG("Signalhandler installed");
 
 	ConsoleMonitor * arguments = (ConsoleMonitor *) ptr;
 	int fd_to_qemu;
