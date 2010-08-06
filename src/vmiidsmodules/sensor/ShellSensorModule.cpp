@@ -19,8 +19,6 @@ ShellSensorModule::ShellSensorModule() :
 	//Get NotificationModule
 	GETNOTIFICATIONMODULE(notify, ShellNotificationModule);
 
-	notify->debug(this, "Constructor called");
-
 	std::string optionConsoleName;
 	std::string optionUsername;
 	std::string optionPassword;
@@ -51,14 +49,15 @@ ShellSensorModule::ShellSensorModule() :
 				<< "\tpassword      =  \"<password>\";            e.g. \"rootkitvm\""
 				<< std::endl << "};";
 
-		throw ShellParserException();
+		throw ShellSensorException();
 	}
 
-	this->initConsoleMonitor(optionConsoleName.c_str(),
+	try {
+		this->initConsoleMonitor(optionConsoleName.c_str(),
 			optionMonitorShell.c_str());
 
-	this->loggedin = false;
-	try {
+		this->loggedin = false;
+
 		this->loggedin = this->isLoggedin();
 
 		if (!this->loggedin) {
@@ -68,8 +67,10 @@ ShellSensorModule::ShellSensorModule() :
 			notify->debug(this, "Already logged in\n");
 			this->monitorShell = optionMonitorShell.c_str();
 		}
-	} catch (const char * exception) {
-		notify->info(this) << exception << std::endl;
+	}catch(vmi::ConsoleMonitorException &e){
+		throw ShellSensorException("Internal error while initializing");
+	}catch (const char * exception) {
+		throw ShellSensorException(exception);
 	}
 }
 
@@ -133,7 +134,7 @@ bool ShellSensorModule::login(std::string username, std::string password) {
 	}
 
 	this->monitorShell = optionLoginShell.c_str();
-	throw ShellParserException();
+	throw ShellSensorException();
 	return false;
 }
 

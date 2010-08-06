@@ -432,8 +432,6 @@ void vmi::VmiIDS::loadSharedObjectsPath(std::string path) {
 }
 
 bool vmi::VmiIDS::loadSharedObject(std::string path) {
-	printf("Trying to load shared object at: %s\n", path.c_str());
-
 	void *dlib;
 	dlib = dlopen(path.c_str(), RTLD_NOW | RTLD_GLOBAL);
 	if (dlib == NULL) {

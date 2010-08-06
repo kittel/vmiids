@@ -25,16 +25,16 @@ public:
 	ModuleException(std::string text){ this->message = text; }
 	virtual ~ModuleException() throw(){};
 	virtual const char* what() const throw () {
-		return "Module abort: ";
+		return "Module abort";
 	}
-	virtual void printException(){ std::cerr << what() << " " << this->message << std::endl; }
+	virtual void printException(){ std::cerr << what() << ": " << this->message << std::endl; }
 };
 
 class FunctionNotImplementedException: public ModuleException {
 public:
 	FunctionNotImplementedException(std::string text) : ModuleException(text) { }
 	virtual const char* what() const throw () {
-		return "Function not implemented: ";
+		return "Function not implemented";
 	}
 };
 
@@ -42,7 +42,7 @@ class DependencyNotFoundException: public ModuleException {
 public:
 	DependencyNotFoundException(std::string text) : ModuleException(text) { }
 	virtual const char* what() const throw () {
-		return "Dependency not found: ";
+		return "Dependency not found";
 	}
 };
 

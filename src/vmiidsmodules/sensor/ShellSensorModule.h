@@ -19,7 +19,10 @@
  * \exception ShellParserException ShellSensorModule.h
  * \brief Exception for ShellSensorModule.
  */
-class ShellParserException: public std::exception {
+class ShellSensorException: public vmi::ModuleException {
+public:
+	ShellSensorException(){}
+	ShellSensorException(std::string text) : ModuleException(text) { }
 	virtual const char* what() const throw () {
 		return "ShellSensorModule abort";
 	}
