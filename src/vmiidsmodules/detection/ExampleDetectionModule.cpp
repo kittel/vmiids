@@ -16,12 +16,10 @@ ExampleDetectionModule::ExampleDetectionModule() :
 	DetectionModule("ExampleDetectionModule") {
 	GETNOTIFICATIONMODULE(notify, ShellNotificationModule);
 
+	GETSENSORMODULE(this->fs, FileSystemSensorModule);
+	GETSENSORMODULE(this->shell, ShellSensorModule);
 	GETSENSORMODULE(this->qemu, QemuMonitorSensorModule);
 	this->wasRunning = this->qemu->isRunning();
-
-	GETSENSORMODULE(this->fs, FileSystemSensorModule);
-
-	GETSENSORMODULE(this->shell, ShellSensorModule);
 }
 
 ExampleDetectionModule::~ExampleDetectionModule() {

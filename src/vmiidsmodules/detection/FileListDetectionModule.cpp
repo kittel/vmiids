@@ -13,31 +13,13 @@ ADDDYNAMICDETECTIONMODULE(FileListDetectionModule, __LINE__)
 
 FileListDetectionModule::FileListDetectionModule() :
 					DetectionModule("FileListDetectionModule") {
+
 	GETNOTIFICATIONMODULE(notify, ShellNotificationModule);
 
-	this->qemu
-			= dynamic_cast<QemuMonitorSensorModule *> (VmiIDS::getInstance()->getSensorModule(
-					"QemuMonitorSensorModule"));
-	if (!this->qemu) {
-		notify->critical(this, "Could not load QemuMonitorSensorModule");
-		return;
-	}
+	GETSENSORMODULE(this->qemu, QemuMonitorSensorModule);
+	GETSENSORMODULE(this->shell, ShellSensorModule);
+	GETSENSORMODULE(this->fs, FileSystemSensorModule);
 
-	this->shell
-			= dynamic_cast<ShellSensorModule *> (VmiIDS::getInstance()->getSensorModule(
-					"ShellSensorModule"));
-	if (!this->shell) {
-		notify->critical(this, "Could not load ShellSensorModule");
-		return;
-	}
-
-	this->fs
-			= dynamic_cast<FileSystemSensorModule *> (VmiIDS::getInstance()->getSensorModule(
-					"FileSystemSensorModule"));
-	if (!this->fs) {
-		notify->critical(this, "Could not load FileSystemSensorModule");
-		return;
-	}
 
 	libconfig::Setting *setting = VmiIDS::getInstance()->getSetting(
 			this->getName());

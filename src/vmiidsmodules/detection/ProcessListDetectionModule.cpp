@@ -15,29 +15,9 @@ ProcessListDetectionModule::ProcessListDetectionModule() :
 
 	GETNOTIFICATIONMODULE(notify, ShellNotificationModule);
 
-	this->qemu
-			= dynamic_cast<QemuMonitorSensorModule *> (VmiIDS::getInstance()->getSensorModule(
-					"QemuMonitorSensorModule"));
-	if (!this->qemu) {
-		notify->critical(this, "Could not load QemuMonitorSensorModule");
-		return;
-	}
-
-	this->shell
-			= dynamic_cast<ShellSensorModule *> (VmiIDS::getInstance()->getSensorModule(
-					"ShellSensorModule"));
-	if (!this->shell) {
-		notify->critical(this, "Could not load ShellSensorModule");
-		return;
-	}
-
-	this->memory
-			= dynamic_cast<MemorySensorModule *> (VmiIDS::getInstance()->getSensorModule(
-					"MemorySensorModule"));
-	if (!this->memory) {
-		notify->critical(this, "Could not load MemorySensorModule");
-		return;
-	}
+	GETSENSORMODULE(this->qemu, QemuMonitorSensorModule);
+	GETSENSORMODULE(this->shell, ShellSensorModule);
+	GETSENSORMODULE(this->memory, MemorySensorModule);
 }
 
 ProcessListDetectionModule::~ProcessListDetectionModule() {

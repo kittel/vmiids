@@ -16,12 +16,7 @@ int StateChangerDetectionModule::runCounter = 0;
 StateChangerDetectionModule::StateChangerDetectionModule()  : DetectionModule("StateChangerDetectionModule"){
 	GETNOTIFICATIONMODULE(notify, ShellNotificationModule);
 
-	qemu = dynamic_cast<QemuMonitorSensorModule *> (vmi::VmiIDS::getInstance()->getSensorModule(
-					"QemuMonitorSensorModule"));
-	if (!qemu) {
-		notify->critical(this, "Could not load QemuMonitorSensorModule");
-		return;
-	}
+	GETSENSORMODULE(this->qemu, QemuMonitorSensorModule);
 }
 
 StateChangerDetectionModule::~StateChangerDetectionModule() {
