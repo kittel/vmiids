@@ -197,7 +197,7 @@ vmi::VmiIDS::VmiIDS() :
 		try {
 			config.read(configFile);
 			fclose (configFile);
-		}catch(libconfig::ParseException){
+		}catch(libconfig::ParseException &e){
 			printf("Could not read config file\n");
 		}
 	}
@@ -258,7 +258,7 @@ void * vmi::VmiIDS::run(void * this_pointer) {
 		for(int i = 0 ;  i < this_p->config.lookup("initialModuleByPath").getLength() ; i++){
 			this_p->loadSharedObjectsPath(this_p->config.lookup("initialModuleByPath")[i]);
 		}
-	}catch(libconfig::SettingNotFoundException e){
+	}catch(libconfig::SettingNotFoundException &e){
 			printf("No Modules loaded by Path ...\n");
 	}
 
@@ -269,7 +269,7 @@ void * vmi::VmiIDS::run(void * this_pointer) {
 	for(int i = 0 ;  i < this_p->config.lookup("initialModuleBySoPath").getLength() ; i++){
 			this_p->loadSharedObject(this_p->config.lookup("initialModuleBySoPath")[i]);
 		}
-	}catch(libconfig::SettingNotFoundException e){
+	}catch(libconfig::SettingNotFoundException &e){
 		printf("No Modules loaded by So Path ...\n");
 	}
 
@@ -280,7 +280,7 @@ void * vmi::VmiIDS::run(void * this_pointer) {
 	for(int i = 0 ;  i < this_p->config.lookup("startModules").getLength() ; i++){
 			this_p->enqueueDetectionModule(this_p->config.lookup("startModules")[i]);
 		}
-	}catch(libconfig::SettingNotFoundException e){
+	}catch(libconfig::SettingNotFoundException &e){
 		printf("No Modules started ...\n");
 	}
 
@@ -291,12 +291,14 @@ void * vmi::VmiIDS::run(void * this_pointer) {
 		for (std::map<std::string, DetectionModule*>::iterator it =
 				this_p->activeDetectionModules.begin(); it
 				!= this_p->activeDetectionModules.end(); ++it) {
-			try { it->second->run(); }
-			catch (vmi::ModuleException e){ e.printException(); }
-			catch (std::exception e){ std::cerr << "Failed: "<< e.what() << std::endl; }
+			try {
+				it->second->run();
+			}
+			catch (vmi::ModuleException &e){ e.printException(); }
+			catch (std::exception &e){ std::cerr << "Failed: "<< e.what() << std::endl; }
 		}
 		pthread_mutex_unlock(&this_p->activeDetectionModuleMutex);
-		sched_yield();
+		sleep(1);
 	}
 	return NULL;
 }
@@ -542,7 +544,7 @@ vmi::SensorModule *vmi::VmiIDS::getSensorModule(std::string sensorModuleName) {
 libconfig::Setting *vmi::VmiIDS::getSetting(std::string settingName){
 	try {
 		return &(this->config.lookup(settingName));
-	}catch(libconfig::SettingNotFoundException e){
+	}catch(libconfig::SettingNotFoundException &e){
 			return NULL;
 	}
 }
