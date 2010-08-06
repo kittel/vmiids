@@ -49,7 +49,7 @@ ShellSensorModule::ShellSensorModule() :
 				<< "\tpassword      =  \"<password>\";            e.g. \"rootkitvm\""
 				<< std::endl << "};";
 
-		throw ShellSensorException();
+		throw vmi::ModuleException();
 	}
 
 	try {
@@ -68,9 +68,9 @@ ShellSensorModule::ShellSensorModule() :
 			this->monitorShell = optionMonitorShell.c_str();
 		}
 	}catch(vmi::ConsoleMonitorException &e){
-		throw ShellSensorException("Internal error while initializing");
+		throw vmi::ModuleException("Internal error while initializing");
 	}catch (const char * exception) {
-		throw ShellSensorException(exception);
+		throw vmi::ModuleException(exception);
 	}
 }
 
@@ -134,7 +134,7 @@ bool ShellSensorModule::login(std::string username, std::string password) {
 	}
 
 	this->monitorShell = optionLoginShell.c_str();
-	throw ShellSensorException();
+	throw vmi::ModuleException("Unable to log in to introspection shell");
 	return false;
 }
 

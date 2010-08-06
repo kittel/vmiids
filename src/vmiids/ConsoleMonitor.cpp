@@ -19,55 +19,67 @@ namespace vmi {
 
 void *ConsoleMonitor::readMonitor(void *ptr) {
 
-	ConsoleMonitor * arguments = (ConsoleMonitor *) ptr;
-	int fd_to_qemu;
+	ConsoleMonitor * this_p = (ConsoleMonitor *) ptr;
+
+	int fd = -1;
 	char buffer = 0;
 	int readcount;
 
-	fd_to_qemu = open(arguments->consoleName.c_str(), O_RDONLY);
-	if (fd_to_qemu < 0) {
-		LIBVMI_WARN_MSG("Open %s readable failed", arguments->consoleName.c_str());
-		arguments->threadRunning = false;
-		arguments->threadStarted = -1;
+	if ((fd = open(this_p->consoleName.c_str(), O_RDONLY)) < 0){
+		this_p->threadRunning = false;
+		this_p->threadStarted = -1;
 		return NULL;
-	}else{
-		LIBVMI_WARN_MSG("Open %s readable successfull", arguments->consoleName.c_str());
+	}
+	struct termios tty;
+	if(tcgetattr(fd, &tty) < 0){
+		this_p->threadRunning = false;
+		this_p->threadStarted = -1;
+		if (fd >= 0)
+			close(fd);
+		return NULL;
+	}
+	tty.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP | INLCR | IGNCR
+			| ICRNL | IXON);
+	tty.c_oflag &= ~OPOST;
+	tty.c_lflag &= ~(ECHO | ECHONL | ICANON | ISIG | IEXTEN);
+	tty.c_cflag &= ~(CSIZE | PARENB);
+	tty.c_cflag |= CS8;
+
+	tty.c_cc[VMIN] = 0;
+	tty.c_cc[VTIME] = 0;
+
+	if(tcsetattr(fd, TCSAFLUSH, &tty) < 0){
+		this_p->threadRunning = false;
+		this_p->threadStarted = -1;
+		if (fd >= 0)
+			close(fd);
+		return NULL;
 	}
 
-	if (arguments->threadRunning) {
-		struct termios tty;
-		tcgetattr(fd_to_qemu, &tty);
-
-		tty.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP | INLCR | IGNCR
-				| ICRNL | IXON);
-		tty.c_oflag &= ~OPOST;
-		tty.c_lflag &= ~(ECHO | ECHONL | ICANON | ISIG | IEXTEN);
-		tty.c_cflag &= ~(CSIZE | PARENB);
-		tty.c_cflag |= CS8;
-
-		tty.c_cc[VMIN] = 0;
-		tty.c_cc[VTIME] = 0;
-
-		tcsetattr(fd_to_qemu, TCSAFLUSH, &tty);
+	if(lseek(fd, 0,SEEK_END ) < 0){
+		this_p->threadRunning = false;
+		this_p->threadStarted = -1;
+		if (fd >= 0)
+			close(fd);
+		return NULL;
 	}
 
-	lseek(fd_to_qemu, 0,SEEK_END );
-	arguments->threadStarted = 1;
+	this_p->threadStarted = 1;
 
-	while (arguments->threadRunning) {
-		readcount = read(fd_to_qemu, &buffer, 1);
+	while (this_p->threadRunning) {
+		readcount = read(fd, &buffer, 1);
 		if (readcount > 0) {
-			pthread_mutex_lock(&(arguments->queuemutex));
-			arguments->queuecontainer.push(buffer);
-			pthread_mutex_unlock(&(arguments->queuemutex));
+			pthread_mutex_lock(&(this_p->queuemutex));
+			this_p->queuecontainer.push(buffer);
+			pthread_mutex_unlock(&(this_p->queuemutex));
 		} else if (readcount < 0) {
-			arguments->threadRunning = false;
-			close(fd_to_qemu);
-			break;
+			this_p->threadRunning = false;
+			this_p->threadStarted = -1;
+			if (fd >= 0)
+				close(fd);
+			return NULL;
 		}
 	}
-	if (fd_to_qemu > 0)
-		close(fd_to_qemu);
 	return NULL;
 }
 
@@ -102,10 +114,12 @@ void ConsoleMonitor::initConsoleMonitor(std::string consoleString,
 			(void *) this);
 
 	while (!this->threadStarted){
+		//printf("Thread wait %i\n", this->threadStarted);
 		sched_yield();
 	}
 	if (this->threadStarted == -1 || !this->threadRunning)
 		throw ConsoleMonitorException();
+
 
 	LIBVMI_DEBUG_MSG("Initialize finished");
 }

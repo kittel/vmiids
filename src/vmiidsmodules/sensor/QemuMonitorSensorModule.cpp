@@ -13,8 +13,6 @@ QemuMonitorSensorModule::QemuMonitorSensorModule() : SensorModule("QemuMonitorSe
 	//Get NotificationModule
 	GETNOTIFICATIONMODULE(notify, ShellNotificationModule);
 
-	notify->debug(this, "Constructor called");
-
 	std::string optionConsoleName;
 	std::string optionMonitorShell;
 
@@ -36,8 +34,14 @@ QemuMonitorSensorModule::QemuMonitorSensorModule() : SensorModule("QemuMonitorSe
 		throw vmi::ModuleException();
 	}
 
-	this->initConsoleMonitor(optionConsoleName.c_str(),
+	try{
+		this->initConsoleMonitor(optionConsoleName.c_str(),
 			optionMonitorShell.c_str());
+	}catch(vmi::ConsoleMonitorException &e){
+		throw vmi::ModuleException("Internal error while initializing");
+	}catch (const char * exception) {
+		throw vmi::ModuleException(exception);
+	}
 }
 
 QemuMonitorSensorModule::~QemuMonitorSensorModule() {

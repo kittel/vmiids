@@ -15,19 +15,6 @@
 #include <map>
 #include <set>
 
-/*!
- * \exception ShellParserException ShellSensorModule.h
- * \brief Exception for ShellSensorModule.
- */
-class ShellSensorException: public vmi::ModuleException {
-public:
-	ShellSensorException(){}
-	ShellSensorException(std::string text) : ModuleException(text) { }
-	virtual const char* what() const throw () {
-		return "ShellSensorModule abort";
-	}
-};
-
 typedef struct{
 	uint32_t pid;
 	std::string processName;
