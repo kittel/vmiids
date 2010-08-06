@@ -291,7 +291,9 @@ void * vmi::VmiIDS::run(void * this_pointer) {
 		for (std::map<std::string, DetectionModule*>::iterator it =
 				this_p->activeDetectionModules.begin(); it
 				!= this_p->activeDetectionModules.end(); ++it) {
-			it->second->run();
+			try { it->second->run(); }
+			catch (vmi::ModuleException e){ e.printException(); }
+			catch (std::exception e){ std::cerr << "Failed: "<< e.what() << std::endl; }
 		}
 		pthread_mutex_unlock(&this_p->activeDetectionModuleMutex);
 		sched_yield();
