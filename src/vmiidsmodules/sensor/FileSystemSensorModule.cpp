@@ -18,12 +18,7 @@ ADDDYNAMICSENSORMODULE(FileSystemSensorModule, __LINE__)
 
 FileSystemSensorModule::FileSystemSensorModule() : SensorModule("FileSystemSensorModule") {
 	//Get NotificationModule
-	notify = VmiIDS::getInstance()->getNotificationModule(
-			"ShellNotificationModule");
-	if (!notify) {
-		printf("Could not load NotificationModule\n");
-		return;
-	}
+	GETNOTIFICATIONMODULE(notify, ShellNotificationModule);
 
 	libconfig::Setting *setting = VmiIDS::getInstance()->getSetting(
 			this->getName());

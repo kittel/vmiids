@@ -13,12 +13,7 @@ ADDDYNAMICDETECTIONMODULE(ProcessListDetectionModule, __LINE__)
 ProcessListDetectionModule::ProcessListDetectionModule() :
 			DetectionModule("ProcessListDetectionModule") {
 
-	notify = VmiIDS::getInstance()->getNotificationModule(
-			"ShellNotificationModule");
-	if (!notify) {
-		printf("Could not load NotificationModule\n");
-		return;
-	}
+	GETNOTIFICATIONMODULE(notify, ShellNotificationModule);
 
 	this->qemu
 			= dynamic_cast<QemuMonitorSensorModule *> (VmiIDS::getInstance()->getSensorModule(

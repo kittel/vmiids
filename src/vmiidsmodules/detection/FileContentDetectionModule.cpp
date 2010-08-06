@@ -13,12 +13,7 @@ ADDDYNAMICDETECTIONMODULE(FileContentDetectionModule, __LINE__)
 FileContentDetectionModule::FileContentDetectionModule() :
 			DetectionModule("FileContentDetectionModule") {
 
-	notify = VmiIDS::getInstance()->getNotificationModule(
-			"ShellNotificationModule");
-	if (!notify) {
-		printf("Could not load NotificationModule\n");
-		return;
-	}
+	GETNOTIFICATIONMODULE(notify, ShellNotificationModule);
 
 	this->qemu
 			= dynamic_cast<QemuMonitorSensorModule *> (VmiIDS::getInstance()->getSensorModule(

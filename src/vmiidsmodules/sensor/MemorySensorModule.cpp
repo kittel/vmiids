@@ -16,12 +16,7 @@ MemorySensorModule::MemorySensorModule() :
 			SensorModule("MemorySensorModule") {
 
 	//Get NotificationModule
-	notify = VmiIDS::getInstance()->getNotificationModule(
-			"ShellNotificationModule");
-	if (!notify) {
-		printf("Could not load NotificationModule\n");
-		return;
-	}
+	GETNOTIFICATIONMODULE(notify, ShellNotificationModule);
 
 	libconfig::Setting *setting = VmiIDS::getInstance()->getSetting(
 			this->getName());

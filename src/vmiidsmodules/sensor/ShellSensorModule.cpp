@@ -17,12 +17,7 @@ ShellSensorModule::ShellSensorModule() :
 	SensorModule("ShellSensorModule"), ConsoleMonitor() {
 
 	//Get NotificationModule
-	notify = VmiIDS::getInstance()->getNotificationModule(
-			"ShellNotificationModule");
-	if (!notify) {
-		printf("Could not load NotificationModule\n");
-		return;
-	}
+	GETNOTIFICATIONMODULE(notify, ShellNotificationModule);
 
 	notify->debug(this, "Constructor called");
 
