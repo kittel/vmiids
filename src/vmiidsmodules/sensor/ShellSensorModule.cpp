@@ -24,7 +24,7 @@ ShellSensorModule::ShellSensorModule() :
 		return;
 	}
 
-	notify->info(this, "Constructor called\n");
+	notify->debug(this, "Constructor called");
 
 	std::string optionConsoleName;
 	std::string optionUsername;
@@ -67,10 +67,10 @@ ShellSensorModule::ShellSensorModule() :
 		this->loggedin = this->isLoggedin();
 
 		if (!this->loggedin) {
-			notify->info(this, "Trying to login\n");
+			notify->debug(this, "Trying to login\n");
 			this->loggedin = this->login(optionUsername, optionPassword);
 		} else {
-			notify->info(this, "Already logged in\n");
+			notify->debug(this, "Already logged in\n");
 			this->monitorShell = optionMonitorShell.c_str();
 		}
 	} catch (const char * exception) {

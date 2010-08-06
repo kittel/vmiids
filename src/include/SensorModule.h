@@ -31,4 +31,10 @@ class SensorModule : public vmi::Module{
 	}; \
 static CONCAT(proxy, line) CONCAT(p, line);
 
+#define GETSENSORMODULE(variable, modulename) \
+		variable = dynamic_cast<modulename *> (vmi::VmiIDS::getInstance()->getSensorModule(QUOTE(modulename))); \
+		if (!variable) { \
+			throw vmi::DependencyNotFoundException(QUOTE(modulename)); \
+		}
+
 #endif /* SENSORMODULE_H_ */

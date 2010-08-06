@@ -28,7 +28,10 @@ class DetectionModule : public vmi::Module {
 
 #define ADDDYNAMICDETECTIONMODULE(classname, line) class CONCAT(proxy, line) { \
 	public: \
-	CONCAT(proxy, line)(){ vmi::VmiIDS::getInstance()->enqueueDetectionModule(new classname);  } \
+	CONCAT(proxy, line)(){ try { vmi::VmiIDS::getInstance()->enqueueDetectionModule(new classname); } \
+                           catch (vmi::ModuleException e){ e.printException(); } \
+                           catch (std::exception e){ std::cerr << "Failed: "<< e.what() << std::endl; } \
+                         } \
 }; \
 static CONCAT(proxy, line) CONCAT(p, line);
 

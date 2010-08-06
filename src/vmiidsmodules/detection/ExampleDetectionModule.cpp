@@ -14,37 +14,14 @@ ADDDYNAMICDETECTIONMODULE(ExampleDetectionModule, __LINE__)
 
 ExampleDetectionModule::ExampleDetectionModule() :
 	DetectionModule("ExampleDetectionModule") {
-	notify = vmi::VmiIDS::getInstance()->getNotificationModule(
-			"ShellNotificationModule");
-	if (!notify) {
-		printf("Could not load NotificationModule\n");
-		return;
-	}
+	GETNOTIFICATIONMODULE(notify, ShellNotificationModule);
 
-	this->qemu
-			= dynamic_cast<QemuMonitorSensorModule *> (vmi::VmiIDS::getInstance()->getSensorModule(
-					"QemuMonitorSensorModule"));
-	if (!this->qemu) {
-		notify->critical(this, "Could not load QemuMonitorSensorModule");
-		return;
-	}
+	GETSENSORMODULE(this->qemu, QemuMonitorSensorModule);
 	this->wasRunning = this->qemu->isRunning();
 
-	this->fs
-			= dynamic_cast<FileSystemSensorModule *> (vmi::VmiIDS::getInstance()->getSensorModule(
-					"FileSystemSensorModule"));
-	if (!this->fs) {
-		notify->critical(this, "Could not load FileSystemSensorModule");
-		return;
-	}
+	GETSENSORMODULE(this->fs, FileSystemSensorModule);
 
-	this->shell
-			= dynamic_cast<ShellSensorModule *> (vmi::VmiIDS::getInstance()->getSensorModule(
-					"ShellSensorModule"));
-	if (!this->shell) {
-		notify->critical(this, "Could not load ShellSensorModule");
-		return;
-	}
+	GETSENSORMODULE(this->shell, ShellSensorModule);
 }
 
 ExampleDetectionModule::~ExampleDetectionModule() {

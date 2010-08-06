@@ -12,6 +12,9 @@
 #include <exception>
 #include <iostream>
 
+#define STR(s) #s              /*!< Do not interpret s. Return as char* */
+#define QUOTE(s) STR(s)  /*!< In case s contains spaces the STR_MACRO() is wrapped. */
+
 namespace vmi {
 
 class ModuleException: public std::exception {
@@ -22,18 +25,25 @@ public:
 	ModuleException(std::string text){ this->message = text; }
 	virtual ~ModuleException() throw(){};
 	virtual const char* what() const throw () {
-		return "MemorySensorModule abort";
+		return "Module abort: ";
 	}
 	virtual void printException(){ std::cerr << what() << " " << this->message << std::endl; }
 };
 
-/*!
- * \exception QemuMonitorParserNotImplementedException QemuMonitorParser.h
- * \brief Exception for QemuMonitorParser.
- */
+
 class FunctionNotImplementedException: public ModuleException {
+public:
+	FunctionNotImplementedException(std::string text) : ModuleException(text) { }
 	virtual const char* what() const throw () {
-		return "Function not implemented";
+		return "Function not implemented: ";
+	}
+};
+
+class DependencyNotFoundException: public ModuleException {
+public:
+	DependencyNotFoundException(std::string text) : ModuleException(text) { }
+	virtual const char* what() const throw () {
+		return "Dependency not found: ";
 	}
 };
 
