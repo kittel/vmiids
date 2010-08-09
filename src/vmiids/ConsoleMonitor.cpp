@@ -56,13 +56,14 @@ void *ConsoleMonitor::readMonitor(void *ptr) {
 		return NULL;
 	}
 
-	if(lseek(fd, 0,SEEK_END ) < 0){
-		this_p->threadRunning = false;
-		this_p->threadStarted = -1;
-		if (fd >= 0)
-			close(fd);
-		return NULL;
-	}
+//	if(lseek(fd, 0,SEEK_END ) < 0){
+//		printf("lseek\n");
+//		this_p->threadRunning = false;
+//		this_p->threadStarted = -1;
+//		if (fd >= 0)
+//			close(fd);
+//		return NULL;
+//	}
 
 	this_p->threadStarted = 1;
 
@@ -114,7 +115,6 @@ void ConsoleMonitor::initConsoleMonitor(std::string consoleString,
 			(void *) this);
 
 	while (!this->threadStarted){
-		//printf("Thread wait %i\n", this->threadStarted);
 		sched_yield();
 	}
 	if (this->threadStarted == -1 || !this->threadRunning)

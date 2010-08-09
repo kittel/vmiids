@@ -19,6 +19,8 @@ FileContentDetectionModule::FileContentDetectionModule() :
 	GETSENSORMODULE(this->shell, ShellSensorModule);
 	GETSENSORMODULE(this->fs, FileSystemSensorModule);
 
+	GETOPTION(directory, this->directory);
+
 }
 
 FileContentDetectionModule::~FileContentDetectionModule() {
@@ -28,8 +30,7 @@ FileContentDetectionModule::~FileContentDetectionModule() {
 void FileContentDetectionModule::run() {
 
 	std::set<std::string> fileSet;
-	std::string dirName = "/home/vm/filetest";
-	this->fs->getFileList(dirName, fileSet, false);
+	this->fs->getFileList(directory, fileSet, false);
 
 	bool isRunning;
 	try {
@@ -57,8 +58,6 @@ void FileContentDetectionModule::run() {
 			notify->alert(this) << "Different file content in file: \"" << *fileName << "\"" << std::endl;
 
 	}
-	char * p = NULL;
-	*p = 0;
 }
 
 void FileContentDetectionModule::runTime() {

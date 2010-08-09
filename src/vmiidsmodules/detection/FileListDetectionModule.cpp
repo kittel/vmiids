@@ -20,21 +20,8 @@ FileListDetectionModule::FileListDetectionModule() :
 	GETSENSORMODULE(this->shell, ShellSensorModule);
 	GETSENSORMODULE(this->fs, FileSystemSensorModule);
 
+	GETOPTION(directory, this->directory);
 
-	libconfig::Setting *setting = VmiIDS::getInstance()->getSetting(
-			this->getName());
-
-	if (setting == NULL || !setting->lookupValue("directory",
-			this->directory) ) {
-
-		notify->critical(this)
-				<< "Could not parse Options. Please add the following section to the config file:"
-				<< std::endl << this->getName() << " = {" << std::endl
-				<< "\tdirectory             =  \"<directory to compare>\"; e.g. \"/home/vm\""
-				<< std::endl << "};";
-
-		throw FileListDetectionModuleException();
-	}
 	while(directory.size() > 1 &&directory[directory.size()-1] == '/')
 		directory.erase(directory.size()-1);
 

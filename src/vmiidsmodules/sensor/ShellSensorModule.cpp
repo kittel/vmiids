@@ -23,34 +23,12 @@ ShellSensorModule::ShellSensorModule() :
 	std::string optionUsername;
 	std::string optionPassword;
 
-	libconfig::Setting *setting = VmiIDS::getInstance()->getSetting(
-			this->getName());
-
-	if (setting == NULL || !setting->lookupValue("consoleName",
-			optionConsoleName) || !setting->lookupValue("monitorShell",
-			optionMonitorShell) || !setting->lookupValue("loginShell",
-			optionLoginShell) || !setting->lookupValue("passwordShell",
-			optionPasswordShell) || !setting->lookupValue("username",
-			optionUsername)
-			|| !setting->lookupValue("password", optionPassword)) {
-		notify->critical(this)
-				<< "Could not parse Options. Please add the following section to the config file:"
-				<< std::endl << this->getName() << " = {" << std::endl
-				<< "\tconsoleName   =  \"<shell device>\";        e.g. \"/dev/ttyS2\""
-				<< std::endl
-				<< "\tmonitorShell  =  \"<shell identifier>\";    e.g. \"rootkitvm@rootkitvm:"
-				<< std::endl
-				<< "\tloginShell    =  \"<login identifier>\";    e.g. \"login:\""
-				<< std::endl
-				<< "\tpasswordShell =  \"<password identifier>\"; e.g. \"Password:\""
-				<< std::endl
-				<< "\tusername      =  \"<username>\" ;           e.g. \"rootkitvm\""
-				<< std::endl
-				<< "\tpassword      =  \"<password>\";            e.g. \"rootkitvm\""
-				<< std::endl << "};";
-
-		throw vmi::ModuleException();
-	}
+	GETOPTION(consoleName, optionConsoleName);
+	GETOPTION(monitorShell, optionMonitorShell);
+	GETOPTION(loginShell, optionLoginShell);
+	GETOPTION(passwordShell, optionPasswordShell);
+	GETOPTION(username, optionUsername);
+	GETOPTION(password, optionPassword);
 
 	try {
 		this->initConsoleMonitor(optionConsoleName.c_str(),

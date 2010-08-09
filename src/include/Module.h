@@ -9,6 +9,7 @@
 #define MODULE_H_
 
 #include <string>
+#include <sstream>
 #include <exception>
 #include <iostream>
 
@@ -18,7 +19,7 @@
 namespace vmi {
 
 class ModuleException: public std::exception {
-private:
+protected:
 	std::string message;
 public:
 	ModuleException(){ this->message = ""; }
@@ -45,6 +46,44 @@ public:
 		return "Dependency not found";
 	}
 };
+
+class OptionNotFoundException: public ModuleException {
+public:
+	OptionNotFoundException(std::string module, std::string setting) : ModuleException() {
+		std::stringstream msg;
+		msg << "Could not parse Option. Please add the following section to the config file:"
+			<< std::endl << module << " = {" << std::endl
+			<< "\t" << setting << " =  \"<value>\";"
+			<< std::endl << "};";
+		this->message = msg.str();
+	}
+	virtual const char* what() const throw () {
+		return "Setting not found";
+	}
+};
+
+#define GETOPTION(option, variable) if(vmi::VmiIDS::getInstance()->getSetting(this->getName()) == NULL || \
+	                                  !vmi::VmiIDS::getInstance()->getSetting(this->getName())->lookupValue(QUOTE(option),variable)){ \
+	                                     throw vmi::OptionNotFoundException(this->getName(), QUOTE(option)); }
+
+#define ADDDYNAMICDETECTIONMODULE(classname, line) class CONCAT(proxy, line) { \
+	public: \
+	CONCAT(proxy, line)(){ try { \
+		                       std::cerr << "Loading DetectionModule " << QUOTE(classname) << "... "; \
+	                           vmi::VmiIDS::getInstance()->enqueueDetectionModule(new classname); \
+		                       std::cerr << "Success" << std::endl; \
+                           } \
+	                       catch (vmi::ModuleException &e){ \
+		                       std::cerr << "FAILED" << std::endl; \
+	                    	   e.printException(); \
+	                       } \
+	                       catch (std::exception &e){ \
+	                    	   std::cerr << "FAILED" << std::endl; \
+	                    	   std::cerr << e.what() << std::endl; \
+	                       } \
+	                     } \
+	}; \
+static CONCAT(proxy, line) CONCAT(p, line);
 
 class Module{
 	private:

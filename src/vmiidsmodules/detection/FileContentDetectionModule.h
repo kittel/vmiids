@@ -20,6 +20,8 @@ class FileContentDetectionModule : public vmi::DetectionModule{
 	ShellSensorModule * shell;
 	FileSystemSensorModule * fs;
 
+	std::string directory;
+
 public:
 	FileContentDetectionModule();
 	virtual ~FileContentDetectionModule();

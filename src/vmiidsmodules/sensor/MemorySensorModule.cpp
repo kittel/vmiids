@@ -18,33 +18,10 @@ MemorySensorModule::MemorySensorModule() :
 	//Get NotificationModule
 	GETNOTIFICATIONMODULE(notify, ShellNotificationModule);
 
-	libconfig::Setting *setting = VmiIDS::getInstance()->getSetting(
-			this->getName());
-
-	if (setting == NULL ||
-			!setting->lookupValue("memtoolPath", this->memtoolPath) ||
-			!setting->lookupValue("memtoolScriptPath", this->memtoolScriptPath) ||
-			!setting->lookupValue("savedDebugingSymbols", this->savedDebugingSymbols) ||
-			!setting->lookupValue("memdumpFile", this->memdumpFile) ||
-			!setting->lookupValue("clearCacheCommand", this->clearCacheCommand)){
-
-		notify->critical(this)
-				<< "Could not parse Options. Please add the following section to the config file:"
-				<< std::endl << this->getName() << " = {" << std::endl
-				<< "\tmemtoolPath           =  \"<path to memtool executable>\"; e.g. \"/usr/bin/memtool\""
-				<< std::endl
-				<< "\tmemtoolScriptPath     =  \"<path to memtool scripts>\";    e.g. \"/home/idsvm/memtool/scripts\""
-				<< std::endl
-				<< "\tsavedDebugingSymbols  =  \"<path to saved debuging symbols>\";    e.g. \"/home/idsvm/symbols.dump\""
-				<< std::endl
-				<< "\tmemdumpFile           =  \"<path to memdump file>\";    e.g. \"/dev/vda\""
-				<< std::endl
-				<< "\tclearCacheCommand  =  \"<path to clearCacheCommand>\";      e.g. \"/usr/bin/clearfscache\""
-				<< std::endl
-				<< "};";
-
-		throw MemorySensorModuleException();
-	}
+	GETOPTION(memtoolPath, this->memtoolPath);
+	GETOPTION(memtoolScriptPath, this->memtoolScriptPath);
+	GETOPTION(savedDebugingSymbols, this->savedDebugingSymbols);
+	GETOPTION(memdumpFile, this->memdumpFile);
 }
 
 MemorySensorModule::~MemorySensorModule() {

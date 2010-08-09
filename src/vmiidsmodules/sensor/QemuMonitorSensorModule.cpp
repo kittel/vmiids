@@ -16,23 +16,8 @@ QemuMonitorSensorModule::QemuMonitorSensorModule() : SensorModule("QemuMonitorSe
 	std::string optionConsoleName;
 	std::string optionMonitorShell;
 
-	libconfig::Setting *setting = VmiIDS::getInstance()->getSetting(
-			this->getName());
-
-	if (setting == NULL || !setting->lookupValue("consoleName",
-			optionConsoleName) || !setting->lookupValue("monitorShell",
-			optionMonitorShell)) {
-		notify->critical(this)
-				<< "Could not parse Options. Please add the following section to the config file:"
-				<< std::endl << this->getName() << " = {" << std::endl
-				<< "\tconsoleName   =  \"<shell device>\";        e.g. \"/dev/ttyS1\""
-				<< std::endl
-				<< "\tmonitorShell  =  \"<shell identifier>\";    e.g. \"(qemu)\""
-				<< std::endl
-				<< "};";
-
-		throw vmi::ModuleException();
-	}
+	GETOPTION(consoleName, optionConsoleName);
+	GETOPTION(monitorShell, optionMonitorShell);
 
 	try{
 		this->initConsoleMonitor(optionConsoleName.c_str(),
