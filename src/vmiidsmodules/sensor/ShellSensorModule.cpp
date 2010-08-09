@@ -169,9 +169,9 @@ void ShellSensorModule::getProcessList(std::map<uint32_t, ShellProcess> &shellPr
 
 void ShellSensorModule::getFileList(const std::string &directory, std::set<std::string> &directories){
 	std::string findResult;
-	std::string command = directory;
-	this->parseCommandOutput(command.insert(0, "find ").c_str(), findResult);
-
+	std::stringstream command;
+	command << "test -e " << directory << " && find " << directory;
+	this->parseCommandOutput(command.str(), findResult);
 	std::string currentLine;
 
 	size_t newLine = 0;
