@@ -17,7 +17,7 @@
  * \brief Exception for MemorySensorModule.
  */
 
-//#include <memtool/memtool.h>
+#include <memtool/memtool.h>
 
 class MemorySensorModuleException: public std::exception {
 	virtual const char* what() const throw () {
@@ -42,7 +42,7 @@ public:
 private:
 	vmi::NotificationModule * notify;
 
-//    Memtool memtool;
+    Memtool memtool;
 	std::string memtooldPath;
 	std::string memtoolScriptPath;
 

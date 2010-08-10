@@ -35,26 +35,23 @@ MemorySensorModule::MemorySensorModule() :
 //            }
 //    }
 
-//    if(memtool.isDaemonRunning()){
-//            notify->debug(this) << "Memtool running" << std::endl;
-//            notify->debug(this) << "Trying to load memdump..."
-//            		<< ((memtool.memDumpLoad("/dev/vda")) ? "Success"  : "Failed")
-//            		<< std::endl;
-//            std::cout << memtool.eval("sc /home/idsvm/workspace/DA/memorytool_chrschn/memtoold/scripts/tasklist.js").toStdString() << std::endl;
-//    }
+    if (memtool.isDaemonRunning()) {
+		notify->debug(this) << "Memtool running" << std::endl;
+		notify->debug(this) << "Trying to load memdump..."
+				<< ((memtool.memDumpLoad("/dev/vda")) ? "Success" : "Failed") << std::endl;
+//		notify->debug(this)
+//				<< memtool.eval(
+//						"sc /home/idsvm/workspace/DA/memorytool_chrschn/memtoold/scripts/tasklist.js").toStdString()
+//				<< std::endl;
+	}
 
 }
 
 MemorySensorModule::~MemorySensorModule() {
 	//Stop Memtoold
-//    if(memtool.isDaemonRunning()){
-//            std::cout << "Trying to stop memtool...";
-//            if(false /*memtool.daemonStop()*/){
-//                    std::cout << "Success" << std::endl;
-//            }else{
-//                    std::cout << "Failed" << std::endl;
-//            }
-//    }
+	if (memtool.isDaemonRunning()) {
+		notify->debug(this) << "Trying to stop memtool..." << ((memtool.daemonStop()) ? "Success" : "Failed") << std::endl;
+	}
 }
 
 
