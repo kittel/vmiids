@@ -8,11 +8,11 @@
 #ifndef PROCESSLISTDETECTIONMODULE_H_
 #define PROCESSLISTDETECTIONMODULE_H_
 
-#include "NotificationModule.h"
+#include "vmiids/NotificationModule.h"
 
-#include "../sensor/QemuMonitorSensorModule.h"
-#include "../sensor/MemorySensorModule.h"
-#include "../sensor/ShellSensorModule.h"
+#include "vmiids/sensor/QemuMonitorSensorModule.h"
+#include "vmiids/sensor/MemorySensorModule.h"
+#include "vmiids/sensor/ShellSensorModule.h"
 
 class ProcessListDetectionModule : public vmi::DetectionModule{
 	vmi::NotificationModule * notify;

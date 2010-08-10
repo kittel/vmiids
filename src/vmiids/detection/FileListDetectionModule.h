@@ -8,11 +8,11 @@
 #ifndef FILELISTDETECTIONMODULE_H_
 #define FILELISTDETECTIONMODULE_H_
 
-#include "NotificationModule.h"
+#include "vmiids/NotificationModule.h"
 
-#include "../sensor/QemuMonitorSensorModule.h"
-#include "../sensor/FileSystemSensorModule.h"
-#include "../sensor/ShellSensorModule.h"
+#include "vmiids/sensor/QemuMonitorSensorModule.h"
+#include "vmiids/sensor/FileSystemSensorModule.h"
+#include "vmiids/sensor/ShellSensorModule.h"
 
 /*!
  * \exception MemorySensorModuleException MemorySensorModule.h

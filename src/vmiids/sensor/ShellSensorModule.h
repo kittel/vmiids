@@ -8,9 +8,9 @@
 #ifndef SHELLSENSORMODULE_H_
 #define SHELLSENSORMODULE_H_
 
-#include "SensorModule.h"
-#include "NotificationModule.h"
-#include "ConsoleMonitor.h"
+#include "vmiids/SensorModule.h"
+#include "vmiids/NotificationModule.h"
+#include "vmiids/ConsoleMonitor.h"
 
 #include <map>
 #include <set>

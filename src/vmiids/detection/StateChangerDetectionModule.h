@@ -8,8 +8,8 @@
 #ifndef STATECHANGERDETECTIONMODULE_H_
 #define STATECHANGERDETECTIONMODULE_H_
 
-#include "NotificationModule.h"
-#include "../sensor/QemuMonitorSensorModule.h"
+#include "vmiids/NotificationModule.h"
+#include "vmiids/sensor/QemuMonitorSensorModule.h"
 
 class StateChangerDetectionModule : public vmi::DetectionModule{
 private:

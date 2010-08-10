@@ -8,10 +8,10 @@
 #ifndef QEMUMONITORSENSORMODULE_H_
 #define QEMUMONITORSENSORMODULE_H_
 
-#include "SensorModule.h"
-#include "ConsoleMonitor.h"
+#include "vmiids/SensorModule.h"
+#include "vmiids/ConsoleMonitor.h"
 
-#include "NotificationModule.h"
+#include "vmiids/NotificationModule.h"
 
 /*!
  * \class QemuMonitorSensorModule QemuMonitorSensorModule.h

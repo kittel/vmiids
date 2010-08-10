@@ -1,24 +1,26 @@
 AM_CPPFLAGS = -Wall -Wextra -Werror
-AM_CXXFLAGS = -fpic -I $(top_builddir)/src/include -rdynamic
-AM_CFLAGS = -fpic  -I $(top_builddir)/src/include
+AM_CXXFLAGS = -fpic -I $(top_builddir)/src @AM_CXXFLAGS@ -rdynamic
+AM_CFLAGS = -fpic  -I $(top_builddir)/src @AM_CFLAGS@ 
+
+SUBDIRS=detection notification sensor
 
 bin_PROGRAMS=vmiids vmiids-clearfscache
+
+vmiidsdir = $(includedir)/vmiids
+vmiids_HEADERS=VmiIDS.h \
+				Module.h \
+				DetectionModule.h \
+				NotificationModule.h \
+				SensorModule.h \
+				ConsoleMonitor.h
+
 vmiids_SOURCES=VmiIDS.cpp \
-               ../include/VmiIDS.h \
-               ../include/DetectionModule.h \
-               ../include/NotificationModule.h \
-               ../include/SensorModule.h \
+			   $(vmiids_HEADERS) \
                ./Debug.h \
-               ./ConsoleMonitor.cpp \
-               ../include/ConsoleMonitor.h
+               ./ConsoleMonitor.cpp 
                
                
 #vmiids_LIBADD = 
 vmiids_LDFLAGS = -lpthread -lnsl -ldl -lconfig++
-vmiids_includedir=$(includedir)
-vmiids_include_HEADERS = ../include/VmiIDS.h \
-												 ../include/DetectionModule.h \
-												 ../include/NotificationModule.h \
-												 ../include/SensorModule.h \
-												 ../include/ConsoleMonitor.h
+
 vmiids_clearfscache_SOURCES=clearfscache.cpp

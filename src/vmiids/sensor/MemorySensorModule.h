@@ -8,7 +8,7 @@
 #ifndef MEMORYSENSORMODULE_H_
 #define MEMORYSENSORMODULE_H_
 
-#include "SensorModule.h"
+#include "vmiids/SensorModule.h"
 
 #include <map>
 
@@ -16,6 +16,9 @@
  * \exception MemorySensorModuleException MemorySensorModule.h
  * \brief Exception for MemorySensorModule.
  */
+
+//#include <memtool/memtool.h>
+
 class MemorySensorModuleException: public std::exception {
 	virtual const char* what() const throw () {
 		return "MemorySensorModule abort";
@@ -39,7 +42,8 @@ public:
 private:
 	vmi::NotificationModule * notify;
 
-	std::string memtoolPath;
+//    Memtool memtool;
+	std::string memtooldPath;
 	std::string memtoolScriptPath;
 
 	std::string savedDebugingSymbols;

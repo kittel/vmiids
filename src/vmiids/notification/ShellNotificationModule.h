@@ -8,7 +8,7 @@
 #ifndef SHELLNOTIFICATIONMODULE_H_
 #define SHELLNOTIFICATIONMODULE_H_
 
-#include "NotificationModule.h"
+#include "vmiids/NotificationModule.h"
 
 class ShellNotificationModule : public vmi::NotificationModule {
 public:

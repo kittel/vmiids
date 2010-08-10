@@ -1,6 +1,6 @@
 AM_CPPFLAGS = -Wall -Wextra -Werror
-AM_CXXFLAGS = -fpic -I $(top_builddir)/src/include -rdynamic
-AM_CFLAGS = -fpic  -I $(top_builddir)/src/include
+AM_CXXFLAGS = -fpic -I $(top_builddir)/src @AM_CXXFLAGS@ -rdynamic
+AM_CFLAGS = -fpic  -I $(top_builddir)/src @AM_CFLAGS@ 
 
 
 lib_LTLIBRARIES = libexampledetectionmodule.la \
@@ -9,7 +9,6 @@ lib_LTLIBRARIES = libexampledetectionmodule.la \
                   libprocesslistdetectionmodule.la \
                   libfilelistdetectionmodule.la \
                   libfilecontentdetectionmodule.la
-                  
 
 libexampledetectionmodule_la_SOURCES = ExampleDetectionModule.h \
 					ExampleDetectionModule.cpp \

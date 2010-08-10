@@ -8,11 +8,11 @@
 #ifndef FILECONTENTDETECTIONMODULE_H_
 #define FILECONTENTDETECTIONMODULE_H_
 
-#include "NotificationModule.h"
+#include "vmiids/NotificationModule.h"
 
-#include "../sensor/QemuMonitorSensorModule.h"
-#include "../sensor/FileSystemSensorModule.h"
-#include "../sensor/ShellSensorModule.h"
+#include "vmiids/sensor/QemuMonitorSensorModule.h"
+#include "vmiids/sensor/FileSystemSensorModule.h"
+#include "vmiids/sensor/ShellSensorModule.h"
 
 class FileContentDetectionModule : public vmi::DetectionModule{
 	vmi::NotificationModule * notify;

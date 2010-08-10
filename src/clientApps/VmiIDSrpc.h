@@ -8,7 +8,7 @@
 #ifndef VMIIDSRPC_H_
 #define VMIIDSRPC_H_
 
-#include "VmiIDS.h"
+#include "vmiids/VmiIDS.h"
 
 #include <rpc/rpc.h>
 

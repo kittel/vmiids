@@ -18,14 +18,43 @@ MemorySensorModule::MemorySensorModule() :
 	//Get NotificationModule
 	GETNOTIFICATIONMODULE(notify, ShellNotificationModule);
 
-	GETOPTION(memtoolPath, this->memtoolPath);
+	GETOPTION(memtooldPath, this->memtooldPath);
 	GETOPTION(memtoolScriptPath, this->memtoolScriptPath);
 	GETOPTION(savedDebugingSymbols, this->savedDebugingSymbols);
 	GETOPTION(memdumpFile, this->memdumpFile);
+
+	//Start Memtool
+	//Memtool Daemon must be in $PATH
+//	The following section is commented because currently no symbols can be loaded with libmemtool.
+//    if(!memtool.isDaemonRunning()){
+//            std::cout << "Trying to start memtool...";
+//            if(memtool.daemonStart()){
+//                    std::cout << "Success" << std::endl;
+//            }else{
+//                    std::cout << "Failed" << std::endl;
+//            }
+//    }
+
+//    if(memtool.isDaemonRunning()){
+//            notify->debug(this) << "Memtool running" << std::endl;
+//            notify->debug(this) << "Trying to load memdump..."
+//            		<< ((memtool.memDumpLoad("/dev/vda")) ? "Success"  : "Failed")
+//            		<< std::endl;
+//            std::cout << memtool.eval("sc /home/idsvm/workspace/DA/memorytool_chrschn/memtoold/scripts/tasklist.js").toStdString() << std::endl;
+//    }
+
 }
 
 MemorySensorModule::~MemorySensorModule() {
-	// TODO Auto-generated destructor stub
+	//Stop Memtoold
+//    if(memtool.isDaemonRunning()){
+//            std::cout << "Trying to stop memtool...";
+//            if(false /*memtool.daemonStop()*/){
+//                    std::cout << "Success" << std::endl;
+//            }else{
+//                    std::cout << "Failed" << std::endl;
+//            }
+//    }
 }
 
 
@@ -41,7 +70,7 @@ void MemorySensorModule::runScript(std::string &scriptResult, std::string script
 	char buffer[1024];
 
 	command << "echo \"sc " << this->memtoolScriptPath << "/" << scriptName << "\" | "
-			<< this->memtoolPath << " -l " << this->savedDebugingSymbols
+			<< this->memtooldPath << " -l " << this->savedDebugingSymbols
 			<< " -m " << this->memdumpFile << " 2>&1";
 
 	stream = popen(command.str().c_str(), "r");

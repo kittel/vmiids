@@ -8,7 +8,7 @@
 #ifndef FILESYSTEMSENSORMODULE_H_
 #define FILESYSTEMSENSORMODULE_H_
 
-#include "SensorModule.h"
+#include "vmiids/SensorModule.h"
 
 #include <string>
 #include <fstream>
