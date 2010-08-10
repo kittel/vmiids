@@ -7,8 +7,7 @@
 
 #include "ProcessListDetectionModule.h"
 
-ADDDYNAMICDETECTIONMODULE(ProcessListDetectionModule, __LINE__)
-;
+ADDDYNAMICDETECTIONMODULE(ProcessListDetectionModule);
 
 ProcessListDetectionModule::ProcessListDetectionModule() :
 			DetectionModule("ProcessListDetectionModule") {
@@ -29,7 +28,7 @@ void ProcessListDetectionModule::run() {
 	bool isRunning;
 	try {
 		isRunning = this->qemu->isRunning();
-	} catch (vmi::ModuleException e) {
+	} catch (vmi::ModuleException &e) {
 		notify->critical(this, "Could not use QemuMonitorSensorModule");
 		return;
 	}

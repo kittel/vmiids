@@ -435,7 +435,7 @@ bool vmi::VmiIDS::loadSharedObject(std::string path) {
 	void *dlib;
 	dlib = dlopen(path.c_str(), RTLD_NOW | RTLD_GLOBAL);
 	if (dlib == NULL) {
-		std::cerr << dlerror() << std::endl;
+		std::cerr << "Error while loading " << path << ": " << dlerror() << std::endl;
 		return false;
 	}
 	return true;

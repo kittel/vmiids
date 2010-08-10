@@ -19,9 +19,9 @@
 
 #include <memtool/memtool.h>
 
-class MemorySensorModuleException: public std::exception {
+class MemtoolNotRunningException: public vmi::ModuleException {
 	virtual const char* what() const throw () {
-		return "MemorySensorModule abort";
+		return "Memtool Not Running";
 	}
 };
 
@@ -44,6 +44,7 @@ private:
 
     Memtool memtool;
 	std::string memtooldPath;
+	std::string libmemtoolPath;
 	std::string memtoolScriptPath;
 
 	std::string savedDebugingSymbols;
@@ -51,7 +52,6 @@ private:
 
 	std::string clearCacheCommand;
 
-	void runScript(std::string &scriptResult, std::string scriptName);
 	bool clearFSCache();
 
 };

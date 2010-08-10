@@ -7,7 +7,7 @@
 
 #include "QemuMonitorSensorModule.h"
 
-ADDDYNAMICSENSORMODULE(QemuMonitorSensorModule, __LINE__);
+ADDDYNAMICSENSORMODULE(QemuMonitorSensorModule);
 
 QemuMonitorSensorModule::QemuMonitorSensorModule() : SensorModule("QemuMonitorSensorModule"), ConsoleMonitor(){
 	//Get NotificationModule

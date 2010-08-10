@@ -26,9 +26,9 @@ class DetectionModule : public vmi::Module {
 
 #include "VmiIDS.h"
 
-#define ADDDYNAMICDETECTIONMODULE(classname, line) class CONCAT(proxy, line) { \
+#define ADDDYNAMICDETECTIONMODULE(classname) class CONCAT(classname, proxy) { \
 	public: \
-	CONCAT(proxy, line)(){ try { \
+	CONCAT(classname, proxy)(){ try { \
 		                       std::cerr << "Loading DetectionModule " << QUOTE(classname) << "... "; \
 	                           vmi::VmiIDS::getInstance()->enqueueDetectionModule(new classname); \
 		                       std::cerr << "Success" << std::endl; \
@@ -43,7 +43,7 @@ class DetectionModule : public vmi::Module {
 	                       } \
 	                     } \
 	}; \
-static CONCAT(proxy, line) CONCAT(p, line);
+static CONCAT(classname, proxy) CONCAT(classname, p);
 
 
 #endif /* DETECTIONMODULE_H_ */

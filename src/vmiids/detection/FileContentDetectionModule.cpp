@@ -7,8 +7,7 @@
 
 #include "FileContentDetectionModule.h"
 
-ADDDYNAMICDETECTIONMODULE(FileContentDetectionModule, __LINE__)
-;
+ADDDYNAMICDETECTIONMODULE(FileContentDetectionModule);
 
 FileContentDetectionModule::FileContentDetectionModule() :
 			DetectionModule("FileContentDetectionModule") {

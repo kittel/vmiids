@@ -66,25 +66,6 @@ public:
 	                                  !vmi::VmiIDS::getInstance()->getSetting(this->getName())->lookupValue(QUOTE(option),variable)){ \
 	                                     throw vmi::OptionNotFoundException(this->getName(), QUOTE(option)); }
 
-#define ADDDYNAMICDETECTIONMODULE(classname, line) class CONCAT(proxy, line) { \
-	public: \
-	CONCAT(proxy, line)(){ try { \
-		                       std::cerr << "Loading DetectionModule " << QUOTE(classname) << "... "; \
-	                           vmi::VmiIDS::getInstance()->enqueueDetectionModule(new classname); \
-		                       std::cerr << "Success" << std::endl; \
-                           } \
-	                       catch (vmi::ModuleException &e){ \
-		                       std::cerr << "FAILED" << std::endl; \
-	                    	   e.printException(); \
-	                       } \
-	                       catch (std::exception &e){ \
-	                    	   std::cerr << "FAILED" << std::endl; \
-	                    	   std::cerr << e.what() << std::endl; \
-	                       } \
-	                     } \
-	}; \
-static CONCAT(proxy, line) CONCAT(p, line);
-
 class Module{
 	private:
 		std::string moduleName;

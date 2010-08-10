@@ -38,9 +38,9 @@ class NotificationModule : public vmi::Module{
 
 #include "VmiIDS.h"
 
-#define ADDDYNAMICNOTIFICATIONMODULE(classname, line) class CONCAT(proxy, line) { \
+#define ADDDYNAMICNOTIFICATIONMODULE(classname) class CONCAT(classname, proxy) { \
 	public: \
-	CONCAT(proxy, line)(){ try { \
+	CONCAT(classname, proxy)(){ try { \
 		                       std::cerr << "Loading NotificationModule " << QUOTE(classname) << "... "; \
 	                           vmi::VmiIDS::getInstance()->enqueueNotificationModule(new classname); \
 		                       std::cerr << "Success" << std::endl; \
@@ -55,7 +55,7 @@ class NotificationModule : public vmi::Module{
 	                       } \
 	                     } \
 	}; \
-static CONCAT(proxy, line) CONCAT(p, line);
+static CONCAT(classname, proxy) CONCAT(classname, p);
 
 #define GETNOTIFICATIONMODULE(variable, modulename) \
 		variable = vmi::VmiIDS::getInstance()->getNotificationModule(QUOTE(modulename)); \

@@ -8,9 +8,9 @@
 #include "MemorySensorModule.h"
 
 #include <sstream>
+#include <cstdlib>
 
-ADDDYNAMICSENSORMODULE(MemorySensorModule, __LINE__)
-;
+ADDDYNAMICSENSORMODULE(MemorySensorModule);
 
 MemorySensorModule::MemorySensorModule() :
 			SensorModule("MemorySensorModule") {
@@ -19,21 +19,25 @@ MemorySensorModule::MemorySensorModule() :
 	GETNOTIFICATIONMODULE(notify, ShellNotificationModule);
 
 	GETOPTION(memtooldPath, this->memtooldPath);
+	GETOPTION(libmemtoolPath, this->libmemtoolPath);
 	GETOPTION(memtoolScriptPath, this->memtoolScriptPath);
 	GETOPTION(savedDebugingSymbols, this->savedDebugingSymbols);
 	GETOPTION(memdumpFile, this->memdumpFile);
 
 	//Start Memtool
 	//Memtool Daemon must be in $PATH
-//	The following section is commented because currently no symbols can be loaded with libmemtool.
-//    if(!memtool.isDaemonRunning()){
-//            std::cout << "Trying to start memtool...";
-//            if(memtool.daemonStart()){
-//                    std::cout << "Success" << std::endl;
-//            }else{
-//                    std::cout << "Failed" << std::endl;
-//            }
-//    }
+    if(!memtool.isDaemonRunning()){
+//	The following line is commented because currently no symbols can be loaded with libmemtool.
+//    	notify->debug(this) << "Trying to start memtool...";
+//    		<< ((memtool.startDaemon()) ? "Success" : "Failed") << std::endl;
+    	std::stringstream memtooldCommand;
+    	memtooldCommand << "LD_LIBRARY_PATH=" << this->libmemtoolPath << " "
+    			<< this->memtooldPath << " -d -l " << this->savedDebugingSymbols << " 2>&1 > /dev/null";
+
+    	notify->debug(this) << "Trying to start memtool..."
+    		<< ((system(memtooldCommand.str().c_str())) ? "Success" : "Failed") << std::endl;
+    }
+    sleep(1);
 
     if (memtool.isDaemonRunning()) {
 		notify->debug(this) << "Memtool running" << std::endl;
@@ -59,42 +63,18 @@ void MemorySensorModule::initSensorModule(){
 
 }
 
-void MemorySensorModule::runScript(std::string &scriptResult, std::string scriptName){
-	std::stringstream command;
-
-	std::string data;
-	FILE *stream;
-	char buffer[1024];
-
-	command << "echo \"sc " << this->memtoolScriptPath << "/" << scriptName << "\" | "
-			<< this->memtooldPath << " -l " << this->savedDebugingSymbols
-			<< " -m " << this->memdumpFile << " 2>&1";
-
-	stream = popen(command.str().c_str(), "r");
-	while (fgets(buffer, 1024, stream) != NULL)
-		data.append(buffer);
-	pclose(stream);
-
-	int firstChar;
-	int lastChar;
-
-	lastChar = data.rfind(">>>");
-
-	firstChar = data.find(">>>");
-	firstChar = data.find("\n", firstChar);
-	firstChar++;
-
-	scriptResult.append(data, firstChar, lastChar - firstChar);
-}
-
 void MemorySensorModule::getProcessList(std::map<uint32_t, MemtoolProcess> &memtoolProcessMap){
 	std::string scriptResult;
 
 	this->clearFSCache();
 
-	this->runScript(scriptResult, "tasklist.js");
+    if (memtool.isDaemonRunning()) {
+		scriptResult = memtool.eval("sc /home/idsvm/workspace/DA/memorytool_chrschn/memtoold/scripts/tasklist.js").toStdString();
+	}else{
+		throw MemtoolNotRunningException();
+	}
 
-	size_t oldNewlineSeparator = 0;
+    size_t oldNewlineSeparator = 0;
 	size_t newlineSeparator = 0;
 
 	oldNewlineSeparator = scriptResult.find("\n");
