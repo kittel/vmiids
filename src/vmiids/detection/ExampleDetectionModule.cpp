@@ -30,7 +30,7 @@ void ExampleDetectionModule::run() {
 	bool isRunning;
 	try {
 		isRunning = this->qemu->isRunning();
-	} catch (vmi::ModuleException e) {
+	} catch (vmi::ModuleException &e) {
 		notify->critical(this, "Could not use QemuMonitorSensorModule");
 		return;
 	}

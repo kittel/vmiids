@@ -16,14 +16,14 @@ LT_INIT
 
 # Checks for programs.
 # store current user given compiler flags to avoid default setup via AC_PROG_CXX
-##OLD_CXXFLAGS=$CXXFLAGS
+OLD_CXXFLAGS=$CXXFLAGS
 # check for C++ preprocessor and compiler and the library compiler
 # (might change the compiler flags)
 AM_PROG_CC_C_O
 AC_PROG_CXX
 AC_PROG_CXXCPP
 # reset compiler flags to initial flags
-## CXXFLAGS=$OLD_CXXFLAGS
+CXXFLAGS=$OLD_CXXFLAGS
 
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
