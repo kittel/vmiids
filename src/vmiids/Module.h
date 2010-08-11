@@ -13,6 +13,7 @@
 #include <exception>
 #include <iostream>
 
+
 #define STR(s) #s              /*!< Do not interpret s. Return as char* */
 #define QUOTE(s) STR(s)  /*!< In case s contains spaces the STR_MACRO() is wrapped. */
 

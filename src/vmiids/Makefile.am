@@ -16,6 +16,7 @@ vmiids_HEADERS=VmiIDS.h \
 
 vmiids_SOURCES=VmiIDS.cpp \
 			   $(vmiids_HEADERS) \
+			   NotificationModule.cpp \
                ./Debug.h \
                ./ConsoleMonitor.cpp 
                
