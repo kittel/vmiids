@@ -10,6 +10,8 @@
 #include <sstream>
 #include <cstdlib>
 
+#include <memtool/memtool.h>
+
 ADDDYNAMICSENSORMODULE(MemorySensorModule);
 
 MemorySensorModule::MemorySensorModule() :
@@ -26,7 +28,9 @@ MemorySensorModule::MemorySensorModule() :
 
 	//Start Memtool
 	//Memtool Daemon must be in $PATH
-    if(!memtool.isDaemonRunning()){
+	Memtool memtool;
+
+	if(!memtool.isDaemonRunning()){
 //	The following line is commented because currently no symbols can be loaded with libmemtool.
 //    	notify->debug(this) << "Trying to start memtool...";
 //    		<< ((memtool.startDaemon()) ? "Success" : "Failed") << std::endl;
@@ -53,6 +57,7 @@ MemorySensorModule::MemorySensorModule() :
 
 MemorySensorModule::~MemorySensorModule() {
 	//Stop Memtoold
+	Memtool memtool;
 	if (memtool.isDaemonRunning()) {
 		notify->debug(this) << "Trying to stop memtool..." << ((memtool.daemonStop()) ? "Success" : "Failed") << std::endl;
 	}
@@ -68,6 +73,7 @@ void MemorySensorModule::getProcessList(std::map<uint32_t, MemtoolProcess> &memt
 
 	this->clearFSCache();
 
+	Memtool memtool;
     if (memtool.isDaemonRunning()) {
 		scriptResult = memtool.eval("sc /home/idsvm/workspace/DA/memorytool_chrschn/memtoold/scripts/tasklist.js").toStdString();
 	}else{

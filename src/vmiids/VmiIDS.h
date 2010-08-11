@@ -67,6 +67,7 @@ class VmiIDS : public Module{
 
 		static void dispatchRPC(struct svc_req *rqstp, register SVCXPRT *transp);
 		static void * run(void * this_pointer);
+		static void * runDetectionModule(void* module);
 
 		bool loadSharedObject(std::string path);
 

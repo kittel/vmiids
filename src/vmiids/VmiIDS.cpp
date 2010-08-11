@@ -284,6 +284,7 @@ void * vmi::VmiIDS::run(void * this_pointer) {
 		printf("No Modules started ...\n");
 	}
 
+	pthread_t moduleThread;
 
 	while (this_p->vmiRunning) {
 		pthread_mutex_lock(&this_p->activeDetectionModuleMutex);
@@ -291,16 +292,29 @@ void * vmi::VmiIDS::run(void * this_pointer) {
 		for (std::map<std::string, DetectionModule*>::iterator it =
 				this_p->activeDetectionModules.begin(); it
 				!= this_p->activeDetectionModules.end(); ++it) {
-			try {
-				it->second->run();
-			}
-			catch (vmi::ModuleException &e){ e.printException(); }
-			catch (std::exception &e){ std::cerr << "Failed: "<< e.what() << std::endl; }
+
+			pthread_create(&moduleThread, NULL, VmiIDS::runDetectionModule,
+						(void*) it->second);
+			pthread_join(moduleThread, NULL);
+
 		}
 		pthread_mutex_unlock(&this_p->activeDetectionModuleMutex);
 		sleep(1);
 	}
 	return NULL;
+}
+
+void* vmi::VmiIDS::runDetectionModule(void* module){
+	DetectionModule * module_p = (DetectionModule *) module;
+	try {
+		module_p->run();
+	} catch (vmi::ModuleException &e) {
+		e.printException();
+	} catch (std::exception &e) {
+		std::cerr << "Failed: " << e.what() << std::endl;
+	}
+
+	pthread_exit(NULL);
 }
 
 void vmi::VmiIDS::dispatchRPC(struct svc_req *rqstp, register SVCXPRT *transp){

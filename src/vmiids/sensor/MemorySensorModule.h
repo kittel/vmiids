@@ -17,8 +17,6 @@
  * \brief Exception for MemorySensorModule.
  */
 
-#include <memtool/memtool.h>
-
 class MemtoolNotRunningException: public vmi::ModuleException {
 	virtual const char* what() const throw () {
 		return "Memtool Not Running";
@@ -42,8 +40,7 @@ public:
 private:
 	vmi::NotificationModule * notify;
 
-    Memtool memtool;
-	std::string memtooldPath;
+    std::string memtooldPath;
 	std::string libmemtoolPath;
 	std::string memtoolScriptPath;
 
