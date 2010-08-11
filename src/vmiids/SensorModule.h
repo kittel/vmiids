@@ -15,6 +15,7 @@ namespace vmi {
 class SensorModule : public vmi::Module{
 	public:
 		SensorModule(std::string moduleName) : vmi::Module(moduleName) {};
+		virtual ~SensorModule(){};
 		virtual void initSensorModule() = 0;
 };
 

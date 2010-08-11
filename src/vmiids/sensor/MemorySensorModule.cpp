@@ -57,6 +57,7 @@ MemorySensorModule::MemorySensorModule() :
 
 MemorySensorModule::~MemorySensorModule() {
 	//Stop Memtoold
+	std::cout << "MemorySensorModule Destructor called!" << std::endl;
 	Memtool memtool;
 	if (memtool.isDaemonRunning()) {
 		notify->debug(this) << "Trying to stop memtool..." << ((memtool.daemonStop()) ? "Success" : "Failed") << std::endl;

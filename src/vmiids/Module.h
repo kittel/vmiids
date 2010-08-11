@@ -73,6 +73,7 @@ class Module{
 
 	public:
 		Module(std::string moduleName){ this->moduleName = moduleName;};
+		virtual ~Module(){};
 		std::string getName(){ return this->moduleName; };
 };
 

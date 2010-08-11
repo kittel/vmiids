@@ -15,6 +15,8 @@ namespace vmi {
 class DetectionModule : public vmi::Module {
 	public:
 		DetectionModule(std::string moduleName) : vmi::Module(moduleName) {};
+		virtual ~DetectionModule(){};
+
 		virtual void run() = 0;
 		virtual void runTime() = 0;
 		virtual void runEvent() = 0;

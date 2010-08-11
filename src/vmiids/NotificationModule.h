@@ -59,6 +59,7 @@ class NotificationModule : public vmi::Module{
 
 	public:
 		NotificationModule(std::string moduleName);
+		virtual ~NotificationModule(){};
 
 		virtual void debug(Module *module, std::string message) = 0;
 		virtual void info(Module *module, std::string message) = 0;

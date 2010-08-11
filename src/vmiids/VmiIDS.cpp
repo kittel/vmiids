@@ -180,6 +180,7 @@ int main() {
 }
 
 vmi::VmiIDS* vmi::VmiIDS::instance = NULL;
+vmi::Destroyer<VmiIDS> vmi::VmiIDS::_destroyer;
 
 vmi::VmiIDS::VmiIDS() :
 		 vmi::Module("VmiIDS"), detectionModules(), notificationModules(), sensorModules(), config(){
@@ -215,22 +216,26 @@ vmi::VmiIDS::~VmiIDS() {
 		activeDetectionModules.erase(activeDetectionModules.begin());
 	}
 	while (!detectionModules.empty()) {
+		printf("Deleting: %s\n", detectionModules.begin()->second->getName().c_str());
 		delete (detectionModules.begin()->second);
 		detectionModules.erase(detectionModules.begin());
 	}
-	while (!notificationModules.empty()) {
-		delete (notificationModules.begin()->second);
-		notificationModules.erase(notificationModules.begin());
-	}
 	while (!sensorModules.empty()) {
+		printf("Deleting: %s\n", sensorModules.begin()->second->getName().c_str());
 		delete (sensorModules.begin()->second);
 		sensorModules.erase(sensorModules.begin());
+	}
+	while (!notificationModules.empty()) {
+		printf("Deleting: %s\n", notificationModules.begin()->second->getName().c_str());
+		delete (notificationModules.begin()->second);
+		notificationModules.erase(notificationModules.begin());
 	}
 }
 
 vmi::VmiIDS *vmi::VmiIDS::getInstance() {
 	if (!instance)
 		instance = new VmiIDS();
+		_destroyer.SetDoomed(instance);
 	return instance;
 }
 
