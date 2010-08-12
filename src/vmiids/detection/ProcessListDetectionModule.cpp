@@ -20,7 +20,6 @@ ProcessListDetectionModule::ProcessListDetectionModule() :
 }
 
 ProcessListDetectionModule::~ProcessListDetectionModule() {
-
 }
 
 void ProcessListDetectionModule::run() {

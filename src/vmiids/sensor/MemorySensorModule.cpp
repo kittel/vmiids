@@ -28,42 +28,41 @@ MemorySensorModule::MemorySensorModule() :
 
 	//Start Memtool
 	//Memtool Daemon must be in $PATH
+	return;
 	Memtool memtool;
 
 	if(!memtool.isDaemonRunning()){
-//	The following line is commented because currently no symbols can be loaded with libmemtool.
-//    	notify->debug(this) << "Trying to start memtool...";
-//    		<< ((memtool.startDaemon()) ? "Success" : "Failed") << std::endl;
-    	std::stringstream memtooldCommand;
-    	memtooldCommand << "LD_LIBRARY_PATH=" << this->libmemtoolPath << " "
-    			<< this->memtooldPath << " -d -l " << this->savedDebugingSymbols << " 2>&1 > /dev/null";
+		notify->debug(this) << "Trying to start memtool..."
+    		<< ((memtool.daemonStart()) ? "Success" : "Failed") << std::endl;
 
-    	notify->debug(this) << "Trying to start memtool..."
-    		<< ((system(memtooldCommand.str().c_str())) ? "Success" : "Failed") << std::endl;
+    		// Load Symbols with eval "symbols load this->savedDebugingSymbols ...
+//    	std::stringstream memtooldCommand;
+//    	memtooldCommand << "LD_LIBRARY_PATH=" << this->libmemtoolPath << " "
+//    			<< this->memtooldPath << " -d -l " << this->savedDebugingSymbols << " 2>&1 > /dev/null";
+//    	notify->debug(this) << memtooldCommand.str() << std::endl;
+
+//    	notify->debug(this) << "Trying to start memtool..."
+//    		<< ((system(memtooldCommand.str().c_str())) ? "Success" : "Failed") << std::endl;
     }
     sleep(1);
 
-    if (memtool.isDaemonRunning()) {
+    if (memtool.isDaemonRunning() && memtool.connectToDaemon() == 0) {
 		notify->debug(this) << "Memtool running" << std::endl;
 		notify->debug(this) << "Trying to load memdump..."
 				<< ((memtool.memDumpLoad("/dev/vda")) ? "Success" : "Failed") << std::endl;
-//		notify->debug(this)
-//				<< memtool.eval(
-//						"sc /home/idsvm/workspace/DA/memorytool_chrschn/memtoold/scripts/tasklist.js").toStdString()
-//				<< std::endl;
 	}
-
 }
 
 MemorySensorModule::~MemorySensorModule() {
-	//Stop Memtoold
 	std::cout << "MemorySensorModule Destructor called!" << std::endl;
+	return;
 	Memtool memtool;
-	if (memtool.isDaemonRunning()) {
-		notify->debug(this) << "Trying to stop memtool..." << ((memtool.daemonStop()) ? "Success" : "Failed") << std::endl;
+	std::cout << "Trying to stop memtool" << std::endl;
+	if (memtool.isDaemonRunning() && memtool.connectToDaemon() == 0) {
+		std::cout << "Trying to stop memtool..." << ((memtool.daemonStop()) ? "Success" : "Failed") << std::endl;
+		memtool.disconnectFromDaemon();
 	}
 }
-
 
 void MemorySensorModule::initSensorModule(){
 
@@ -75,8 +74,11 @@ void MemorySensorModule::getProcessList(std::map<uint32_t, MemtoolProcess> &memt
 	this->clearFSCache();
 
 	Memtool memtool;
-    if (memtool.isDaemonRunning()) {
-		scriptResult = memtool.eval("sc /home/idsvm/workspace/DA/memorytool_chrschn/memtoold/scripts/tasklist.js").toStdString();
+    if (memtool.isDaemonRunning() &&
+    		memtool.connectToDaemon() == 0 &&
+    		memtool.eval("sc /home/idsvm/workspace/DA/memorytool_chrschn/memtoold/scripts/tasklist.js") == 0) {
+		scriptResult = memtool.readAllBinary().data();
+		std::cout << scriptResult << std::endl;
 	}else{
 		throw MemtoolNotRunningException();
 	}

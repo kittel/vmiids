@@ -124,7 +124,7 @@ AC_ARG_WITH([memtool],
 # if optional parameter used, extend path flags for compliler and linker
 if test $MEMTOOLPATHSET = 1 ; then
     # extend the compiler and linker flags according to the path set
-    #MEMTOOL_CXXFLAGS="-I$with_memtool/include  -I/usr/include/qt4 -I/usr/include/qt4/QtCore"
+    MEMTOOL_CXXFLAGS="-I$with_memtool/include  -I/usr/include/qt4 -I/usr/include/qt4/QtCore"
     MEMTOOL_LDFLAGS="-L$with_memtool/ -lmemtool"
 fi
 
@@ -136,8 +136,8 @@ fi
 # store current *FLAGS and merge with AM_*FLAGS for compilation and linker check   
 OLD_CXXFLAGS=$CXXFLAGS;
 OLD_LDFLAGS=$LDFLAGS;
-CXXFLAGS="$AM_CXXFLAGS $CXXFLAGS -I$with_memtool/include -I /usr/include/qt4 -I /usr/include/qt4/QtCore"
-LDFLAGS="$AM_LDFLAGS $LDFLAGS -L$with_memtool/"
+CXXFLAGS="$AM_CXXFLAGS $CXXFLAGS $MEMTOOL_CXXFLAGS"
+LDFLAGS="$AM_LDFLAGS $LDFLAGS $MEMTOOL_LDFLAGS"
 
 # ensure the library to check for is covered by the LIBS variable
 OLD_LIBS=$LIBS
@@ -188,7 +188,7 @@ fi
 AC_SUBST([AM_CPPFLAGS])
 AC_SUBST([AM_CXXFLAGS])
 AC_SUBST([AM_LDFLAGS])
-#AC_SUBST(MEMTOOL_CXXFLAGS)
+AC_SUBST(MEMTOOL_CXXFLAGS)
 AC_SUBST(MEMTOOL_LDFLAGS)
 AC_SUBST([LIBS])
 
