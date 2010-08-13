@@ -10,7 +10,10 @@
 
 #include "vmiids/SensorModule.h"
 
+#include <memtool/memtool.h>
+
 #include <map>
+#include <QCoreApplication>
 
 /*!
  * \exception MemorySensorModuleException MemorySensorModule.h
@@ -38,6 +41,12 @@ public:
 	void initSensorModule();
 
 private:
+	static QCoreApplication* app;
+	static Memtool* memtool;
+	int null;
+
+	static void stopMemtool(void);
+
 	vmi::NotificationModule * notify;
 
     std::string memtooldPath;

@@ -66,8 +66,8 @@ void ProcessListDetectionModule::run() {
 	}
 
 	//Find process in memtool not listed in ps
+	bool seenps = false;
 	for ( p_it=psProcessMap.begin() ; p_it != psProcessMap.end(); p_it++ ){
-	    bool seenps = false;
 		if(!seenps && (*p_it).second.processName.compare(0,2,"ps") != 0){
 	    	seenps = true;
 	    	notify->critical(this) << "Process not found in memtool: PID: " << (*p_it).first
