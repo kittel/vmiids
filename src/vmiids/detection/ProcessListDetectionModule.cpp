@@ -7,7 +7,7 @@
 
 #include "ProcessListDetectionModule.h"
 
-ADDDYNAMICDETECTIONMODULE(ProcessListDetectionModule);
+ADDMODULE(ProcessListDetectionModule);
 
 ProcessListDetectionModule::ProcessListDetectionModule() :
 			DetectionModule("ProcessListDetectionModule") {

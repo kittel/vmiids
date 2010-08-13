@@ -8,6 +8,8 @@
 #ifndef RKHUNTERDETECTIONMODULE_H_
 #define RKHUNTERDETECTIONMODULE_H_
 
+#include "vmiids/DetectionModule.h"
+
 #include "vmiids/notification/ShellNotificationModule.h"
 #include "vmiids/sensor/QemuMonitorSensorModule.h"
 #include "vmiids/sensor/FileSystemSensorModule.h"

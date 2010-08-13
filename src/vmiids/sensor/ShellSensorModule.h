@@ -9,7 +9,9 @@
 #define SHELLSENSORMODULE_H_
 
 #include "vmiids/SensorModule.h"
+
 #include "vmiids/NotificationModule.h"
+
 #include "vmiids/ConsoleMonitor.h"
 
 #include <map>

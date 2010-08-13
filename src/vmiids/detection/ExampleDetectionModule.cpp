@@ -9,7 +9,7 @@
 
 #include "ExampleDetectionModule.h"
 
-ADDDYNAMICDETECTIONMODULE(ExampleDetectionModule);
+ADDMODULE(ExampleDetectionModule);
 
 ExampleDetectionModule::ExampleDetectionModule() :
 	DetectionModule("ExampleDetectionModule") {

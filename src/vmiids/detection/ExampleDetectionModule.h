@@ -8,11 +8,12 @@
 #ifndef EXAMPLEDETECTIONMODULE_H_
 #define EXAMPLEDETECTIONMODULE_H_
 
+#include "vmiids/DetectionModule.h"
+
 #include "vmiids/NotificationModule.h"
 #include "vmiids/sensor/QemuMonitorSensorModule.h"
 #include "vmiids/sensor/FileSystemSensorModule.h"
 #include "vmiids/sensor/ShellSensorModule.h"
-
 
 class ExampleDetectionModule : public vmi::DetectionModule{
 private:

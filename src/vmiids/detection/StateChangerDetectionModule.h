@@ -8,6 +8,8 @@
 #ifndef STATECHANGERDETECTIONMODULE_H_
 #define STATECHANGERDETECTIONMODULE_H_
 
+#include "vmiids/DetectionModule.h"
+
 #include "vmiids/NotificationModule.h"
 #include "vmiids/sensor/QemuMonitorSensorModule.h"
 

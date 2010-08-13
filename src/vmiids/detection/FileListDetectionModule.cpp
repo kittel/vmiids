@@ -7,7 +7,7 @@
 
 #include "FileListDetectionModule.h"
 
-ADDDYNAMICDETECTIONMODULE(FileListDetectionModule);
+ADDMODULE(FileListDetectionModule);
 
 
 FileListDetectionModule::FileListDetectionModule() :

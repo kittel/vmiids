@@ -483,10 +483,25 @@ bool vmi::VmiIDS::stopIDS(int signum) {
 	return true;
 }
 
-void vmi::VmiIDS::enqueueDetectionModule(DetectionModule *detectionModule) {
+void vmi::VmiIDS::enqueueModule(DetectionModule *module) {
+	if(module == NULL) return;
 	pthread_mutex_lock(&detectionModuleMutex);
-	detectionModules[detectionModule->getName()] = detectionModule;
+	detectionModules[module->getName()] = module;
 	pthread_mutex_unlock(&detectionModuleMutex);
+}
+
+void vmi::VmiIDS::enqueueModule(NotificationModule *module) {
+	if(module == NULL) return;
+	pthread_mutex_lock(&notificationModuleMutex);
+	notificationModules[module->getName()] = module;
+	pthread_mutex_unlock(&notificationModuleMutex);
+}
+
+void vmi::VmiIDS::enqueueModule(SensorModule *module) {
+	if(module == NULL) return;
+	pthread_mutex_lock(&sensorModuleMutex);
+	sensorModules[module->getName()] = module;
+	pthread_mutex_unlock(&sensorModuleMutex);
 }
 
 bool vmi::VmiIDS::enqueueDetectionModule(std::string detectionModuleName) {
@@ -514,12 +529,6 @@ bool vmi::VmiIDS::dequeueDetectionModule(std::string detectionModuleName) {
 	}
 	pthread_mutex_unlock(&activeDetectionModuleMutex);
 	return success;
-}
-
-void vmi::VmiIDS::enqueueNotificationModule(NotificationModule *notificationModule) {
-	pthread_mutex_lock(&notificationModuleMutex);
-	notificationModules[notificationModule->getName()] = notificationModule;
-	pthread_mutex_unlock(&notificationModuleMutex);
 }
 
 bool vmi::VmiIDS::enqueueNotificationModule(std::string notificationModuleName) {
@@ -550,12 +559,6 @@ bool vmi::VmiIDS::dequeueNotificationModule(std::string notificationModuleName) 
 	}
 	pthread_mutex_unlock(&notificationModuleMutex);
 	return success;
-}
-
-void vmi::VmiIDS::enqueueSensorModule(SensorModule *sensorModule) {
-	pthread_mutex_lock(&sensorModuleMutex);
-	sensorModules[sensorModule->getName()] = sensorModule;
-	pthread_mutex_unlock(&sensorModuleMutex);
 }
 
 vmi::NotificationModule *vmi::VmiIDS::getNotificationModule(

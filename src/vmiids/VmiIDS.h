@@ -8,14 +8,14 @@
 #ifndef VMIIDS_H_
 #define VMIIDS_H_
 
-#include "DetectionModule.h"
-#include "NotificationModule.h"
-#include "SensorModule.h"
-
 #include <map>
 #include <string>
 #include <rpc/rpc.h>
 #include <libconfig.h++>
+
+#include "DetectionModule.h"
+#include "NotificationModule.h"
+#include "SensorModule.h"
 
 typedef enum {
 	ENQUEUEDETECTIONMODULE = 1,
@@ -75,16 +75,18 @@ class VmiIDS : public Module{
 
 		bool loadSharedObject(std::string path);
 
-		void enqueueDetectionModule(vmi::DetectionModule *detectionModule);
+		void enqueueModule(vmi::DetectionModule *detectionModule);
+		void enqueueModule(vmi::NotificationModule *notificationModule);
+		void enqueueModule(vmi::SensorModule *sensorModule);
+
+
 		bool enqueueDetectionModule(std::string detectionModuleName);
 		bool dequeueDetectionModule(std::string detectionModuleName);
 
 
-		void enqueueNotificationModule(vmi::NotificationModule *notificationModule);
 		bool enqueueNotificationModule(std::string notificationModuleName);
 		bool dequeueNotificationModule(std::string notificationModuleName);
 
-		void enqueueSensorModule(vmi::SensorModule *sensorModule);
 
 		vmi::NotificationModule *getNotificationModule(std::string notificationModuleName);
 		vmi::SensorModule *getSensorModule(std::string sensorModuleName);

@@ -13,7 +13,7 @@
 #include <dirent.h>
 #include <iostream>
 
-ADDDYNAMICSENSORMODULE(FileSystemSensorModule);
+ADDMODULE(FileSystemSensorModule);
 
 FileSystemSensorModule::FileSystemSensorModule() : SensorModule("FileSystemSensorModule") {
 	//Get NotificationModule

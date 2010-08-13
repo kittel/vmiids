@@ -21,26 +21,7 @@ class SensorModule : public vmi::Module{
 
 }
 
-#include "VmiIDS.h"
-
-#define ADDDYNAMICSENSORMODULE(classname) class CONCAT(classname, proxy) { \
-	public: \
-	CONCAT(classname, proxy)(){ try { \
-		                       std::cerr << "Loading SensorModule " << QUOTE(classname) << "... "; \
-	                           vmi::VmiIDS::getInstance()->enqueueSensorModule(new classname); \
-		                       std::cerr << "Success" << std::endl; \
-                           } \
-	                       catch (vmi::ModuleException &e){ \
-		                       std::cerr << "FAILED" << std::endl; \
-	                    	   e.printException(); \
-	                       } \
-	                       catch (std::exception &e){ \
-	                    	   std::cerr << "FAILED" << std::endl; \
-	                    	   std::cerr << e.what() << std::endl; \
-	                       } \
-	                     } \
-	}; \
-static CONCAT(classname, proxy) CONCAT(classname, p);
+#include "Modintern.h"
 
 #define GETSENSORMODULE(variable, modulename) \
 		variable = dynamic_cast<modulename *> (vmi::VmiIDS::getInstance()->getSensorModule(QUOTE(modulename))); \

@@ -8,6 +8,8 @@
 #ifndef PROCESSLISTDETECTIONMODULE_H_
 #define PROCESSLISTDETECTIONMODULE_H_
 
+#include "vmiids/DetectionModule.h"
+
 #include "vmiids/NotificationModule.h"
 
 #include "vmiids/sensor/QemuMonitorSensorModule.h"

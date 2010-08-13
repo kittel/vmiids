@@ -10,6 +10,8 @@
 
 #include "vmiids/SensorModule.h"
 
+#include "vmiids/NotificationModule.h"
+
 #include <string>
 #include <fstream>
 

@@ -8,6 +8,8 @@
 #ifndef FILECONTENTDETECTIONMODULE_H_
 #define FILECONTENTDETECTIONMODULE_H_
 
+#include "vmiids/DetectionModule.h"
+
 #include "vmiids/NotificationModule.h"
 
 #include "vmiids/sensor/QemuMonitorSensorModule.h"

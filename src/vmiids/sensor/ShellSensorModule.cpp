@@ -10,7 +10,7 @@
 #include <sstream>
 #include <cstdlib>
 
-ADDDYNAMICSENSORMODULE(ShellSensorModule);
+ADDMODULE(ShellSensorModule);
 
 ShellSensorModule::ShellSensorModule() :
 	SensorModule("ShellSensorModule"), ConsoleMonitor() {

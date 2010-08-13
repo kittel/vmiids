@@ -9,7 +9,7 @@
 
 #include "StateChangerDetectionModule.h"
 
-ADDDYNAMICDETECTIONMODULE(StateChangerDetectionModule);
+ADDMODULE(StateChangerDetectionModule);
 
 int StateChangerDetectionModule::runCounter = 0;
 

@@ -10,7 +10,7 @@
 #include <sstream>
 #include <cstdlib>
 
-ADDDYNAMICSENSORMODULE(MemorySensorModule);
+ADDMODULE(MemorySensorModule);
 
 Memtool* MemorySensorModule::memtool = NULL;
 QCoreApplication* MemorySensorModule::app = NULL;
