@@ -11,7 +11,6 @@
 
 namespace vmi {
 
-DEBUG_LEVEL NotificationModule::debugLevel = vmi::OUTPUT_INFO;
 std::map<std::string, vmi::NotificationModule *> NotificationModule::notificationModules;
 pthread_mutex_t NotificationModule::notificationModuleMutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -37,7 +36,6 @@ NotificationModule::NotificationModule(std::string moduleName): Module(moduleNam
 	}catch(OptionNotFoundException &e){
 		this->debugLevel = vmi::OUTPUT_INFO;
 	}
-	std::cerr << "Constructor called" << std::endl;
 
 	pthread_mutex_lock(&notificationModuleMutex);
 	notificationModules[moduleName] = this;
@@ -57,8 +55,6 @@ NotificationModule::~NotificationModule(){
 }
 
 void NotificationModule::debug(std::string module, std::string message){
-	if(debugLevel < vmi::OUTPUT_DEBUG)
-		std::cout << "Debug:       " << module << ": " << message << " Debug Level: " << debugLevel << " < " << vmi::OUTPUT_DEBUG;
 	pthread_mutex_lock(&notificationModuleMutex);
 	for (std::map<std::string, NotificationModule*>::iterator it =
 			notificationModules.begin(); it
@@ -69,8 +65,6 @@ void NotificationModule::debug(std::string module, std::string message){
 }
 
 void NotificationModule::info(std::string module, std::string message){
-	if(debugLevel < vmi::OUTPUT_INFO)
-		std::cout << "Information: " << module << ": " << message;
 	pthread_mutex_lock(&notificationModuleMutex);
 	for (std::map<std::string, NotificationModule*>::iterator it =
 			notificationModules.begin(); it
@@ -81,8 +75,6 @@ void NotificationModule::info(std::string module, std::string message){
 }
 
 void NotificationModule::warn(std::string module, std::string message){
-	if(debugLevel < vmi::OUTPUT_WARN)
-		std::cout << "Warning:     " << module << ": " << message;
 	pthread_mutex_lock(&notificationModuleMutex);
 	for (std::map<std::string, NotificationModule*>::iterator it =
 			notificationModules.begin(); it
@@ -93,8 +85,6 @@ void NotificationModule::warn(std::string module, std::string message){
 }
 
 void NotificationModule::error(std::string module, std::string message){
-	if(debugLevel < vmi::OUTPUT_ERROR)
-		std::cout << "Error:       " << module << ": " << message;
 	pthread_mutex_lock(&notificationModuleMutex);
 	for (std::map<std::string, NotificationModule*>::iterator it =
 			notificationModules.begin(); it
@@ -105,8 +95,6 @@ void NotificationModule::error(std::string module, std::string message){
 }
 
 void NotificationModule::critical(std::string module, std::string message){
-	if(debugLevel < vmi::OUTPUT_CRITICAL)
-		std::cout << "Critical:    " << module << ": " << message;
 	pthread_mutex_lock(&notificationModuleMutex);
 	for (std::map<std::string, NotificationModule*>::iterator it =
 			notificationModules.begin(); it
@@ -117,8 +105,6 @@ void NotificationModule::critical(std::string module, std::string message){
 }
 
 void NotificationModule::alert(std::string module, std::string message){
-	if(debugLevel < vmi::OUTPUT_ALERT)
-		std::cout << "Alert:       " << module << ": " << message;
 	pthread_mutex_lock(&notificationModuleMutex);
 	for (std::map<std::string, NotificationModule*>::iterator it =
 			notificationModules.begin(); it

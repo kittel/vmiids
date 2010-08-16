@@ -109,8 +109,10 @@ typedef enum {
 } DEBUG_LEVEL;
 
 class NotificationModule : public vmi::Module{
+	protected:
+		DEBUG_LEVEL debugLevel;
+
 	private:
-		static DEBUG_LEVEL debugLevel;
 		nullstream nullStream;
 
 		static std::map<std::string, vmi::NotificationModule *> notificationModules;
@@ -134,6 +136,22 @@ class NotificationModule : public vmi::Module{
 		static void critical(std::string module, std::string message);
 		static void alert(std::string module, std::string message);
 };
+
+template<class Module>
+class NotificationModuleLoader{
+private:
+	Module *module;
+public:
+	NotificationModuleLoader(){
+		module = new Module();
+	}
+	~NotificationModuleLoader(){
+		delete module;
+	}
+};
+
+#define LOADNOTIFICATIONMODULE(classname) \
+	static vmi::NotificationModuleLoader<classname> CONCAT(classname, p);
 
 }
 

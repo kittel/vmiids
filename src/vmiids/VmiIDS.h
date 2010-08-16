@@ -26,9 +26,6 @@ typedef enum {
 #define VMIIDS_RPC 			555555555
 #define VMIIDS_RPC_VERSION 	1
 
-
-#define CONCAT(a, b) a ## b
-
 namespace vmi {
 
 class VmiIDS : public Module{
