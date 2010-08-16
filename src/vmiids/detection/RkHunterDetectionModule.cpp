@@ -32,7 +32,6 @@ ADDMODULE(RkHunterDetectionModule);
 
 RkHunterDetectionModule::RkHunterDetectionModule() :
 	DetectionModule("RkHunterDetectionModule") {
-	GETNOTIFICATIONMODULE(notify, ShellNotificationModule);
 
 	GETSENSORMODULE(this->qemu, QemuMonitorSensorModule);
 	GETSENSORMODULE(this->shell, ShellSensorModule);
@@ -211,7 +210,7 @@ void RkHunterDetectionModule::run() {
 	try {
 		isRunning = this->qemu->isRunning();
 	} catch (vmi::ModuleException &e) {
-		notify->critical(this, "Could not use QemuMonitorSensorModule");
+		critical << "Could not use QemuMonitorSensorModule";
 		return;
 	}
 
@@ -219,28 +218,28 @@ void RkHunterDetectionModule::run() {
 		this->qemu->resumeVM();
 	}
 
-	notify->info(this, "[ VMIIDS Rootkit Hunter version 0.0.foo ]");
-	notify->info(this, "");
+	printInfo("[ VMIIDS Rootkit Hunter version 0.0.foo ]");
+	printInfo("");
 
-	notify->info(this, "Checking system commands...");
+	printInfo("Checking system commands...");
 	this->performStringCommandCheck();
 	this->performSharedLibrariesCheck();
 	this->performFilePropertiesCheck();
-	notify->info(this, "Checking for rootkits...");
+	printInfo("Checking for rootkits...");
 	this->performKnownRootkitCheck();
 	this->performAdditionalRootkitCheck();
 	this->performMalwareCheck();
 	this->performTrojanSpecificCheck();
 	this->performLinuxSpecificCheck();
-	notify->info(this, "Checking the network...");
+	printInfo("Checking the network...");
 	this->performBackdoorCheck();
 	this->performNetworkInterfacesCheck();
-	notify->info(this, "Checking the local host...");
+	printInfo("Checking the local host...");
 	this->performSystemBootCheck();
 	this->performGroupAndAccountCheck();
 	this->performSystemConfigurationCheck();
 	this->performFileSystemCheck();
-	notify->info(this, "Checking application versions...");
+	printInfo("Checking application versions...");
 	this->performApplicationVersionsCheck();
 
 	/*
@@ -283,7 +282,7 @@ void RkHunterDetectionModule::getThreadLevel() {
 }
 
 void RkHunterDetectionModule::performStringCommandCheck() {
-	notify->info(this, "\t Performing 'strings' command checks");
+	printInfo("\t Performing 'strings' command checks");
 
 	bool stringsFailed = false;
 	std::string commandOutput;
@@ -306,13 +305,13 @@ void RkHunterDetectionModule::performStringCommandCheck() {
 		if(commandOutput.find((*it).second) == std::string::npos) stringsFailed = true;
 	}
 	if(!stringsFailed){
-		notify->info(this, "\t\tChecking 'strings' command [ OK ]");
+		printInfo("\t\tChecking 'strings' command [ OK ]");
 	}else{
-		notify->warn(this, "\t\tChecking 'strings' command [ Warning ]");
+		warn << "\t\tChecking 'strings' command [ Warning ]";
 	}
 }
 void RkHunterDetectionModule::performSharedLibrariesCheck() {
-	notify->info(this, "\t Performing 'shared libraries' checks");
+	printInfo("\t Performing 'shared libraries' checks");
 
 	//
 	// First check for preloading exported variables.
@@ -336,15 +335,15 @@ void RkHunterDetectionModule::performSharedLibrariesCheck() {
 		this->shell->parseCommandOutput(command.str(), commandOutput);
 		while((crString = commandOutput.rfind("\n")) != std::string::npos) commandOutput.replace(crString, 1, "");
 		if(commandOutput.size() > 2) {
-			notify->warn(this, commandOutput.c_str());
+			warn << commandOutput;
 			varFound = true;
 		}
 		variablesToCheck.pop_front();
 	}
 	if(!varFound){
-		notify->info(this, "\t\tChecking for preloading variables [ None Found ]");
+		printInfo("\t\tChecking for preloading variables [ None Found ]");
 	}else{
-		notify->warn(this, "\t\tChecking for preloading variables [ Warning ]");
+		warn << "\t\tChecking for preloading variables [ Warning ]";
 	}
 
 	//
@@ -354,7 +353,7 @@ void RkHunterDetectionModule::performSharedLibrariesCheck() {
 
 	if(this->fs->fileExists("/etc/ld.so.preload"), NULL){
 
-		notify->info(this, "\t\tFound library preload file: /etc/ld.so.preload");
+		printInfo("\t\tFound library preload file: /etc/ld.so.preload");
 
 		//TODO Add shared libraries whitelist
 
@@ -362,13 +361,13 @@ void RkHunterDetectionModule::performSharedLibrariesCheck() {
 		this->fs->openFileRO("/etc/ld.so.preload", &fileHandle);
 		std::string line;
 		while (std::getline(fileHandle, line)){
-			notify->warn(this, line.insert(0, "\t\t Found preloaded shared library"));
+			warn << "\t\t Found preloaded shared library" << line;
 			//TODO check if shared library is whitelisted!
-			notify->info(this, "\t\t TODO check if it is whitelisted!");
+			printInfo("\t\t TODO check if it is whitelisted!");
 		}
 		fileHandle.close();
 	} else {
-		notify->info(this, "\t\tChecking for preloaded libraries [ None Found ]");
+		printInfo("\t\tChecking for preloaded libraries [ None Found ]");
 	}
 
 	//
@@ -380,7 +379,7 @@ void RkHunterDetectionModule::performSharedLibrariesCheck() {
 	 Checking LD_LIBRARY_PATH variable[24C[ [0;32mNot found[0;39m ]
 	 */
 
-	notify->info(this, "\t\tChecking LD_LIBRARY_PATH variable [ Not Implemented ]");
+	printInfo("\t\tChecking LD_LIBRARY_PATH variable [ Not Implemented ]");
 
 	/*
 	if `check_test shared_libs_path`; then
@@ -454,7 +453,7 @@ void RkHunterDetectionModule::performSharedLibrariesCheck() {
 	 */
 }
 void RkHunterDetectionModule::performFilePropertiesCheck() {
-	notify->info(this, "\t Performing file properties checks");
+	printInfo("\t Performing file properties checks");
 
 	//
 	// This function carries out a check of system command property
@@ -1706,8 +1705,7 @@ void RkHunterDetectionModule::performFilePropertiesCheck() {
 	 */
 }
 void RkHunterDetectionModule::performKnownRootkitCheck() {
-	notify->info(this,
-			"\t Performing check of known rootkit files and directories");
+	info << "\t Performing check of known rootkit files and directories";
 	/*
 	 Performing check of known rootkit files and directories
 	 55808 Trojan - Variant A[33C[ [0;32mNot found[0;39m ]
@@ -1788,7 +1786,7 @@ void RkHunterDetectionModule::performKnownRootkitCheck() {
 	 */
 }
 void RkHunterDetectionModule::performAdditionalRootkitCheck() {
-	notify->info(this, "\t Performing additional rootkit checks");
+	printInfo("\t Performing additional rootkit checks");
 	/*
 	 Performing additional rootkit checks
 	 Suckit Rookit additional checks[26C[ [0;32mOK[0;39m ]
@@ -1797,7 +1795,7 @@ void RkHunterDetectionModule::performAdditionalRootkitCheck() {
 	 */
 }
 void RkHunterDetectionModule::performMalwareCheck() {
-	notify->info(this, "\t Performing malware checks");
+	printInfo("\t Performing malware checks");
 	/*
 	 Performing malware checks
 	 Checking running processes for suspicious files[10C[ [0;32mNone found[0;39m ]
@@ -1807,14 +1805,14 @@ void RkHunterDetectionModule::performMalwareCheck() {
 	 */
 }
 void RkHunterDetectionModule::performTrojanSpecificCheck() {
-	notify->info(this, "\t Performing trojan specific checks");
+	printInfo("\t Performing trojan specific checks");
 	/*
 	 Performing trojan specific checks
 	 Checking for enabled inetd services[22C[ [0;32mOK[0;39m ]
 	 */
 }
 void RkHunterDetectionModule::performLinuxSpecificCheck() {
-	notify->info(this, "\t Performing Linux specific checks");
+	printInfo("\t Performing Linux specific checks");
 	/*
 	 Performing Linux specific checks
 	 Checking loaded kernel modules[27C[ [0;32mOK[0;39m ]
@@ -1822,7 +1820,7 @@ void RkHunterDetectionModule::performLinuxSpecificCheck() {
 	 */
 }
 void RkHunterDetectionModule::performBackdoorCheck() {
-	notify->info(this, "\t Performing check for backdoor ports");
+	printInfo("\t Performing check for backdoor ports");
 	/*
 	 Performing check for backdoor ports
 	 Checking for TCP port 1524[31C[ [0;32mNot found[0;39m ]
@@ -1849,14 +1847,14 @@ void RkHunterDetectionModule::performBackdoorCheck() {
 	 */
 }
 void RkHunterDetectionModule::performNetworkInterfacesCheck() {
-	notify->info(this, "\t Performing checks on the network interfaces");
+	printInfo("\t Performing checks on the network interfaces");
 	/*
 	 Performing checks on the network interfaces
 	 Checking for promiscuous interfaces[22C[ [0;32mNone found[0;39m ]
 	 */
 }
 void RkHunterDetectionModule::performSystemBootCheck() {
-	notify->info(this, "\t Performing system boot checks");
+	printInfo("\t Performing system boot checks");
 	/*
 	 Performing system boot checks
 	 Checking for local host name[29C[ [0;32mFound[0;39m ]
@@ -1865,7 +1863,7 @@ void RkHunterDetectionModule::performSystemBootCheck() {
 	 */
 }
 void RkHunterDetectionModule::performGroupAndAccountCheck() {
-	notify->info(this, "\t Performing group and account checks");
+	printInfo("\t Performing group and account checks");
 	/*
 	 Performing group and account checks
 	 Checking for passwd file[33C[ [0;32mFound[0;39m ]
@@ -1877,7 +1875,7 @@ void RkHunterDetectionModule::performGroupAndAccountCheck() {
 	 */
 }
 void RkHunterDetectionModule::performSystemConfigurationCheck() {
-	notify->info(this, "\t Performing system configuration file checks");
+	printInfo("\t Performing system configuration file checks");
 	/*
 	 Performing system configuration file checks
 	 Checking for SSH configuration file[22C[ [0;32mFound[0;39m ]
@@ -1889,7 +1887,7 @@ void RkHunterDetectionModule::performSystemConfigurationCheck() {
 	 */
 }
 void RkHunterDetectionModule::performFileSystemCheck() {
-	notify->info(this, "\t Performing filesystem checks");
+	printInfo("\t Performing filesystem checks");
 	/*
 	 Performing filesystem checks
 	 Checking /dev for suspicious file types[18C[ [1;31mWarning[0;39m ]
@@ -1897,7 +1895,7 @@ void RkHunterDetectionModule::performFileSystemCheck() {
 	 */
 }
 void RkHunterDetectionModule::performApplicationVersionsCheck() {
-	notify->info(this, "\t Performing Application Version checks");
+	printInfo("\t Performing Application Version checks");
 	/*
 	 Checking version of Exim MTA[29C[ [0;32mOK[0;39m ]
 	 Checking version of GnuPG[32C[ [0;32mOK[0;39m ]

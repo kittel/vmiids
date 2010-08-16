@@ -11,9 +11,6 @@ ADDMODULE(ProcessListDetectionModule);
 
 ProcessListDetectionModule::ProcessListDetectionModule() :
 			DetectionModule("ProcessListDetectionModule") {
-
-	GETNOTIFICATIONMODULE(notify, ShellNotificationModule);
-
 	GETSENSORMODULE(this->qemu, QemuMonitorSensorModule);
 	GETSENSORMODULE(this->shell, ShellSensorModule);
 	GETSENSORMODULE(this->memory, MemorySensorModule);
@@ -28,7 +25,7 @@ void ProcessListDetectionModule::run() {
 	try {
 		isRunning = this->qemu->isRunning();
 	} catch (vmi::ModuleException &e) {
-		notify->critical(this, "Could not use QemuMonitorSensorModule");
+		critical << "Could not use QemuMonitorSensorModule";
 		return;
 	}
 
@@ -58,7 +55,7 @@ void ProcessListDetectionModule::run() {
 		if(psProcessMap.find((*m_it).first) == psProcessMap.end() ||
 			psProcessMap.find((*m_it).first)->second.processName.compare(0, (*m_it).second.processName.length(),
 					(*m_it).second.processName) != 0){
-			notify->critical(this) << "Process not found in ps: PID: " << (*m_it).first << " Proccess: " << (*m_it).second.processName << std::endl;
+			critical << "Process not found in ps: PID: " << (*m_it).first << " Proccess: " << (*m_it).second.processName << std::endl;
 		}else{
 			psProcessMap.erase((*m_it).first);
 			memtoolProcessMap.erase(m_it);
@@ -70,7 +67,7 @@ void ProcessListDetectionModule::run() {
 	for ( p_it=psProcessMap.begin() ; p_it != psProcessMap.end(); p_it++ ){
 		if(!seenps && (*p_it).second.processName.compare(0,2,"ps") != 0){
 	    	seenps = true;
-	    	notify->critical(this) << "Process not found in memtool: PID: " << (*p_it).first
+	    	critical << "Process not found in memtool: PID: " << (*p_it).first
 	    			<< " Proccess: " << (*p_it).second.processName << std::endl;
 	    }else{
 	    	psProcessMap.erase(p_it);
@@ -85,7 +82,7 @@ void ProcessListDetectionModule::run() {
 				&& globalPsProcessMap.find((*p_it).first)->second.processName.compare(
 						0, (*p_it).second.processName.length(),
 						(*p_it).second.processName) == 0) {
-			notify->alert(this) << "Virtual process detected: PID: " << (*p_it).first
+			alert << "Virtual process detected: PID: " << (*p_it).first
 					<< " Proccess: " << (*p_it).second.processName << std::endl;
 		}
 	}
@@ -97,7 +94,7 @@ void ProcessListDetectionModule::run() {
 				&& globalMemtoolProcessMap.find((*m_it).first)->second.processName.compare(
 						0, (*m_it).second.processName.length(),
 						(*m_it).second.processName) == 0) {
-			notify->alert(this) << "Hidden process detected: PID: " << (*m_it).first
+			alert << "Hidden process detected: PID: " << (*m_it).first
 					<< " Proccess: " << (*m_it).second.processName << std::endl;
 		}
 	}

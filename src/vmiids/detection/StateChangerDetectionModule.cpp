@@ -14,7 +14,6 @@ ADDMODULE(StateChangerDetectionModule);
 int StateChangerDetectionModule::runCounter = 0;
 
 StateChangerDetectionModule::StateChangerDetectionModule()  : DetectionModule("StateChangerDetectionModule"){
-	GETNOTIFICATIONMODULE(notify, ShellNotificationModule);
 
 	GETSENSORMODULE(this->qemu, QemuMonitorSensorModule);
 }
@@ -28,15 +27,15 @@ void StateChangerDetectionModule::run(){
 	this->runCounter++;
 	try{
 		if(this->runCounter == 25){
-			notify->info(this, "Pausing VM");
+			info << "Pausing VM";
 			qemu->pauseVM();
 		}else if(this->runCounter == 50){
 			this->runCounter = 0;
-			notify->info(this, "Resuming VM");
+			info << "Resuming VM";
 			qemu->resumeVM();
 		}
 	}catch(vmi::ModuleException &e){
-		notify->critical(this, "Could not use QemuMonitorSensorModule");
+		critical << "Could not use QemuMonitorSensorModule";
 		return;
 	}
 }

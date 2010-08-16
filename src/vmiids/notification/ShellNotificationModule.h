@@ -16,19 +16,13 @@ public:
 	ShellNotificationModule();
 	virtual ~ShellNotificationModule();
 
-	virtual void debug(vmi::Module *module, std::string message);
-	virtual void info(vmi::Module *module, std::string message);
-	virtual void warn(vmi::Module *module, std::string message);
-	virtual void error(vmi::Module *module, std::string message);
-	virtual void critical(vmi::Module *module, std::string message);
-	virtual void alert(vmi::Module *module, std::string message);
+	virtual void doDebug(std::string module, std::string message);
+	virtual void doInfo(std::string module, std::string message);
+	virtual void doWarn(std::string module, std::string message);
+	virtual void doError(std::string module, std::string message);
+	virtual void doCritical(std::string module, std::string message);
+	virtual void doAlert(std::string module, std::string message);
 
-	virtual std::ostream& debug(vmi::Module *module);
-	virtual std::ostream& info(vmi::Module *module);
-	virtual std::ostream& warn(vmi::Module *module);
-	virtual std::ostream& error(vmi::Module *module);
-	virtual std::ostream& critical(vmi::Module *module);
-	virtual std::ostream& alert(vmi::Module *module);
 };
 
 #endif /* SHELLNOTIFICATIONMODULE_H_ */

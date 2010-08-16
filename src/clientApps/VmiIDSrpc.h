@@ -26,8 +26,6 @@ public:
 
 	bool enqueueDetectionModule(std::string detectionModuleName);
 	bool dequeueDetectionModule(std::string detectionModuleName);
-	bool enqueueNotificationModule(std::string notificationModuleName);
-	bool dequeueNotificationModule(std::string notificationModuleName);
 	bool stopIDS(int signum = 0);
 	bool loadSharedObject(std::string path);
 };

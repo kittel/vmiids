@@ -23,9 +23,6 @@ MemorySensorModule::MemorySensorModule() :
     if(app == NULL) app = new QCoreApplication(null, NULL);
     if(memtool == NULL) memtool = new Memtool();
 
-	//Get NotificationModule
-	GETNOTIFICATIONMODULE(notify, ShellNotificationModule);
-
 	GETOPTION(memtooldPath, this->memtooldPath);
 	GETOPTION(libmemtoolPath, this->libmemtoolPath);
 	GETOPTION(memtoolScriptPath, this->memtoolScriptPath);
@@ -34,7 +31,7 @@ MemorySensorModule::MemorySensorModule() :
 
 	if(!memtool->isDaemonRunning()){
 		bool daemonStart = false;
-		notify->debug(this) << "Trying to start memtool..."
+		debug << "Trying to start memtool..."
     		<< ((daemonStart = memtool->daemonStart()) ? "Success" : "Failed") << std::endl;
 		if (daemonStart){
 			while(!memtool->isDaemonRunning()){
@@ -43,11 +40,11 @@ MemorySensorModule::MemorySensorModule() :
 
 			std::stringstream loadSymbolsCmd;
 			loadSymbolsCmd << "symbols load " << this->savedDebugingSymbols;
-			notify->debug(this) << "Trying to load symbols..."
+			debug << "Trying to load symbols..."
 			    		<< ((daemonStart = (memtool->eval(loadSymbolsCmd.str().c_str()) == 0)) ? "Success" : "Failed") << std::endl;
 			if(!daemonStart) throw MemtoolNotRunningException();
 
-			notify->debug(this) << "Trying to to load memory image..."
+			debug << "Trying to to load memory image..."
 			    		<< ((daemonStart = memtool->memDumpLoad(this->memdumpFile.c_str())) ? "Success" : "Failed") << std::endl;
 			if(!daemonStart) throw MemtoolNotRunningException();
 		}else{
@@ -58,8 +55,8 @@ MemorySensorModule::MemorySensorModule() :
     sleep(1);
 
     if (memtool->isDaemonRunning() && memtool->connectToDaemon() == 0) {
-		notify->debug(this) << "Memtool running" << std::endl;
-		notify->debug(this) << "Trying to load memdump..."
+		debug << "Memtool running" << std::endl;
+		debug << "Trying to load memdump..."
 				<< ((memtool->memDumpLoad("/dev/vda")) ? "Success" : "Failed") << std::endl;
 	}
 }
@@ -96,7 +93,7 @@ void MemorySensorModule::getProcessList(std::map<uint32_t, MemtoolProcess> &memt
 
 	std::stringstream runTasklistScript;
 	runTasklistScript << "sc " << this->memtoolScriptPath << "/tasklist.js";
-	notify->debug(this) << "Trying to read tasklist symbols..." << std::endl;
+	debug << "Trying to read tasklist symbols..." << std::endl;
 
     if (memtool->isDaemonRunning() &&
     		memtool->eval(runTasklistScript.str().c_str()) == 0) {

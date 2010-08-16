@@ -10,8 +10,6 @@
 
 #include "vmiids/SensorModule.h"
 
-#include "vmiids/NotificationModule.h"
-
 #include <memtool/memtool.h>
 
 #include <map>
@@ -48,8 +46,6 @@ private:
 	int null;
 
 	static void stopMemtool(void);
-
-	vmi::NotificationModule * notify;
 
     std::string memtooldPath;
 	std::string libmemtoolPath;

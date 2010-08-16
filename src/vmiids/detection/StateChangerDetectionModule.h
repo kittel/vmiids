@@ -10,12 +10,10 @@
 
 #include "vmiids/DetectionModule.h"
 
-#include "vmiids/NotificationModule.h"
 #include "vmiids/sensor/QemuMonitorSensorModule.h"
 
 class StateChangerDetectionModule : public vmi::DetectionModule{
 private:
-	vmi::NotificationModule * notify;
 	QemuMonitorSensorModule * qemu;
 
 	static int runCounter;

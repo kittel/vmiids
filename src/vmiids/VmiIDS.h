@@ -14,14 +14,11 @@
 #include <libconfig.h++>
 
 #include "DetectionModule.h"
-#include "NotificationModule.h"
 #include "SensorModule.h"
 
 typedef enum {
 	ENQUEUEDETECTIONMODULE = 1,
 	DEQUEUEDETECTIONMODULE,
-	ENQUEUENOTIFICATIONMODULE,
-	DEQUEUENOTIFICATIONMODULE,
 	STOPIDS,
 	LOADSHAREDOBJECT,
 } eRPCFuncs;
@@ -40,8 +37,6 @@ class VmiIDS : public Module{
 		pthread_mutex_t detectionModuleMutex;
 		std::map<std::string, vmi::DetectionModule *> activeDetectionModules;
 		pthread_mutex_t activeDetectionModuleMutex;
-		std::map<std::string, vmi::NotificationModule *> notificationModules;
-		pthread_mutex_t notificationModuleMutex;
 		std::map<std::string, vmi::SensorModule* > sensorModules;
 		pthread_mutex_t sensorModuleMutex;
 
@@ -76,19 +71,11 @@ class VmiIDS : public Module{
 		bool loadSharedObject(std::string path);
 
 		void enqueueModule(vmi::DetectionModule *detectionModule);
-		void enqueueModule(vmi::NotificationModule *notificationModule);
 		void enqueueModule(vmi::SensorModule *sensorModule);
-
 
 		bool enqueueDetectionModule(std::string detectionModuleName);
 		bool dequeueDetectionModule(std::string detectionModuleName);
 
-
-		bool enqueueNotificationModule(std::string notificationModuleName);
-		bool dequeueNotificationModule(std::string notificationModuleName);
-
-
-		vmi::NotificationModule *getNotificationModule(std::string notificationModuleName);
 		vmi::SensorModule *getSensorModule(std::string sensorModuleName);
 
 		libconfig::Setting *getSetting(std::string settingName);

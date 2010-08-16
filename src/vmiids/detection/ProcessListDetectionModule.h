@@ -10,14 +10,11 @@
 
 #include "vmiids/DetectionModule.h"
 
-#include "vmiids/NotificationModule.h"
-
 #include "vmiids/sensor/QemuMonitorSensorModule.h"
 #include "vmiids/sensor/MemorySensorModule.h"
 #include "vmiids/sensor/ShellSensorModule.h"
 
 class ProcessListDetectionModule : public vmi::DetectionModule{
-	vmi::NotificationModule * notify;
 	QemuMonitorSensorModule * qemu;
 	ShellSensorModule * shell;
 	MemorySensorModule * memory;

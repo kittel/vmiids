@@ -9,8 +9,6 @@
 
 #include "ShellNotificationModule.h"
 
-ADDMODULE(ShellNotificationModule);
-
 ShellNotificationModule::ShellNotificationModule() : NotificationModule("ShellNotificationModule"){
 
 }
@@ -19,10 +17,31 @@ ShellNotificationModule::~ShellNotificationModule() {
 	// TODO Auto-generated destructor stub
 }
 
-void ShellNotificationModule::debug(vmi::Module *module, std::string message){
-	this->debug(module) << message << std::endl;
+void ShellNotificationModule::doDebug(std::string module, std::string message){
+	std::cout << "Debug:       " << module << ": " << message;
 }
 
+void ShellNotificationModule::doInfo(std::string module, std::string message){
+	std::cout << "Information: " << module << ": " << message;
+}
+
+void ShellNotificationModule::doWarn(std::string module, std::string message){
+	std::cout << "Warning:     " << module << ": " << message;
+}
+
+void ShellNotificationModule::doError(std::string module, std::string message){
+	std::cout << "Error:       " << module << ": " << message;
+}
+
+void ShellNotificationModule::doCritical(std::string module, std::string message){
+	std::cout << "Critical:    " << module << ": " << message;
+}
+
+void ShellNotificationModule::doAlert(std::string module, std::string message){
+	std::cout << "Alert:       " << module << ": " << message;
+}
+
+/*
 std::ostream& ShellNotificationModule::debug(vmi::Module *module){
 	std::ostream & stream = ((this->debugLevel >= vmi::OUTPUT_DEBUG) ? std::cout : this->nullStream );
 	stream << "Debug:       " << module->getName() << ": ";
@@ -78,3 +97,4 @@ std::ostream& ShellNotificationModule::alert(vmi::Module *module){
 	stream << "Alert:       " << module->getName() << ": ";
 	return stream;
 }
+*/

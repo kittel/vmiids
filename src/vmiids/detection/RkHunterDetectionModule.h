@@ -10,7 +10,6 @@
 
 #include "vmiids/DetectionModule.h"
 
-#include "vmiids/notification/ShellNotificationModule.h"
 #include "vmiids/sensor/QemuMonitorSensorModule.h"
 #include "vmiids/sensor/FileSystemSensorModule.h"
 #include "vmiids/sensor/ShellSensorModule.h"
@@ -20,7 +19,6 @@
 
 class RkHunterDetectionModule : public vmi::DetectionModule {
 private:
-	vmi::NotificationModule * notify;
 	QemuMonitorSensorModule * qemu;
 	FileSystemSensorModule * fs;
 	ShellSensorModule * shell;

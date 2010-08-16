@@ -9,6 +9,7 @@ bin_PROGRAMS=vmiids vmiids-clearfscache
 vmiidsdir = $(includedir)/vmiids
 vmiids_HEADERS=VmiIDS.h \
 				Module.h \
+				OutputModule.h \
 				DetectionModule.h \
 				NotificationModule.h \
 				SensorModule.h \

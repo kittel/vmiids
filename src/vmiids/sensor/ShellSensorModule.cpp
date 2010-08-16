@@ -15,9 +15,6 @@ ADDMODULE(ShellSensorModule);
 ShellSensorModule::ShellSensorModule() :
 	SensorModule("ShellSensorModule"), ConsoleMonitor() {
 
-	//Get NotificationModule
-	GETNOTIFICATIONMODULE(notify, ShellNotificationModule);
-
 	std::string optionConsoleName;
 	std::string optionUsername;
 	std::string optionPassword;
@@ -38,10 +35,10 @@ ShellSensorModule::ShellSensorModule() :
 		this->loggedin = this->isLoggedin();
 
 		if (!this->loggedin) {
-			notify->debug(this, "Trying to login\n");
+			debug <<  "Trying to login\n";
 			this->loggedin = this->login(optionUsername, optionPassword);
 		} else {
-			notify->debug(this, "Already logged in\n");
+			debug << "Already logged in\n";
 			this->monitorShell = optionMonitorShell.c_str();
 		}
 	}catch(vmi::ConsoleMonitorException &e){
@@ -86,8 +83,8 @@ bool ShellSensorModule::isLoggedin(void) {
 }
 
 bool ShellSensorModule::login(std::string username, std::string password) {
-	notify->info(this, "Login");
-	notify->info(this) << "username: " << username << std::endl << "password: " << password << std::endl;
+	info << "Login";
+	info << "username: " << username << std::endl << "password: " << password << std::endl;
 	this->monitorShell = optionLoginShell.c_str();
 	std::string string;
 	this->parseCommandOutput("", string);

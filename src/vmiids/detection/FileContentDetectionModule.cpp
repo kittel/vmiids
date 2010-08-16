@@ -11,9 +11,6 @@ ADDMODULE(FileContentDetectionModule);
 
 FileContentDetectionModule::FileContentDetectionModule() :
 			DetectionModule("FileContentDetectionModule") {
-
-	GETNOTIFICATIONMODULE(notify, ShellNotificationModule);
-
 	GETSENSORMODULE(this->qemu, QemuMonitorSensorModule);
 	GETSENSORMODULE(this->shell, ShellSensorModule);
 	GETSENSORMODULE(this->fs, FileSystemSensorModule);
@@ -35,7 +32,7 @@ void FileContentDetectionModule::run() {
 	try {
 		isRunning = this->qemu->isRunning();
 	} catch (vmi::ModuleException &e) {
-		notify->critical(this, "Could not use QemuMonitorSensorModule");
+		critical << "Could not use QemuMonitorSensorModule";
 		return;
 	}
 
@@ -54,7 +51,7 @@ void FileContentDetectionModule::run() {
 		if (!isRunning) this->qemu->pauseVM();
 
 		if(fileSha1Sum.compare(shellSha1Sum) != 0)
-			notify->alert(this) << "Different file content in file: \"" << *fileName << "\"" << std::endl;
+			alert << "Different file content in file: \"" << *fileName << "\"" << std::endl;
 
 	}
 }

@@ -10,8 +10,6 @@
 
 #include "vmiids/SensorModule.h"
 
-#include "vmiids/NotificationModule.h"
-
 #include <string>
 #include <fstream>
 
@@ -42,8 +40,6 @@ public:
 	void getFileSHA1Sum(const std::string &fileName, std::string &sha1Sum);
 
 private:
-	vmi::NotificationModule * notify;
-
 	std::string clearCacheCommand;
 	std::string fileSystemPath;
 

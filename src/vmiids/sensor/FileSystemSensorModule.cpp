@@ -16,8 +16,6 @@
 ADDMODULE(FileSystemSensorModule);
 
 FileSystemSensorModule::FileSystemSensorModule() : SensorModule("FileSystemSensorModule") {
-	//Get NotificationModule
-	GETNOTIFICATIONMODULE(notify, ShellNotificationModule);
 
 	GETOPTION(clearCacheCommand, this->clearCacheCommand);
 	GETOPTION(fileSystemPath, this->fileSystemPath);

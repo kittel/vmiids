@@ -12,9 +12,6 @@ ADDMODULE(FileListDetectionModule);
 
 FileListDetectionModule::FileListDetectionModule() :
 					DetectionModule("FileListDetectionModule") {
-
-	GETNOTIFICATIONMODULE(notify, ShellNotificationModule);
-
 	GETSENSORMODULE(this->qemu, QemuMonitorSensorModule);
 	GETSENSORMODULE(this->shell, ShellSensorModule);
 	GETSENSORMODULE(this->fs, FileSystemSensorModule);
@@ -36,7 +33,7 @@ void FileListDetectionModule::run() {
 	try {
 		isRunning = this->qemu->isRunning();
 	} catch (vmi::ModuleException &e) {
-		notify->critical(this, "Could not use QemuMonitorSensorModule");
+		critical << "Could not use QemuMonitorSensorModule";
 		return;
 	}
 
@@ -63,7 +60,7 @@ void FileListDetectionModule::run() {
 	//Find files in find not listed in FileSystem
 	for (s_it = shellFileList.begin(); s_it != shellFileList.end(); s_it++) {
 		if (fsFileList.find(*s_it) == fsFileList.end()) {
-			notify->critical(this) << "File not found on FileSystem: " << *s_it << std::endl;
+			critical << "File not found on FileSystem: " << *s_it << std::endl;
 		} else {
 			fsFileList.erase(fsFileList.find(*s_it));
 			shellFileList.erase(s_it);
@@ -71,14 +68,14 @@ void FileListDetectionModule::run() {
 	}
 
 	for (f_it = fsFileList.begin(); f_it != fsFileList.end(); f_it++){
-		notify->critical(this) << "File not found with find command: " << *f_it << std::endl;
+		critical << "File not found with find command: " << *f_it << std::endl;
 	}
 
 	//Compare with results of last run
 	//FileSystem results
 	for (f_it = fsFileList.begin(); f_it != fsFileList.end(); f_it++) {
 		if (this->globalFsFileList.find(*f_it) != this->globalFsFileList.end()) {
-			notify->alert(this) << "Hidden file detected: " << (*f_it) << std::endl;
+			alert << "Hidden file detected: " << (*f_it) << std::endl;
 		}
 	}
 	this->globalFsFileList = fsFileList;
@@ -86,7 +83,7 @@ void FileListDetectionModule::run() {
 	//find results
 	for (s_it = shellFileList.begin(); s_it != shellFileList.end(); s_it++) {
 		if (this->globalShellFileList.find(*s_it) != this->globalShellFileList.end()) {
-			notify->alert(this) << "Virtual file detected: " << (*s_it) << std::endl;
+			alert << "Virtual file detected: " << (*s_it) << std::endl;
 		}
 	}
 	this->globalShellFileList = shellFileList;

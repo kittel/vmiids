@@ -10,8 +10,6 @@
 
 #include "vmiids/SensorModule.h"
 
-#include "vmiids/NotificationModule.h"
-
 #include "vmiids/ConsoleMonitor.h"
 
 #include <map>
@@ -29,8 +27,6 @@ typedef struct{
  */
 class ShellSensorModule : public vmi::SensorModule , public vmi::ConsoleMonitor {
 private:
-	vmi::NotificationModule * notify;
-
 	std::string optionMonitorShell;
 	std::string optionLoginShell;
 	std::string optionPasswordShell;

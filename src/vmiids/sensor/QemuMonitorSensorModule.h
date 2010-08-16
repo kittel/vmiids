@@ -11,8 +11,6 @@
 #include "vmiids/SensorModule.h"
 #include "vmiids/ConsoleMonitor.h"
 
-#include "vmiids/NotificationModule.h"
-
 /*!
  * \class QemuMonitorSensorModule QemuMonitorSensorModule.h
  *
@@ -146,9 +144,6 @@ info roms              -- show roms
  */
 
 class QemuMonitorSensorModule: public vmi::SensorModule , public vmi::ConsoleMonitor {
-private:
-	vmi::NotificationModule * notify;
-
 public:
 	QemuMonitorSensorModule();
 	virtual ~QemuMonitorSensorModule();

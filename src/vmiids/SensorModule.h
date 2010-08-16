@@ -9,12 +9,15 @@
 #define SENSORMODULE_H_
 
 #include "Module.h"
+#include "OutputModule.h"
 
 namespace vmi {
 
-class SensorModule : public vmi::Module{
-	public:
-		SensorModule(std::string moduleName) : vmi::Module(moduleName) {};
+class SensorModule : public vmi::Module, protected OutputModule{
+public:
+		SensorModule(std::string moduleName) :
+			vmi::Module(moduleName),
+			vmi::OutputModule(moduleName){};
 		virtual ~SensorModule(){};
 		virtual void initSensorModule() = 0;
 };

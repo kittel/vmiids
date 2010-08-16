@@ -182,11 +182,10 @@ int main() {
 vmi::VmiIDS* vmi::VmiIDS::instance = NULL;
 
 vmi::VmiIDS::VmiIDS() :
-		 vmi::Module("VmiIDS"), detectionModules(), notificationModules(), sensorModules(), config(){
+		 vmi::Module("VmiIDS"), detectionModules(), sensorModules(), config(){
 	this->vmiRunning = false;
 	pthread_mutex_init(&detectionModuleMutex, NULL);
 	pthread_mutex_init(&activeDetectionModuleMutex, NULL);
-	pthread_mutex_init(&notificationModuleMutex, NULL);
 	pthread_mutex_init(&sensorModuleMutex, NULL);
 
 	FILE * configFile;
@@ -208,9 +207,7 @@ vmi::VmiIDS::VmiIDS() :
 vmi::VmiIDS::~VmiIDS() {
 	pthread_mutex_lock(&detectionModuleMutex);
 	pthread_mutex_lock(&activeDetectionModuleMutex);
-	pthread_mutex_lock(&notificationModuleMutex);
 	pthread_mutex_lock(&sensorModuleMutex);
-
 	while (!activeDetectionModules.empty()) {
 		//Do not delete Module, because there is still a pointer in detectionModules map.
 		activeDetectionModules.erase(activeDetectionModules.begin());
@@ -226,12 +223,6 @@ vmi::VmiIDS::~VmiIDS() {
 		if(sensorModules.begin()->second != NULL)
 			delete (sensorModules.begin()->second);
 		sensorModules.erase(sensorModules.begin());
-	}
-	while (!notificationModules.empty()) {
-		printf("Deleting %s\n", notificationModules.begin()->first.c_str());
-		if(notificationModules.begin()->second != NULL)
-			delete (notificationModules.begin()->second);
-		notificationModules.erase(notificationModules.begin());
 	}
 }
 
@@ -370,28 +361,6 @@ void vmi::VmiIDS::dispatchRPC(struct svc_req *rqstp, register SVCXPRT *transp){
 		VmiIDS::getInstance()->dequeueDetectionModule(argument.char_arg);
 		break;
 
-	case ENQUEUENOTIFICATIONMODULE:
-		_xdr_argument = (xdrproc_t) xdr_wrapstring;
-		_xdr_result = (xdrproc_t) xdr_bool;
-		if (!svc_getargs (transp, (xdrproc_t) _xdr_argument, (caddr_t) &argument)) {
-			svcerr_decode (transp);
-			return;
-		}
-		retval = 1;
-		VmiIDS::getInstance()->enqueueNotificationModule(argument.char_arg);
-		break;
-
-	case DEQUEUENOTIFICATIONMODULE:
-		_xdr_argument = (xdrproc_t) xdr_wrapstring;
-		_xdr_result = (xdrproc_t) xdr_bool;
-		if (!svc_getargs (transp, (xdrproc_t) _xdr_argument, (caddr_t) &argument)) {
-			svcerr_decode (transp);
-			return;
-		}
-		retval = 1;
-		VmiIDS::getInstance()->dequeueNotificationModule(argument.char_arg);
-		break;
-
 	case STOPIDS:
 		_xdr_argument = (xdrproc_t) xdr_int;
 		_xdr_result = (xdrproc_t) xdr_int;
@@ -490,13 +459,6 @@ void vmi::VmiIDS::enqueueModule(DetectionModule *module) {
 	pthread_mutex_unlock(&detectionModuleMutex);
 }
 
-void vmi::VmiIDS::enqueueModule(NotificationModule *module) {
-	if(module == NULL) return;
-	pthread_mutex_lock(&notificationModuleMutex);
-	notificationModules[module->getName()] = module;
-	pthread_mutex_unlock(&notificationModuleMutex);
-}
-
 void vmi::VmiIDS::enqueueModule(SensorModule *module) {
 	if(module == NULL) return;
 	pthread_mutex_lock(&sensorModuleMutex);
@@ -531,43 +493,11 @@ bool vmi::VmiIDS::dequeueDetectionModule(std::string detectionModuleName) {
 	return success;
 }
 
-bool vmi::VmiIDS::enqueueNotificationModule(std::string notificationModuleName) {
-	bool success = false;
-	if (notificationModuleName.find("") != std::string::npos) {
-		pthread_mutex_lock(&notificationModuleMutex);
-		//notificationModules[notificationModuleName] = new SimpleDetectionModule();
-		pthread_mutex_unlock(&notificationModuleMutex);
-	}
-	return success;
-}
-
-/**
- * @deprecated
- * @param notificationModuleName
- * @return
- */
-bool vmi::VmiIDS::dequeueNotificationModule(std::string notificationModuleName) {
-	bool success = false;
-	pthread_mutex_lock(&notificationModuleMutex);
-	for (std::map<std::string, NotificationModule*>::iterator it =
-			this->notificationModules.begin(); it
-			!= this->notificationModules.end(); ++it) {
-		if (it->first.compare(notificationModuleName) == 0) {
-			this->notificationModules.erase(it);
-			success = true;
-		}
-	}
-	pthread_mutex_unlock(&notificationModuleMutex);
-	return success;
-}
-
-vmi::NotificationModule *vmi::VmiIDS::getNotificationModule(
-		std::string notificationModuleName) {
-	return this->notificationModules[notificationModuleName];
-}
-
 vmi::SensorModule *vmi::VmiIDS::getSensorModule(std::string sensorModuleName) {
-	return this->sensorModules[sensorModuleName];
+    if(this->sensorModules.find(sensorModuleName) == this->sensorModules.end()){
+    	return NULL;
+    }
+   	return this->sensorModules[sensorModuleName];
 }
 
 libconfig::Setting *vmi::VmiIDS::getSetting(std::string settingName){

@@ -10,11 +10,67 @@
 
 #include "Module.h"
 
-#include <ostream>
 #include <streambuf>
 #include <ostream>
+#include <vector>
+#include <map>
+#include <pthread.h>
 
 namespace vmi {
+
+
+template <class cT, class traits = std::char_traits<cT> >
+class NotificationModuleStreamBuffer : public std::basic_streambuf<cT, traits>
+{
+public:
+	NotificationModuleStreamBuffer(std::string p_name,
+			void (*p_notifyFunction)(std::string, std::string)) :
+    	buf(BUF_SIZE), name(p_name), notifyFunction(p_notifyFunction){
+    	std::basic_streambuf<cT, traits>::setp(&buf[0], &buf[0] + buf.capacity());
+    }
+protected:
+    virtual typename traits::int_type overflow(typename traits::int_type c = traits::eof())
+    {
+    	size_t currentptr = buf.capacity();
+    	buf.resize(buf.capacity()*2);
+    	std::basic_streambuf<cT, traits>::setp(&buf[0], &buf[0] + buf.capacity());
+    	std::basic_streambuf<cT, traits>::pbump(currentptr);
+    	*std::basic_streambuf<cT, traits>::pptr() = c;
+    	std::basic_streambuf<cT, traits>::pbump(1);
+    	return traits::not_eof(c);
+    }
+
+    virtual int sync(void)
+    {
+        // Handle output
+        notifyFunction(name, std::string(std::basic_streambuf<cT, traits>::pbase(),
+        		std::basic_streambuf<cT, traits>::pptr()));
+
+        // This tells that buffer is empty again
+    	buf.resize(BUF_SIZE);
+    	std::basic_streambuf<cT, traits>::setp(&buf[0], &buf[0] + buf.capacity());
+        return 0;
+    }
+private:
+    // Work in buffer mode. It is also possible to work without buffer.
+    static size_t const BUF_SIZE = 64;
+    std::vector<cT> buf;
+    std::string name;
+    void (*notifyFunction)(std::string, std::string);
+};
+
+template <class cT, class traits = std::char_traits<cT> >
+class NotificationModuleStreamTemplate: public std::basic_ostream< cT, traits >
+{
+public:
+	NotificationModuleStreamTemplate(std::string name, void (*notifyFunction)(std::string, std::string)) :
+    	std::basic_ostream< cT, traits >(&buf), buf(name, notifyFunction){}
+private:
+    NotificationModuleStreamBuffer<cT> buf;
+};
+
+typedef NotificationModuleStreamTemplate<char> NotificationStream;
+typedef NotificationModuleStreamTemplate<wchar_t> wNotificationStream;
 
 //Throw away all output - see from:
 //http://www.velocityreviews.com/forums/t450028-null-ostream.html
@@ -53,37 +109,32 @@ typedef enum {
 } DEBUG_LEVEL;
 
 class NotificationModule : public vmi::Module{
-	protected:
-		DEBUG_LEVEL debugLevel;
+	private:
+		static DEBUG_LEVEL debugLevel;
 		nullstream nullStream;
+
+		static std::map<std::string, vmi::NotificationModule *> notificationModules;
+		static pthread_mutex_t notificationModuleMutex;
 
 	public:
 		NotificationModule(std::string moduleName);
-		virtual ~NotificationModule(){};
+		virtual ~NotificationModule();
 
-		virtual void debug(Module *module, std::string message) = 0;
-		virtual void info(Module *module, std::string message) = 0;
-		virtual void warn(Module *module, std::string message) = 0;
-		virtual void error(Module *module, std::string message) = 0;
-		virtual void critical(Module *module, std::string message) = 0;
-		virtual void alert(Module *module, std::string message) = 0;
+		virtual void doDebug(std::string module, std::string message) = 0;
+		virtual void doInfo(std::string module, std::string message) = 0;
+		virtual void doWarn(std::string module, std::string message) = 0;
+		virtual void doError(std::string module, std::string message) = 0;
+		virtual void doCritical(std::string module, std::string message) = 0;
+		virtual void doAlert(std::string module, std::string message) = 0;
 
-		virtual std::ostream& debug(Module *module) = 0;
-		virtual std::ostream& info(Module *module) = 0;
-		virtual std::ostream& warn(Module *module) = 0;
-		virtual std::ostream& error(Module *module) = 0;
-		virtual std::ostream& critical(Module *module) = 0;
-		virtual std::ostream& alert(Module *module) = 0;
+		static void debug(std::string module, std::string message);
+		static void info(std::string module, std::string message);
+		static void warn(std::string module, std::string message);
+		static void error(std::string module, std::string message);
+		static void critical(std::string module, std::string message);
+		static void alert(std::string module, std::string message);
 };
 
 }
-
-#include "Modintern.h"
-
-#define GETNOTIFICATIONMODULE(variable, modulename) \
-		variable = vmi::VmiIDS::getInstance()->getNotificationModule(QUOTE(modulename)); \
-		if (!variable) { \
-			throw vmi::DependencyNotFoundException(QUOTE(modulename)); \
-		}
 
 #endif /* NOTIFICATIONMODULE_H_ */

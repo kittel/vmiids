@@ -9,12 +9,15 @@
 #define DETECTIONMODULE_H_
 
 #include "Module.h"
+#include "OutputModule.h"
 
 namespace vmi {
 
-class DetectionModule : public vmi::Module {
+class DetectionModule : public vmi::Module, protected OutputModule{
 	public:
-		DetectionModule(std::string moduleName) : vmi::Module(moduleName) {};
+		DetectionModule(std::string moduleName) :
+			vmi::Module(moduleName),
+			vmi::OutputModule(moduleName){};
 		virtual ~DetectionModule(){};
 
 		virtual void run() = 0;
