@@ -143,7 +143,17 @@ private:
 	Module *module;
 public:
 	NotificationModuleLoader(){
-		module = new Module();
+		try {
+			module = new Module();
+			std::cerr << "Loading " << module->getName() << "... ";
+			std::cerr << "Success" << std::endl;
+		} catch (vmi::ModuleException &e) {
+			std::cerr << "Loading Module FAILED" << std::endl;
+			e.printException();
+		} catch (std::exception &e) {
+			std::cerr << "FAILED" << std::endl;
+			std::cerr << e.what() << std::endl;
+		}
 	}
 	~NotificationModuleLoader(){
 		delete module;

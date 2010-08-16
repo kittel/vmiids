@@ -3,10 +3,14 @@ AM_CXXFLAGS = -fpic -I $(top_builddir)/src @AM_CXXFLAGS@ -rdynamic
 AM_CFLAGS = -fpic  -I $(top_builddir)/src @AM_CFLAGS@ 
 
 
-lib_LTLIBRARIES = libshellnotificationmodule.la
+lib_LTLIBRARIES = libshellnotificationmodule.la libfilenotificationmodule.la
 
 libshellnotificationmodule_ladir = $(includedir)/vmiids/notification
 libshellnotificationmodule_la_HEADERS = ShellNotificationModule.h
 libshellnotificationmodule_la_SOURCES = $(libshellnotificationmodule_la_HEADERS) \
 					ShellNotificationModule.cpp 
 
+libfilenotificationmodule_ladir = $(includedir)/vmiids/notification
+libfilenotificationmodule_la_HEADERS = FileNotificationModule.h
+libfilenotificationmodule_la_SOURCES = $(libfilenotificationmodule_la_HEADERS) \
+					FileNotificationModule.cpp 
