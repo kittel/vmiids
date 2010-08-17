@@ -6,6 +6,7 @@
  */
 
 #include "VmiIDSrpc.h"
+#include <iostream>
 
 int
 main (int argc, char *argv[])
@@ -22,6 +23,9 @@ main (int argc, char *argv[])
 	} else if(argv[1][0] == 'd'){
 		printf("Deleting module %s\n", module);
 		VmiIDSrpc::getInstance()->dequeueDetectionModule(module);
+	} else if(argv[1][0] == 'r'){
+		printf("Run module %s\n", module);
+		std::cout << VmiIDSrpc::getInstance()->runSingleDetectionModule(module);
 	} else if(argv[1][0] == 'l'){
 		printf("Loading shared object %s\n", module);
 		if(VmiIDSrpc::getInstance()->loadSharedObject(module)){

@@ -11,6 +11,7 @@
 #include "vmiids/VmiIDS.h"
 
 #include <rpc/rpc.h>
+#include <string>
 
 class VmiIDSrpc {
 private:
@@ -26,6 +27,7 @@ public:
 
 	bool enqueueDetectionModule(std::string detectionModuleName);
 	bool dequeueDetectionModule(std::string detectionModuleName);
+	std::string runSingleDetectionModule(std::string module);
 	bool stopIDS(int signum = 0);
 	bool loadSharedObject(std::string path);
 };

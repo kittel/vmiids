@@ -64,6 +64,22 @@ bool VmiIDSrpc::dequeueDetectionModule(std::string detectionModuleName){
 	return result;
 }
 
+std::string VmiIDSrpc::runSingleDetectionModule(std::string module){
+	enum clnt_stat retval;
+	char * result;
+	const char * arg = module.c_str();
+
+	retval = clnt_call(this->clnt, RUNDETECTIONMODULE,
+		(xdrproc_t) xdr_wrapstring, (caddr_t) &arg,
+		(xdrproc_t) xdr_wrapstring, (caddr_t) &result,
+		TIMEOUT);
+	if (retval != RPC_SUCCESS) {
+		clnt_perror (this->clnt, "call failed");
+	}
+	std::string resultString(result);
+	return resultString;
+}
+
 bool VmiIDSrpc::stopIDS(int signum){
 	enum clnt_stat retval;
 	bool_t result;

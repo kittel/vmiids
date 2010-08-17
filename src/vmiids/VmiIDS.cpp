@@ -30,6 +30,8 @@
 #include <ucontext.h>
 #include <cxxabi.h>
 
+#include "RpcNotificationModule.h"
+
 // rpcthread SIGTERM
 	//pthread_exit(NULL);
 
@@ -322,14 +324,34 @@ void* vmi::VmiIDS::runDetectionModule(void* module){
 	pthread_exit(NULL);
 }
 
+std::string vmi::VmiIDS::runSingleDetectionModule(std::string detectionModuleName){
+	RpcNotificationModule rpc;
+	pthread_t moduleThread;
+	pthread_mutex_lock(&this->detectionModuleMutex);
+	pthread_mutex_lock(&activeDetectionModuleMutex);
+	std::map<std::string, DetectionModule*>::iterator it;
+	if((it = this->detectionModules.find(detectionModuleName)) != this->detectionModules.end()){
+		pthread_create(&moduleThread, NULL, VmiIDS::runDetectionModule,
+					(void*) it->second);
+		pthread_join(moduleThread, NULL);
+	}else {
+		pthread_mutex_unlock(&this->detectionModuleMutex);
+		pthread_mutex_unlock(&activeDetectionModuleMutex);
+		return "Detection Module not found\n";
+	}
+	pthread_mutex_unlock(&this->detectionModuleMutex);
+	pthread_mutex_unlock(&activeDetectionModuleMutex);
+	return rpc.getRpcResult();
+}
+
 void vmi::VmiIDS::dispatchRPC(struct svc_req *rqstp, register SVCXPRT *transp){
 	union {
-		char *char_arg;
+		const char *char_arg;
 	} argument;
-	union {
-		bool_t bool_res;
-	} result;
-	bool_t retval;
+	char *result;
+	static bool_t retbool;
+	static char * returnStringMemory = 0;
+	std::string returnString;
 	xdrproc_t _xdr_argument, _xdr_result;
 
 	memset ((char *)&argument, 0, sizeof (argument));
@@ -346,8 +368,8 @@ void vmi::VmiIDS::dispatchRPC(struct svc_req *rqstp, register SVCXPRT *transp){
 			svcerr_decode (transp);
 			return;
 		}
-		retval = 1;
-		VmiIDS::getInstance()->enqueueDetectionModule(argument.char_arg);
+		retbool	= VmiIDS::getInstance()->enqueueDetectionModule(argument.char_arg);
+		result = (char*) &retbool;
 		break;
 
 	case DEQUEUEDETECTIONMODULE:
@@ -357,8 +379,23 @@ void vmi::VmiIDS::dispatchRPC(struct svc_req *rqstp, register SVCXPRT *transp){
 			svcerr_decode (transp);
 			return;
 		}
-		retval = 1;
-		VmiIDS::getInstance()->dequeueDetectionModule(argument.char_arg);
+		retbool = VmiIDS::getInstance()->dequeueDetectionModule(argument.char_arg);
+		result = (char*) &retbool;
+		break;
+
+	case RUNDETECTIONMODULE:
+		_xdr_argument = (xdrproc_t) xdr_wrapstring;
+		_xdr_result = (xdrproc_t) xdr_wrapstring;
+		if (!svc_getargs (transp, (xdrproc_t) _xdr_argument, (caddr_t) &argument)) {
+			svcerr_decode (transp);
+			return;
+		}
+		returnString = VmiIDS::getInstance()->runSingleDetectionModule(argument.char_arg).c_str();
+		if(returnStringMemory != NULL) free(returnStringMemory);
+		returnStringMemory = (char *) malloc(returnString.length() + 1);
+		memset(returnStringMemory, 0, returnString.length() + 1);
+		memmove(returnStringMemory,returnString.c_str(), returnString.length());
+		result = (char*) &returnStringMemory;
 		break;
 
 	case STOPIDS:
@@ -368,9 +405,10 @@ void vmi::VmiIDS::dispatchRPC(struct svc_req *rqstp, register SVCXPRT *transp){
 			svcerr_decode (transp);
 			return;
 		}
-		retval = 1;
 		pthread_t killThread;
 		pthread_create(&killThread, NULL, &stopIDSThreadFunction, NULL);
+		retbool = true;
+		result = (char*) &retbool;
 		break;
 
 	case LOADSHAREDOBJECT:
@@ -380,22 +418,22 @@ void vmi::VmiIDS::dispatchRPC(struct svc_req *rqstp, register SVCXPRT *transp){
 			svcerr_decode (transp);
 			return;
 		}
-		retval = 1;
-		VmiIDS::getInstance()->loadSharedObject(argument.char_arg);
+		retbool = VmiIDS::getInstance()->loadSharedObject(argument.char_arg);
+		result = (char*) &retbool;
 		break;
 
 	default:
 		svcerr_noproc (transp);
 		return;
 	}
-	if (retval > 0 && !svc_sendreply(transp, (xdrproc_t) _xdr_result, (char *)&result)) {
+	if (result != NULL && !svc_sendreply(transp, (xdrproc_t) _xdr_result, result)) {
 		svcerr_systemerr (transp);
 	}
 	if (!svc_freeargs (transp, (xdrproc_t) _xdr_argument, (caddr_t) &argument)) {
 		fprintf (stderr, "%s", "unable to free arguments");
-		exit (1);
+		return;
 	}
-	xdr_free(_xdr_result, (caddr_t) &result);
+
 	//if (!simp_prog_1_freeresult (transp, _xdr_result, (caddr_t) &result))
 	//	fprintf (stderr, "%s", "unable to free results");
 

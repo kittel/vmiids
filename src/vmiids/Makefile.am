@@ -18,6 +18,8 @@ vmiids_HEADERS=VmiIDS.h \
 vmiids_SOURCES=VmiIDS.cpp \
 			   $(vmiids_HEADERS) \
 			   NotificationModule.cpp \
+			   RpcNotificationModule.h \
+			   RpcNotificationModule.cpp \
                ./Debug.h \
                ./ConsoleMonitor.cpp 
                

@@ -19,6 +19,7 @@
 typedef enum {
 	ENQUEUEDETECTIONMODULE = 1,
 	DEQUEUEDETECTIONMODULE,
+	RUNDETECTIONMODULE,
 	STOPIDS,
 	LOADSHAREDOBJECT,
 } eRPCFuncs;
@@ -72,6 +73,8 @@ class VmiIDS : public Module{
 
 		bool enqueueDetectionModule(std::string detectionModuleName);
 		bool dequeueDetectionModule(std::string detectionModuleName);
+
+		std::string runSingleDetectionModule(std::string detectionModuleName);
 
 		vmi::SensorModule *getSensorModule(std::string sensorModuleName);
 
