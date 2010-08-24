@@ -32,7 +32,6 @@ public:
 	virtual void printException(){ std::cerr << what() << ": " << this->message << std::endl; }
 };
 
-
 class FunctionNotImplementedException: public ModuleException {
 public:
 	FunctionNotImplementedException(std::string text) : ModuleException(text) { }

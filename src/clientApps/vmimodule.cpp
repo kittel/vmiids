@@ -34,4 +34,6 @@ main (int argc, char *argv[])
 			printf("Loading shared object failed\n");
 		}
 	} else printf("Unknown task\n");
+
+	return 0;
 }

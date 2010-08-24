@@ -13,11 +13,27 @@
 #include <rpc/rpc.h>
 #include <string>
 
+class VmiIDSrpcException: public std::exception {
+protected:
+	std::string message;
+public:
+	VmiIDSrpcException(){ this->message = ""; }
+	VmiIDSrpcException(std::string text){ this->message = text; }
+	virtual ~VmiIDSrpcException() throw(){};
+	virtual const char* what() const throw () {
+		return "VmiIDSrpc abort";
+	}
+	virtual void printException(){ std::cerr << what() << ": " << this->message << std::endl; }
+};
+
 class VmiIDSrpc {
 private:
 	CLIENT *clnt;
 
 	static VmiIDSrpc *instance;
+
+	void startConnection(void);
+	void stopConnection(void);
 
 public:
 	VmiIDSrpc();

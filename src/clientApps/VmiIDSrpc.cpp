@@ -13,14 +13,19 @@
 static struct timeval TIMEOUT = { 25, 0 };
 
 VmiIDSrpc::VmiIDSrpc() {
-	this->clnt = clnt_create (RPC_HOST, VMIIDS_RPC, VMIIDS_RPC_VERSION, "udp");
-	if (this->clnt == NULL) {
-		clnt_pcreateerror (RPC_HOST);
-		exit (1);
-	}
 }
 
 VmiIDSrpc::~VmiIDSrpc() {
+}
+
+void VmiIDSrpc::startConnection(void){
+	this->clnt = clnt_create (RPC_HOST, VMIIDS_RPC, VMIIDS_RPC_VERSION, "udp");
+	if (this->clnt == NULL) {
+		clnt_pcreateerror (RPC_HOST);
+		throw VmiIDSrpcException("Could not connect to VmiIDS");
+	}
+}
+void VmiIDSrpc::stopConnection(void){
 	clnt_destroy (this->clnt);
 }
 
@@ -35,6 +40,7 @@ VmiIDSrpc *VmiIDSrpc::getInstance() {
 
 
 bool VmiIDSrpc::enqueueDetectionModule(std::string detectionModuleName){
+	this->startConnection();
 	enum clnt_stat retval;
 	bool_t result;
 	const char * arg = detectionModuleName.c_str();
@@ -46,10 +52,12 @@ bool VmiIDSrpc::enqueueDetectionModule(std::string detectionModuleName){
 	if (retval != RPC_SUCCESS) {
 		clnt_perror (this->clnt, "call failed");
 	}
+	this->stopConnection();
 	return result;
 }
 
 bool VmiIDSrpc::dequeueDetectionModule(std::string detectionModuleName){
+	this->startConnection();
 	enum clnt_stat retval;
 	bool_t result;
 	const char * arg = detectionModuleName.c_str();
@@ -61,12 +69,15 @@ bool VmiIDSrpc::dequeueDetectionModule(std::string detectionModuleName){
 	if (retval != RPC_SUCCESS) {
 		clnt_perror (this->clnt, "call failed");
 	}
+	this->stopConnection();
 	return result;
 }
 
 std::string VmiIDSrpc::runSingleDetectionModule(std::string module){
+	this->startConnection();
 	enum clnt_stat retval;
-	char * result;
+	char *result = NULL;
+	//char result[1024] = {0};
 	const char * arg = module.c_str();
 
 	retval = clnt_call(this->clnt, RUNDETECTIONMODULE,
@@ -77,10 +88,12 @@ std::string VmiIDSrpc::runSingleDetectionModule(std::string module){
 		clnt_perror (this->clnt, "call failed");
 	}
 	std::string resultString(result);
+	this->stopConnection();
 	return resultString;
 }
 
 bool VmiIDSrpc::stopIDS(int signum){
+	this->startConnection();
 	enum clnt_stat retval;
 	bool_t result;
 
@@ -90,10 +103,12 @@ bool VmiIDSrpc::stopIDS(int signum){
 	if (retval != RPC_SUCCESS) {
 		clnt_perror (this->clnt, "call failed");
 	}
+	this->stopConnection();
 	return result;
 }
 
 bool VmiIDSrpc::loadSharedObject(std::string path){
+	this->startConnection();
 	enum clnt_stat retval;
 	bool_t result;
 	const char * arg = path.c_str();
@@ -105,5 +120,6 @@ bool VmiIDSrpc::loadSharedObject(std::string path){
 	if (retval != RPC_SUCCESS) {
 		clnt_perror (this->clnt, "call failed");
 	}
+	this->stopConnection();
 	return result;
 }
