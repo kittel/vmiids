@@ -5,10 +5,10 @@
  *      Author: kittel
  */
 
-#include "VmiIDSrpc.h"
+#include "vmiids/rpc/RpcClient.h"
 
 int
 main ()
 {
-	VmiIDSrpc::getInstance()->stopIDS();
+	vmi::RpcClient::getInstance()->stopIDS();
 }

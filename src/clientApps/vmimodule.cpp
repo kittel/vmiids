@@ -5,7 +5,7 @@
  *      Author: kittel
  */
 
-#include "VmiIDSrpc.h"
+#include "vmiids/rpc/RpcClient.h"
 #include <iostream>
 
 int
@@ -19,16 +19,16 @@ main (int argc, char *argv[])
 
 	if( argv[1][0] == 'a'){
 		printf("Adding module %s\n", module);
-		VmiIDSrpc::getInstance()->enqueueDetectionModule(module);
+		vmi::RpcClient::getInstance()->enqueueDetectionModule(module);
 	} else if(argv[1][0] == 'd'){
 		printf("Deleting module %s\n", module);
-		VmiIDSrpc::getInstance()->dequeueDetectionModule(module);
+		vmi::RpcClient::getInstance()->dequeueDetectionModule(module);
 	} else if(argv[1][0] == 'r'){
 		printf("Run module %s\n", module);
-		std::cout << VmiIDSrpc::getInstance()->runSingleDetectionModule(module);
+		std::cout << vmi::RpcClient::getInstance()->runSingleDetectionModule(module);
 	} else if(argv[1][0] == 'l'){
 		printf("Loading shared object %s\n", module);
-		if(VmiIDSrpc::getInstance()->loadSharedObject(module)){
+		if(vmi::RpcClient::getInstance()->loadSharedObject(module)){
 			printf("Loading shared object successful\n");
 		}else {
 			printf("Loading shared object failed\n");

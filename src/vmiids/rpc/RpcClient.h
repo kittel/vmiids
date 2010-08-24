@@ -1,17 +1,19 @@
 /*
- * VmiIDSrpc.h
+ * VmiIDS_rpcClient.h
  *
  *  Created on: Jul 8, 2010
  *      Author: kittel
  */
 
-#ifndef VMIIDSRPC_H_
-#define VMIIDSRPC_H_
+#ifndef VMIIDSRPCCLIENT_H_
+#define VMIIDSRPCCLIENT_H_
 
 #include "vmiids/VmiIDS.h"
 
 #include <rpc/rpc.h>
 #include <string>
+
+namespace vmi {
 
 class VmiIDSrpcException: public std::exception {
 protected:
@@ -26,20 +28,20 @@ public:
 	virtual void printException(){ std::cerr << what() << ": " << this->message << std::endl; }
 };
 
-class VmiIDSrpc {
+class RpcClient {
 private:
 	CLIENT *clnt;
 
-	static VmiIDSrpc *instance;
+	static RpcClient *instance;
 
 	void startConnection(void);
 	void stopConnection(void);
 
 public:
-	VmiIDSrpc();
-	virtual ~VmiIDSrpc();
+	RpcClient();
+	virtual ~RpcClient();
 
-	static VmiIDSrpc *getInstance();
+	static RpcClient *getInstance();
 
 	bool enqueueDetectionModule(std::string detectionModuleName);
 	bool dequeueDetectionModule(std::string detectionModuleName);
@@ -48,4 +50,6 @@ public:
 	bool loadSharedObject(std::string path);
 };
 
-#endif /* VMIIDSRPC_H_ */
+}
+
+#endif /* VMIIDSRPCCLIENT_H_ */

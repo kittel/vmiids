@@ -1,45 +1,43 @@
 /*
- * VmiIDSrpc.cpp
+ * VmiIDS_rpcClient.cpp
  *
  *  Created on: Jul 8, 2010
  *      Author: kittel
  */
 
-#include "VmiIDSrpc.h"
+#include "RpcClient.h"
 
 #define RPC_HOST "localhost"
 
 /* Default timeout can be changed using clnt_control() */
 static struct timeval TIMEOUT = { 25, 0 };
 
-VmiIDSrpc::VmiIDSrpc() {
+vmi::RpcClient::RpcClient() {
 }
 
-VmiIDSrpc::~VmiIDSrpc() {
+vmi::RpcClient::~RpcClient() {
 }
 
-void VmiIDSrpc::startConnection(void){
+void vmi::RpcClient::startConnection(void){
 	this->clnt = clnt_create (RPC_HOST, VMIIDS_RPC, VMIIDS_RPC_VERSION, "udp");
 	if (this->clnt == NULL) {
 		clnt_pcreateerror (RPC_HOST);
 		throw VmiIDSrpcException("Could not connect to VmiIDS");
 	}
 }
-void VmiIDSrpc::stopConnection(void){
+void vmi::RpcClient::stopConnection(void){
 	clnt_destroy (this->clnt);
 }
 
-VmiIDSrpc* VmiIDSrpc::instance = NULL;
+vmi::RpcClient* vmi::RpcClient::instance = NULL;
 
-VmiIDSrpc *VmiIDSrpc::getInstance() {
+vmi::RpcClient *vmi::RpcClient::getInstance() {
 	if (!instance)
-		instance = new VmiIDSrpc();
+		instance = new RpcClient();
 	return instance;
 }
 
-
-
-bool VmiIDSrpc::enqueueDetectionModule(std::string detectionModuleName){
+bool vmi::RpcClient::enqueueDetectionModule(std::string detectionModuleName){
 	this->startConnection();
 	enum clnt_stat retval;
 	bool_t result;
@@ -56,7 +54,7 @@ bool VmiIDSrpc::enqueueDetectionModule(std::string detectionModuleName){
 	return result;
 }
 
-bool VmiIDSrpc::dequeueDetectionModule(std::string detectionModuleName){
+bool vmi::RpcClient::dequeueDetectionModule(std::string detectionModuleName){
 	this->startConnection();
 	enum clnt_stat retval;
 	bool_t result;
@@ -73,11 +71,10 @@ bool VmiIDSrpc::dequeueDetectionModule(std::string detectionModuleName){
 	return result;
 }
 
-std::string VmiIDSrpc::runSingleDetectionModule(std::string module){
+std::string vmi::RpcClient::runSingleDetectionModule(std::string module){
 	this->startConnection();
 	enum clnt_stat retval;
 	char *result = NULL;
-	//char result[1024] = {0};
 	const char * arg = module.c_str();
 
 	retval = clnt_call(this->clnt, RUNDETECTIONMODULE,
@@ -92,7 +89,7 @@ std::string VmiIDSrpc::runSingleDetectionModule(std::string module){
 	return resultString;
 }
 
-bool VmiIDSrpc::stopIDS(int signum){
+bool vmi::RpcClient::stopIDS(int signum){
 	this->startConnection();
 	enum clnt_stat retval;
 	bool_t result;
@@ -107,7 +104,7 @@ bool VmiIDSrpc::stopIDS(int signum){
 	return result;
 }
 
-bool VmiIDSrpc::loadSharedObject(std::string path){
+bool vmi::RpcClient::loadSharedObject(std::string path){
 	this->startConnection();
 	enum clnt_stat retval;
 	bool_t result;
