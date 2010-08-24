@@ -22,7 +22,7 @@ void vmi::RpcClient::startConnection(void){
 	this->clnt = clnt_create (RPC_HOST, VMIIDS_RPC, VMIIDS_RPC_VERSION, "udp");
 	if (this->clnt == NULL) {
 		clnt_pcreateerror (RPC_HOST);
-		throw VmiIDSrpcException("Could not connect to VmiIDS");
+		throw RpcException("Could not connect to VmiIDS");
 	}
 }
 void vmi::RpcClient::stopConnection(void){

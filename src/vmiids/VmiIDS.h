@@ -10,22 +10,11 @@
 
 #include <map>
 #include <string>
-#include <rpc/rpc.h>
 #include <libconfig.h++>
+#include "vmiids/rpc/RpcServer.h"
 
 #include "DetectionModule.h"
 #include "SensorModule.h"
-
-typedef enum {
-	ENQUEUEDETECTIONMODULE = 1,
-	DEQUEUEDETECTIONMODULE,
-	RUNDETECTIONMODULE,
-	STOPIDS,
-	LOADSHAREDOBJECT,
-} eRPCFuncs;
-
-#define VMIIDS_RPC 			555555555
-#define VMIIDS_RPC_VERSION 	1
 
 namespace vmi {
 
@@ -39,8 +28,9 @@ class VmiIDS : public Module{
 		pthread_mutex_t sensorModuleMutex;
 
 		static VmiIDS *instance;
+		RpcServer rpcServer;
 
-		pthread_t mainThread, rpcThread, vmiidsThread;
+		pthread_t mainThread, vmiidsThread;
 
 		libconfig::Config config;
 
@@ -62,7 +52,6 @@ class VmiIDS : public Module{
 		void waitIDS();
 		bool stopIDS(int signum = 0);
 
-		static void dispatchRPC(struct svc_req *rqstp, register SVCXPRT *transp);
 		static void * run(void * this_pointer);
 		static void * runDetectionModule(void* module);
 
