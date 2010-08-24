@@ -132,6 +132,7 @@ if test $MEMTOOLPATHSET = 1 ; then
     # extend the compiler and linker flags according to the path set
     MEMTOOL_CXXFLAGS="-I$with_memtool/include  -I/usr/include/qt4 -I/usr/include/qt4/QtCore"
     MEMTOOL_LDFLAGS="-L$with_memtool/ -lmemtool"
+    MEMTOOL_PATH=$with_memtool
 fi
 
 ##########################################################################
@@ -196,6 +197,12 @@ AC_SUBST([AM_CXXFLAGS])
 AC_SUBST([AM_LDFLAGS])
 AC_SUBST(MEMTOOL_CXXFLAGS)
 AC_SUBST(MEMTOOL_LDFLAGS)
+AC_SUBST(MEMTOOL_PATH)
 AC_SUBST([LIBS])
+
+AC_CONFIG_FILES(
+	[vmiids.sh:src/vmiids/vmiids.sh.in],
+	[chmod +x vmiids.sh])
+
 
 AC_OUTPUT

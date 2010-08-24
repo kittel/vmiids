@@ -4,6 +4,8 @@ AM_CFLAGS = -fpic  -I $(top_builddir)/src @AM_CFLAGS@
 
 SUBDIRS=modules rpc modules_extern
 
+sysconf_DATA = vmiids.cfg
+
 bin_PROGRAMS=vmiids vmiids-clearfscache
 
 vmiidsdir = $(includedir)/vmiids
