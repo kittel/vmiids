@@ -10,7 +10,7 @@
 
 #include "vmiids/DetectionModule.h"
 
-#include "vmiids/sensor/QemuMonitorSensorModule.h"
+#include "vmiids/modules/sensor/QemuMonitorSensorModule.h"
 
 class StateChangerDetectionModule : public vmi::DetectionModule{
 private:

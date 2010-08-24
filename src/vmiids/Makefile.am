@@ -24,7 +24,6 @@ vmiids_SOURCES=VmiIDS.cpp \
                ./ConsoleMonitor.cpp 
                
                
-#vmiids_LIBADD = 
 vmiids_LDFLAGS = -lpthread -lnsl -ldl -lconfig++ @AM_LDFLAGS@ 
 
 vmiids_clearfscache_SOURCES=clearfscache.cpp

@@ -10,9 +10,9 @@
 
 #include "vmiids/DetectionModule.h"
 
-#include "vmiids/sensor/QemuMonitorSensorModule.h"
-#include "vmiids/sensor/FileSystemSensorModule.h"
-#include "vmiids/sensor/ShellSensorModule.h"
+#include "vmiids/modules/sensor/QemuMonitorSensorModule.h"
+#include "vmiids/modules/sensor/FileSystemSensorModule.h"
+#include "vmiids/modules/sensor/ShellSensorModule.h"
 
 /*!
  * \exception MemorySensorModuleException MemorySensorModule.h
