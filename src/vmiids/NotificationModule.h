@@ -48,6 +48,7 @@ protected:
 
         // This tells that buffer is empty again
     	buf.resize(BUF_SIZE);
+    	memset(&buf[0], 0, buf.capacity());
     	std::basic_streambuf<cT, traits>::setp(&buf[0], &buf[0] + buf.capacity());
         return 0;
     }

@@ -18,7 +18,7 @@
 
 namespace vmi {
 
-class VmiIDS : public Module{
+class VmiIDS : public Module, protected OutputModule{
 	private:
 		std::map<std::string, vmi::DetectionModule *> detectionModules;
 		pthread_mutex_t detectionModuleMutex;
@@ -30,11 +30,11 @@ class VmiIDS : public Module{
 		static VmiIDS *instance;
 		RpcServer rpcServer;
 
-		pthread_t mainThread, vmiidsThread;
+		static pthread_t mainThread, vmiidsThread;
 
 		libconfig::Config config;
 
-		bool vmiRunning;
+		static bool vmiRunning;
 
 		VmiIDS();
 		VmiIDS(const VmiIDS&);
@@ -44,13 +44,12 @@ class VmiIDS : public Module{
 
 	protected:
 		virtual ~VmiIDS();
-		static void killInstance(void);
 
 	public:
 		static VmiIDS *getInstance();
 		int startIDS();
 		void waitIDS();
-		bool stopIDS(int signum = 0);
+		static bool stopIDS(int signum = 0);
 
 		static void * run(void * this_pointer);
 		static void * runDetectionModule(void* module);

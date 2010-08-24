@@ -31,6 +31,7 @@ class OutputModule {
 	  int length = vsnprintf(string, 1024, format, args);
 	  if(length == 0) return;
 	  debug << string;
+	  debug.flush();
 	  va_end (args);
 	}
 	void printInfo(const char * format, ...){
@@ -40,6 +41,7 @@ class OutputModule {
 	  int length = vsnprintf(string, 1024, format, args);
 	  if(length == 0) return;
 	  info << string;
+	  info.flush();
 	  va_end (args);
 	}
 	void printWarn(const char * format, ...){
@@ -58,6 +60,7 @@ class OutputModule {
 	  int length = vsnprintf(string, 1024, format, args);
 	  if(length == 0) return;
 	  error << string;
+	  error.flush();
 	  va_end (args);
 	}
 	void printCritical(const char * format, ...){
@@ -67,6 +70,7 @@ class OutputModule {
 	  int length = vsnprintf(string, 1024, format, args);
 	  if(length == 0) return;
 	  critical << string;
+	  critical.flush();
 	  va_end (args);
 	}
 	void printAlert(const char * format, ...){
@@ -76,6 +80,7 @@ class OutputModule {
 	  int length = vsnprintf(string, 1024, format, args);
 	  if(length == 0) return;
 	  alert << string;
+	  alert.flush();
 	  va_end (args);
 	}
 
@@ -87,7 +92,8 @@ class OutputModule {
 			error(moduleName, vmi::NotificationModule::error),
 			critical(moduleName, vmi::NotificationModule::critical),
 			alert(moduleName, vmi::NotificationModule::alert){};
-		virtual ~OutputModule(){};
+		virtual ~OutputModule(){
+		};
 
 };
 

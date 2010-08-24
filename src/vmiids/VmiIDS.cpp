@@ -12,15 +12,12 @@
 #include <cstdlib>
 #include <unistd.h>
 #include <cstring>
-#include <memory.h>
 
 #include <dlfcn.h>
 #include <dirent.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
 
 #include <signal.h>
 #include <execinfo.h>
@@ -138,9 +135,13 @@ int main() {
 }
 
 vmi::VmiIDS* vmi::VmiIDS::instance = NULL;
+pthread_t vmi::VmiIDS::mainThread = NULL;
+pthread_t vmi::VmiIDS::vmiidsThread = NULL;
+bool vmi::VmiIDS::vmiRunning = false;
 
 vmi::VmiIDS::VmiIDS() :
-		 vmi::Module("VmiIDS"), detectionModules(), sensorModules(),
+		 vmi::Module("VmiIDS"), vmi::OutputModule("VmiIDS"),
+		 detectionModules(), sensorModules(),
 		 rpcServer(), config(){
 	this->vmiRunning = false;
 	pthread_mutex_init(&detectionModuleMutex, NULL);
@@ -156,11 +157,10 @@ vmi::VmiIDS::VmiIDS() :
 			config.read(configFile);
 			fclose (configFile);
 		}catch(libconfig::ParseException &e){
-			printf("Could not read config file\n");
+			this->printError("Could not read config file\n");
 		}
 	}
 	this->mainThread = pthread_self();
-	atexit(vmi::VmiIDS::killInstance);
 }
 
 vmi::VmiIDS::~VmiIDS() {
@@ -172,17 +172,20 @@ vmi::VmiIDS::~VmiIDS() {
 		activeDetectionModules.erase(activeDetectionModules.begin());
 	}
 	while (!detectionModules.empty()) {
-		printf("Deleting %s\n", detectionModules.begin()->first.c_str());
+		this->printDebug("Deleting %s\n", detectionModules.begin()->first.c_str());
 		if(detectionModules.begin()->second != NULL)
 			delete (detectionModules.begin()->second);
 		detectionModules.erase(detectionModules.begin());
 	}
 	while (!sensorModules.empty()) {
-		printf("Deleting %s\n", sensorModules.begin()->first.c_str());
+		this->printDebug("Deleting %s\n", sensorModules.begin()->first.c_str());
 		if(sensorModules.begin()->second != NULL)
 			delete (sensorModules.begin()->second);
 		sensorModules.erase(sensorModules.begin());
 	}
+	pthread_mutex_unlock(&detectionModuleMutex);
+	pthread_mutex_unlock(&activeDetectionModuleMutex);
+	pthread_mutex_unlock(&sensorModuleMutex);
 }
 
 vmi::VmiIDS *vmi::VmiIDS::getInstance() {
@@ -191,23 +194,33 @@ vmi::VmiIDS *vmi::VmiIDS::getInstance() {
 	return instance;
 }
 
-void vmi::VmiIDS::killInstance() {
-	if (instance){
-		delete(instance);
-		instance = NULL;
-	}
-}
-
 int vmi::VmiIDS::startIDS() {
 	if (this->vmiRunning == true) {
-		printf("IDS already running");
+		this->printError("IDS already running");
 		return 0;
 	}
-	printf("IDS Starting\n");
+	this->printDebug("IDS Starting\n");
 	this->vmiRunning = true;
 	pthread_create(&vmiidsThread, NULL, VmiIDS::run,
 			(void*) this);
 	return 0;
+}
+
+void vmi::VmiIDS::waitIDS() {
+	pthread_join(vmiidsThread, NULL);
+	while(instance != NULL){
+		sched_yield();
+	}
+}
+
+bool vmi::VmiIDS::stopIDS(int signum) {
+	signum = 0;
+	vmi::VmiIDS::getInstance()->printDebug("IDS Stopping\n");
+	vmi::VmiIDS::getInstance()->vmiRunning = false;
+	pthread_join(vmiidsThread, NULL);
+	delete instance;
+	instance = NULL;
+	return true;
 }
 
 void * vmi::VmiIDS::run(void * this_pointer) {
@@ -222,7 +235,7 @@ void * vmi::VmiIDS::run(void * this_pointer) {
 			this_p->loadSharedObjectsPath(this_p->config.lookup("initialModuleByPath")[i]);
 		}
 	}catch(libconfig::SettingNotFoundException &e){
-			printf("No Modules loaded by Path ...\n");
+		this_p->printDebug("No Modules loaded by Path ...\n");
 	}
 
 	//
@@ -233,7 +246,7 @@ void * vmi::VmiIDS::run(void * this_pointer) {
 			this_p->loadSharedObject(this_p->config.lookup("initialModuleBySoPath")[i]);
 		}
 	}catch(libconfig::SettingNotFoundException &e){
-		printf("No Modules loaded by So Path ...\n");
+		this_p->printDebug("No Modules loaded by So Path ...\n");
 	}
 
 	//
@@ -244,7 +257,7 @@ void * vmi::VmiIDS::run(void * this_pointer) {
 			this_p->enqueueDetectionModule(this_p->config.lookup("startModules")[i]);
 		}
 	}catch(libconfig::SettingNotFoundException &e){
-		printf("No Modules started ...\n");
+		this_p->printDebug("No Modules started ...\n");
 	}
 
 	pthread_t moduleThread;
@@ -305,7 +318,7 @@ void vmi::VmiIDS::loadSharedObjectsPath(std::string path) {
 	DIR *dp;
 	struct dirent *dirp;
 	if ((dp = opendir(path.c_str())) == NULL) {
-		std::cout << "Error opening " << path << std::endl;
+		error << "Error opening " << path << std::endl;
 		return;
 	}
 
@@ -329,21 +342,9 @@ bool vmi::VmiIDS::loadSharedObject(std::string path) {
 	void *dlib;
 	dlib = dlopen(path.c_str(), RTLD_NOW | RTLD_GLOBAL);
 	if (dlib == NULL) {
-		std::cerr << "Error while loading " << path << ": " << dlerror() << std::endl;
+		error << "Error while loading " << path << ": " << dlerror() << std::endl;
 		return false;
 	}
-	return true;
-}
-
-void vmi::VmiIDS::waitIDS() {
-	pthread_join(vmiidsThread, NULL);
-}
-
-bool vmi::VmiIDS::stopIDS(int signum) {
-	signum = 0;
-	printf("IDS Stopping\n");
-	this->vmiRunning = false;
-	pthread_join(this->vmiidsThread, NULL);
 	return true;
 }
 
