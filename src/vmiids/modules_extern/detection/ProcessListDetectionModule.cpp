@@ -100,15 +100,3 @@ void ProcessListDetectionModule::run() {
 	}
 	this->globalMemtoolProcessMap = memtoolProcessMap;
 }
-
-void ProcessListDetectionModule::runTime() {
-
-}
-
-void ProcessListDetectionModule::runEvent() {
-
-}
-
-void ProcessListDetectionModule::getThreadLevel() {
-
-}

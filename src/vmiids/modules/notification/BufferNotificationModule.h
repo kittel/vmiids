@@ -1,26 +1,26 @@
 /*
- * RpcNotificationModule.h
+ * BufferNotificationModule.h
  *
  *  Created on: Aug 16, 2010
  *      Author: kittel
  */
 
-#ifndef RPCNOTIFICATIONMODULE_H_
-#define RPCNOTIFICATIONMODULE_H_
+#ifndef BUFFERNOTIFICATIONMODULE_H_
+#define BUFFERNOTIFICATIONMODULE_H_
 
 #include "vmiids/NotificationModule.h"
 
 #include <sstream>
 
-class RpcNotificationModule: public vmi::NotificationModule {
+class BufferNotificationModule: public vmi::NotificationModule {
 private:
 	std::stringstream stream;
 
 public:
-	RpcNotificationModule();
-	virtual ~RpcNotificationModule();
+	BufferNotificationModule();
+	virtual ~BufferNotificationModule();
 
-	std::string getRpcResult();
+	std::string getBuffer();
 
 	virtual void doDebug(std::string module, std::string message);
 	virtual void doInfo(std::string module, std::string message);

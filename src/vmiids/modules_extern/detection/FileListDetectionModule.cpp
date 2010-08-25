@@ -89,16 +89,3 @@ void FileListDetectionModule::run() {
 	this->globalShellFileList = shellFileList;
 
 }
-
-void FileListDetectionModule::runTime() {
-
-}
-
-void FileListDetectionModule::runEvent() {
-
-}
-
-void FileListDetectionModule::getThreadLevel() {
-
-}
-

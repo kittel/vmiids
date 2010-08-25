@@ -12,29 +12,26 @@
 #include <string>
 #include <libconfig.h++>
 #include "vmiids/rpc/RpcServer.h"
+#include "vmiids/util/Thread.h"
 
 #include "DetectionModule.h"
 #include "SensorModule.h"
 
 namespace vmi {
 
-class VmiIDS : public Module, protected OutputModule{
+class VmiIDS : public Module, protected OutputModule, public Thread{
 	private:
 		std::map<std::string, vmi::DetectionModule *> detectionModules;
 		pthread_mutex_t detectionModuleMutex;
-		std::map<std::string, vmi::DetectionModule *> activeDetectionModules;
-		pthread_mutex_t activeDetectionModuleMutex;
 		std::map<std::string, vmi::SensorModule* > sensorModules;
 		pthread_mutex_t sensorModuleMutex;
 
 		static VmiIDS *instance;
 		RpcServer rpcServer;
 
-		static pthread_t mainThread, vmiidsThread;
-
 		libconfig::Config config;
 
-		static bool vmiRunning;
+		bool vmiRunning;
 
 		VmiIDS();
 		VmiIDS(const VmiIDS&);
@@ -47,12 +44,11 @@ class VmiIDS : public Module, protected OutputModule{
 
 	public:
 		static VmiIDS *getInstance();
-		int startIDS();
-		void waitIDS();
+		static void defaultExceptionHandler(std::exception& e);
+
 		static bool stopIDS(int signum = 0);
 
-		static void * run(void * this_pointer);
-		static void * runDetectionModule(void* module);
+		virtual void run(void);
 
 		bool loadSharedObject(std::string path);
 
@@ -62,14 +58,12 @@ class VmiIDS : public Module, protected OutputModule{
 		bool enqueueDetectionModule(std::string detectionModuleName);
 		bool dequeueDetectionModule(std::string detectionModuleName);
 
-		std::string runSingleDetectionModule(std::string detectionModuleName);
-
+		vmi::DetectionModule *getDetectionModule(std::string detectionModuleName);
 		vmi::SensorModule *getSensorModule(std::string sensorModuleName);
 
 		libconfig::Setting *getSetting(std::string settingName);
 
 		void collectThreadLevel();
-
 };
 
 }

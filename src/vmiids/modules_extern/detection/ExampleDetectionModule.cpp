@@ -65,15 +65,3 @@ void ExampleDetectionModule::run() {
 		info << "\t" << commandResult;
 	}
 }
-
-void ExampleDetectionModule::runTime() {
-
-}
-
-void ExampleDetectionModule::runEvent() {
-
-}
-
-void ExampleDetectionModule::getThreadLevel() {
-
-}

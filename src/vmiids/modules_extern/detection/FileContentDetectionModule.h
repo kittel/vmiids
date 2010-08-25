@@ -26,10 +26,6 @@ public:
 	virtual ~FileContentDetectionModule();
 
 	virtual void run();
-	virtual void runTime();
-	virtual void runEvent();
-
-	virtual void getThreadLevel();
 };
 
 #endif /* FILECONTENTDETECTIONMODULE_H_ */

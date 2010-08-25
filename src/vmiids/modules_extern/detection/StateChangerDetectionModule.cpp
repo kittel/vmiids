@@ -39,15 +39,3 @@ void StateChangerDetectionModule::run(){
 		return;
 	}
 }
-
-void StateChangerDetectionModule::runTime(){
-
-}
-
-void StateChangerDetectionModule::runEvent(){
-
-}
-
-void StateChangerDetectionModule::getThreadLevel(){
-
-}

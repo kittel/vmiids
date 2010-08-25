@@ -10,21 +10,22 @@
 
 #include "Module.h"
 #include "OutputModule.h"
+#include "util/Thread.h"
 
 namespace vmi {
 
-class DetectionModule : public vmi::Module, protected OutputModule{
+class DetectionModule : public vmi::Module, protected OutputModule, public Thread{
+	protected:
+		bool intrusionDetected;
 	public:
 		DetectionModule(std::string moduleName) :
 			vmi::Module(moduleName),
-			vmi::OutputModule(moduleName){};
+			vmi::OutputModule(moduleName){
+			intrusionDetected = false;
+		};
 		virtual ~DetectionModule(){};
 
-		virtual void run() = 0;
-		virtual void runTime() = 0;
-		virtual void runEvent() = 0;
-
-		virtual void getThreadLevel() = 0;
+		bool getThreadLevel(){ return intrusionDetected; }
 };
 
 }

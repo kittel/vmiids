@@ -8,17 +8,20 @@
 #ifndef RCPSERVER_H_
 #define RCPSERVER_H_
 
-#include <pthread.h>
+#include "vmiids/util/Thread.h"
 
 #include "vmiids/rpc/RpcCommon.h"
 
 namespace vmi{
 
-class RpcServer {
+class RpcServer : public Thread{
 private:
+	static RpcServer* this_p;
 	pthread_t rpcThread;
 
-	static void * rpcThreadFunction(void * argument);
+	virtual void run(void);
+
+	std::string runDetectionModule(std::string detectionModuleName);
 	static void * stopIDSThreadFunction(void * nothing);
 	static void dispatchRPC(struct svc_req *rqstp, register SVCXPRT *transp);
 

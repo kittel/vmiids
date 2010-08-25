@@ -27,10 +27,6 @@ public:
 	virtual ~ProcessListDetectionModule();
 
 	virtual void run();
-	virtual void runTime();
-	virtual void runEvent();
-
-	virtual void getThreadLevel();
 };
 
 #endif /* PROCESSLISTDETECTIONMODULE_H_ */

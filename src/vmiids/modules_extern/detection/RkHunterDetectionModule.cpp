@@ -269,18 +269,6 @@ void RkHunterDetectionModule::run() {
 
 }
 
-void RkHunterDetectionModule::runTime() {
-
-}
-
-void RkHunterDetectionModule::runEvent() {
-
-}
-
-void RkHunterDetectionModule::getThreadLevel() {
-
-}
-
 void RkHunterDetectionModule::performStringCommandCheck() {
 	printInfo("\t Performing 'strings' command checks");
 

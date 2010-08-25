@@ -41,10 +41,6 @@ public:
 	virtual ~FileListDetectionModule();
 
 	virtual void run();
-	virtual void runTime();
-	virtual void runEvent();
-
-	virtual void getThreadLevel();
 };
 
 #endif /* FILELISTDETECTIONMODULE_H_ */

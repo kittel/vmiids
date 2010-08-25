@@ -26,10 +26,6 @@ public:
 	virtual ~ExampleDetectionModule();
 
 	virtual void run();
-	virtual void runTime();
-	virtual void runEvent();
-
-	virtual void getThreadLevel();
 };
 
 #endif /* EXAMPLEDETECTIONMODULE_H_ */

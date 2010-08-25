@@ -55,15 +55,3 @@ void FileContentDetectionModule::run() {
 
 	}
 }
-
-void FileContentDetectionModule::runTime() {
-
-}
-
-void FileContentDetectionModule::runEvent() {
-
-}
-
-void FileContentDetectionModule::getThreadLevel() {
-
-}

@@ -23,10 +23,6 @@ public:
 	virtual ~StateChangerDetectionModule();
 
 	virtual void run();
-	virtual void runTime();
-	virtual void runEvent();
-
-	virtual void getThreadLevel();
 };
 
 #endif /* STATECHANGERDETECTIONMODULE_H_ */

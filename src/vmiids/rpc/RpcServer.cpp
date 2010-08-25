@@ -12,18 +12,21 @@
 #include <rpc/pmap_clnt.h>
 #include <signal.h>
 
+#include "vmiids/modules/notification/BufferNotificationModule.h"
+#include "vmiids/DetectionModule.h"
+
+vmi::RpcServer* vmi::RpcServer::this_p = NULL;
+
 vmi::RpcServer::RpcServer() {
-	pthread_create(&this->rpcThread, NULL, rpcThreadFunction, NULL);
+	this_p = this;
+	this->start();
 }
 
 vmi::RpcServer::~RpcServer() {
-	pthread_kill(this->rpcThread, SIGTERM);
-	pthread_join(this->rpcThread, NULL);
+	this->join();
 }
 
-void * vmi::RpcServer::rpcThreadFunction(void * argument) {
-	argument = NULL;
-
+void vmi::RpcServer::run(void) {
 	register SVCXPRT *transp;
 
 	pmap_unset (VMIIDS_RPC, VMIIDS_RPC_VERSION);
@@ -53,6 +56,19 @@ void * vmi::RpcServer::rpcThreadFunction(void * argument) {
 	/* NOTREACHED */
 
 	pthread_exit(NULL);
+}
+
+
+std::string vmi::RpcServer::runDetectionModule(std::string detectionModuleName){
+	BufferNotificationModule buffer;
+	DetectionModule * module = VmiIDS::getInstance()->getDetectionModule(detectionModuleName);
+	if (module == NULL) {
+		return "Detection Module not found\n";
+	} else {
+		module->start();
+		module->join();
+	}
+	return buffer.getBuffer();
 }
 
 void * vmi::RpcServer::stopIDSThreadFunction(void * nothing) {
@@ -108,7 +124,7 @@ void vmi::RpcServer::dispatchRPC(struct svc_req *rqstp, register SVCXPRT *transp
 			svcerr_decode (transp);
 			return;
 		}
-		returnString = VmiIDS::getInstance()->runSingleDetectionModule(argument.char_arg).c_str();
+		returnString = this_p->runDetectionModule(argument.char_arg).c_str();
 		if(returnStringMemory != NULL) free(returnStringMemory);
 		returnStringMemory = (char *) malloc(returnString.length() + 1);
 		memset(returnStringMemory, 0, returnString.length() + 1);

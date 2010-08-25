@@ -48,10 +48,6 @@ public:
 	virtual ~RkHunterDetectionModule();
 
 	virtual void run();
-	virtual void runTime();
-	virtual void runEvent();
-
-	virtual void getThreadLevel();
 };
 
 #endif /* RKHUNTERDETECTIONMODULE_H_ */
