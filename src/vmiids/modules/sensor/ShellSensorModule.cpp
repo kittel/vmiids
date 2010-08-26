@@ -7,6 +7,8 @@
 
 #include "ShellSensorModule.h"
 
+#include "vmiids/util/MutexLocker.h"
+
 #include <sstream>
 #include <cstdlib>
 
@@ -120,6 +122,7 @@ void ShellSensorModule::logout() {
 }
 
 void ShellSensorModule::getProcessList(std::map<uint32_t, ShellProcess> &shellProcessMap){
+	vmi::MutexLocker lock(&mutex);
 	std::string psResult;
 	this->parseCommandOutput("ps -A --no-headers", psResult);
 
@@ -164,6 +167,7 @@ void ShellSensorModule::getProcessList(std::map<uint32_t, ShellProcess> &shellPr
 }
 
 void ShellSensorModule::getFileList(const std::string &directory, std::set<std::string> &directories){
+	vmi::MutexLocker lock(&mutex);
 	std::string findResult;
 	std::stringstream command;
 	command << "test -e " << directory << " && find " << directory;
@@ -182,6 +186,7 @@ void ShellSensorModule::getFileList(const std::string &directory, std::set<std::
 }
 
 void ShellSensorModule::getFileContent(const std::string &fileName, std::vector<char> &fileContent){
+	vmi::MutexLocker lock(&mutex);
 	std::string hexdumpResult;
 	std::stringstream command;
 	command << "test -e " << fileName << " && hexdump -v -e '1/1 \"%02X\" \" \"' " << fileName;
@@ -198,6 +203,7 @@ void ShellSensorModule::getFileContent(const std::string &fileName, std::vector<
 }
 
 void ShellSensorModule::getFileSHA1Sum(const std::string &fileName, std::string &sha1Sum){
+	vmi::MutexLocker lock(&mutex);
 	std::stringstream command;
 	command << "test -e " << fileName
 			<< " && sha1sum " << fileName;

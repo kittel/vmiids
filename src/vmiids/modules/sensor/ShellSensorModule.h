@@ -10,6 +10,8 @@
 
 #include "vmiids/SensorModule.h"
 
+#include "vmiids/util/Mutex.h"
+
 #include "vmiids/ConsoleMonitor.h"
 
 #include <map>
@@ -27,6 +29,8 @@ typedef struct{
  */
 class ShellSensorModule : public vmi::SensorModule , public vmi::ConsoleMonitor {
 private:
+	vmi::Mutex mutex;
+
 	std::string optionMonitorShell;
 	std::string optionLoginShell;
 	std::string optionPasswordShell;

@@ -10,6 +10,8 @@
 
 #include "vmiids/SensorModule.h"
 
+#include "vmiids/util/Mutex.h"
+
 #include <memtool/memtool.h>
 
 #include <map>
@@ -41,6 +43,8 @@ public:
 	void initSensorModule();
 
 private:
+	vmi::Mutex mutex;
+
 	static QCoreApplication* app;
 	static Memtool* memtool;
 	int null;

@@ -9,6 +9,7 @@ noinst_LTLIBRARIES = libutil.la
 
 libutil_ladir = $(includedir)/vmiids/util
 libutil_la_HEADERS = Thread.h \
+					 Mutex.h \
 					 MutexLocker.h
 libutil_la_SOURCES = $(libutil_la_HEADERS) \
 					Thread.cpp 

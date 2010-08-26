@@ -9,6 +9,9 @@
 #define QEMUMONITORSENSORMODULE_H_
 
 #include "vmiids/SensorModule.h"
+
+#include "vmiids/util/Mutex.h"
+
 #include "vmiids/ConsoleMonitor.h"
 
 /*!
@@ -144,6 +147,9 @@ info roms              -- show roms
  */
 
 class QemuMonitorSensorModule: public vmi::SensorModule , public vmi::ConsoleMonitor {
+private:
+	vmi::Mutex mutex;
+
 public:
 	QemuMonitorSensorModule();
 	virtual ~QemuMonitorSensorModule();
