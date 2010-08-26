@@ -1,12 +1,15 @@
 #include "ConsoleMonitor.h"
 
-#include <signal.h>
 #include <termios.h>
 #include <fcntl.h>
-#include <stdio.h>
 #include <string.h>
 #include <exception>
 #include <inttypes.h>
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/time.h>
+
 
 //#define DEBUG
 
@@ -79,6 +82,17 @@ void *ConsoleMonitor::readMonitor(void *ptr) {
 			if (fd >= 0)
 				close(fd);
 			return NULL;
+		} else if (readcount == 0){
+		   fd_set fds;
+		   struct timeval timeout;
+
+		   /* Set time limit. */
+		   timeout.tv_sec = 1;
+		   timeout.tv_usec = 0;
+			  /* Create a descriptor set containing our two sockets.  */
+		   FD_ZERO(&fds);
+		   FD_SET(fd, &fds);
+		   select(FD_SETSIZE, &fds, NULL, NULL, &timeout);
 		}
 	}
 	return NULL;
@@ -109,6 +123,7 @@ void ConsoleMonitor::initConsoleMonitor(std::string consoleString,
 	this->threadStarted = false;
 
 	pthread_mutex_init(&(this->queuemutex), NULL);
+	pthread_mutex_init(&this->monitorMutex, NULL);
 	this->threadRunning = true;
 
 	pthread_create(&(this->thread), NULL, ConsoleMonitor::readMonitor,
@@ -133,6 +148,11 @@ void ConsoleMonitor::killThread(void) throw(ConsoleMonitorException) {
 	LIBVMI_DEBUG_MSG("Kill Thread");
 	this->threadRunning = false;
 	pthread_join(this->thread, NULL);
+	pthread_mutex_lock(&(this->monitorMutex));
+	pthread_mutex_unlock(&(this->monitorMutex));
+	pthread_mutex_destroy(&(this->monitorMutex));
+	pthread_mutex_lock(&(this->queuemutex));
+	pthread_mutex_unlock(&(this->queuemutex));
 	pthread_mutex_destroy(&(this->queuemutex));
 }
 
@@ -175,6 +195,9 @@ void ConsoleMonitor::parseCommandOutput(const char *command,
 		throw ConsoleMonitorException();
 	if (this->threadRunning)
 		LIBVMI_DEBUG_MSG("Thread is running...");
+
+	pthread_mutex_lock(&(this->monitorMutex));
+
 	//Parse everything which was printed before the command was sent.
 
 	while (!this->queuecontainer.empty()) {
@@ -192,7 +215,7 @@ void ConsoleMonitor::parseCommandOutput(const char *command,
 	//Delete command from result
 	while (output.size() < strlen(command) || (output.rfind(command) == std::string::npos)) {
 		while (this->queuecontainer.empty())
-			sched_yield();
+			sleep(1);
 		pthread_mutex_lock(&(this->queuemutex));
 		output.append(&this->queuecontainer.front(), 1);
 		size_t crString;
@@ -206,7 +229,7 @@ void ConsoleMonitor::parseCommandOutput(const char *command,
 	LIBVMI_DEBUG_MSG("parseResult...");
 	while (output.rfind(this->monitorShell) == std::string::npos) {
 		while (this->queuecontainer.empty())
-			sched_yield();
+			sleep(1);
 		pthread_mutex_lock(&(this->queuemutex));
 		output.append(&this->queuecontainer.front(), 1);
 		this->queuecontainer.pop();
@@ -219,6 +242,7 @@ void ConsoleMonitor::parseCommandOutput(const char *command,
 	LIBVMI_DEBUG_MSG("Complete String:\n%s\n", output.c_str());
 	output.resize(output.rfind(this->monitorShell));
 	LIBVMI_DEBUG_MSG("Truncated String:\n%s\n", output.c_str());
+	pthread_mutex_unlock(&(this->monitorMutex));
 }
 
 }

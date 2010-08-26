@@ -32,6 +32,8 @@ class ConsoleMonitor {
 	bool threadRunning;
 	int threadStarted;
 
+	pthread_mutex_t monitorMutex;
+
 	protected:
 		std::string monitorShell;
 
