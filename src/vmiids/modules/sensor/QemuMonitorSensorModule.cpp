@@ -9,7 +9,7 @@
 
 #include "vmiids/util/MutexLocker.h"
 
-ADDMODULE(QemuMonitorSensorModule);
+LOADMODULE(QemuMonitorSensorModule);
 
 QemuMonitorSensorModule::QemuMonitorSensorModule() : SensorModule("QemuMonitorSensorModule"), ConsoleMonitor(){
 	std::string optionConsoleName;

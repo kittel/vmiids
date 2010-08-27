@@ -13,7 +13,7 @@
 #include <dirent.h>
 #include <iostream>
 
-ADDMODULE(FileSystemSensorModule);
+LOADMODULE(FileSystemSensorModule);
 
 FileSystemSensorModule::FileSystemSensorModule() : SensorModule("FileSystemSensorModule") {
 

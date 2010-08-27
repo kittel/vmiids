@@ -12,15 +12,13 @@
 #include <sstream>
 #include <cstdlib>
 
-ADDMODULE(MemorySensorModule);
+LOADMODULE(MemorySensorModule);
 
 Memtool* MemorySensorModule::memtool = NULL;
 QCoreApplication* MemorySensorModule::app = NULL;
 
 MemorySensorModule::MemorySensorModule() :
 			 SensorModule("MemorySensorModule"), null(0){
-
-    atexit(MemorySensorModule::stopMemtool);
 
     if(app == NULL) app = new QCoreApplication(null, NULL);
     if(memtool == NULL) memtool = new Memtool();
@@ -64,6 +62,11 @@ MemorySensorModule::MemorySensorModule() :
 }
 
 MemorySensorModule::~MemorySensorModule() {
+	if(memtool != NULL){
+		stopMemtool();
+		delete memtool;
+		memtool = NULL;
+	}
 }
 
 void MemorySensorModule::stopMemtool(void){
@@ -71,9 +74,6 @@ void MemorySensorModule::stopMemtool(void){
 		if (memtool->isDaemonRunning()) {
 			memtool->daemonStop();
 		}
-		delete (memtool);
-		memtool = NULL;
-
 	}
 
 	//Deleting the qt Application causes an segfault. So ... don´t delete.

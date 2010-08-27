@@ -8,8 +8,11 @@ AM_CFLAGS = -fpic  -I $(top_builddir)/src @AM_CFLAGS@
 noinst_LTLIBRARIES = libutil.la
 
 libutil_ladir = $(includedir)/vmiids/util
-libutil_la_HEADERS = Thread.h \
+libutil_la_HEADERS = Exception.h \
+					 Thread.h \
 					 Mutex.h \
-					 MutexLocker.h
+					 MutexLocker.h \
+					 Settings.h
 libutil_la_SOURCES = $(libutil_la_HEADERS) \
-					Thread.cpp 
+					Thread.cpp \
+					Settings.cpp 

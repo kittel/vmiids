@@ -14,12 +14,13 @@
 
 namespace vmi{
 
-class RpcServer : public Thread{
+class RpcServer{
 private:
 	static RpcServer* this_p;
 	pthread_t rpcThread;
 
-	virtual void run(void);
+	void run(void);
+	static void* __runThread(void* ptr);
 
 	std::string runDetectionModule(std::string detectionModuleName);
 	static void * stopIDSThreadFunction(void * nothing);

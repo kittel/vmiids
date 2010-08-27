@@ -19,11 +19,17 @@ vmi::RpcServer* vmi::RpcServer::this_p = NULL;
 
 vmi::RpcServer::RpcServer() {
 	this_p = this;
-	this->start();
+	pthread_create(&rpcThread, NULL, RpcServer::__runThread,
+				(void*) this);
+}
+
+void* vmi::RpcServer::__runThread(void* ptr){
+	RpcServer *this_p = (RpcServer *) ptr;
+		this_p->run();
+	return NULL;
 }
 
 vmi::RpcServer::~RpcServer() {
-	this->join();
 }
 
 void vmi::RpcServer::run(void) {
@@ -61,7 +67,7 @@ void vmi::RpcServer::run(void) {
 
 std::string vmi::RpcServer::runDetectionModule(std::string detectionModuleName){
 	BufferNotificationModule buffer;
-	DetectionModule * module = VmiIDS::getInstance()->getDetectionModule(detectionModuleName);
+	DetectionModule * module = DetectionModule::getDetectionModule(detectionModuleName);
 	if (module == NULL) {
 		return "Detection Module not found\n";
 	} else {

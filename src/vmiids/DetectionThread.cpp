@@ -64,7 +64,7 @@ void DetectionThread::run(){
 		    if(!this->threadActive){
 		    	return;
 		    }
-		    module = VmiIDS::getInstance()->getDetectionModule(*it);
+		    module = DetectionModule::getDetectionModule(*it);
 		    if(module == NULL){
 				pthread_mutex_lock(&threadMutex);
 				this->m_detectionModules.erase(*it);

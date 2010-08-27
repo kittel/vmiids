@@ -17,6 +17,8 @@
 #include <map>
 #include <QCoreApplication>
 
+#include <stdint.h>
+
 /*!
  * \exception MemorySensorModuleException MemorySensorModule.h
  * \brief Exception for MemorySensorModule.

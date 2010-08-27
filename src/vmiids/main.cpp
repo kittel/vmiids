@@ -11,6 +11,7 @@
 #include <execinfo.h>
 #include <ucontext.h>
 #include <cxxabi.h>
+#include <cstdlib>
 
 // rpcthread SIGTERM
 	//pthread_exit(NULL);
@@ -37,7 +38,7 @@ void signal_handler(int sig_num, siginfo_t * info, void * ucontext) {
 			vmi::VmiIDS::getInstance()->stopIDS(sig_num);
 			signal_handler_sigint++;
 		}else{
-			pthread_exit(NULL);
+			exit(1);
 		}
 	}else if (sig_num == SIGTERM) {
 			pthread_exit(NULL);

@@ -18,53 +18,28 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#include <set>
-#include "DetectionThread.h"
+#include "vmiids/util/MutexLocker.h"
+
+#include "NotificationModule.h"
 
 vmi::VmiIDS* vmi::VmiIDS::instance = NULL;
 
 vmi::VmiIDS::VmiIDS() :
 		 vmi::Module("VmiIDS"), vmi::OutputModule("VmiIDS"),
-		 detectionModules(), sensorModules(),
-		 rpcServer(), config(){
+		 rpcServer(){
+
 	Thread::setDefaultUncaughtExceptionHandler(defaultExceptionHandler);
+
 	this->vmiRunning = true;
-	pthread_mutex_init(&detectionModuleMutex, NULL);
-	pthread_mutex_init(&sensorModuleMutex, NULL);
-
-	FILE * configFile;
-
-	if( ((configFile = fopen ("vmiids.cfg" , "r")) != NULL) ||
-		((configFile = fopen ("/etc/vmiids.cfg" , "r")) != NULL)    ){
-
-		try {
-			config.read(configFile);
-			fclose (configFile);
-		}catch(libconfig::ParseException &e){
-			this->printError("Could not read config file\n");
-		}
-	}
 }
 
 vmi::VmiIDS::~VmiIDS() {
 	this->vmiRunning = false;
 	this->join();
-	pthread_mutex_lock(&detectionModuleMutex);
-	pthread_mutex_lock(&sensorModuleMutex);
-	while (!detectionModules.empty()) {
-		this->printDebug("Deleting %s\n", detectionModules.begin()->first.c_str());
-		if(detectionModules.begin()->second != NULL)
-			delete (detectionModules.begin()->second);
-		detectionModules.erase(detectionModules.begin());
-	}
-	while (!sensorModules.empty()) {
-		this->printDebug("Deleting %s\n", sensorModules.begin()->first.c_str());
-		if(sensorModules.begin()->second != NULL)
-			delete (sensorModules.begin()->second);
-		sensorModules.erase(sensorModules.begin());
-	}
-	pthread_mutex_unlock(&detectionModuleMutex);
-	pthread_mutex_unlock(&sensorModuleMutex);
+
+	DetectionModule::killInstances();
+	SensorModule::killInstances();
+	NotificationModule::killInstances();
 }
 
 vmi::VmiIDS *vmi::VmiIDS::getInstance() {
@@ -77,6 +52,61 @@ void vmi::VmiIDS::defaultExceptionHandler(std::exception& e){
 	vmi::VmiIDS::getInstance()->error << e.what() << std::endl;
 }
 
+void vmi::VmiIDS::loadModules(){
+
+	//
+	// Load Modules by Path Name
+	//
+	try {
+		libconfig::Setting &setting = Settings::getInstance()->getSetting("initialModuleByPath");
+		for (int i = 0; i < setting.getLength(); i++) {
+			this->loadSharedObjectsPath(setting[i]);
+		}
+	} catch (OptionNotFoundException &e) {
+		this->printDebug("No Modules loaded by Path ...\n");
+	}
+
+	//
+	// Load Modules by Filename
+	//
+	try {
+		libconfig::Setting &setting = Settings::getInstance()->getSetting("initialModuleByFilename");
+		for (int i = 0; i < setting.getLength(); i++) {
+			this->loadSharedObjectsPath(setting[i]);
+		}
+	} catch (OptionNotFoundException &e) {
+		this->printDebug("No Modules loaded by Filename ...\n");
+	}
+
+	//
+	// Start DetectionModules by Name
+	//
+	try {
+		libconfig::Setting &setting = Settings::getInstance()->getSetting("runModules");
+		for (int i = 0; i < setting.getLength(); i++) {
+			libconfig::Setting &modulesSetting = setting[i];
+			int seconds = modulesSetting["secondsBetweenRun"];
+			DetectionThread *thread = new DetectionThread(seconds);
+			for (int j = 0; j < modulesSetting["modules"].getLength(); j++) {
+				std::string module = modulesSetting["modules"][j];
+				thread->enqueueModule(modulesSetting["modules"][j]);
+			}
+			runModules[seconds] = thread;
+			thread->start();
+		}
+	} catch (libconfig::SettingNotFoundException &e) {
+		this->printDebug("No DetectionModules started ...\n");
+	} catch (OptionNotFoundException &e) {
+		this->printDebug("No DetectionModules started ...\n");
+	}
+
+}
+
+void vmi::VmiIDS::initVmiIDS(){
+
+	this->loadModules();
+}
+
 bool vmi::VmiIDS::stopIDS(int signum) {
 	signum = 0;
 	vmi::VmiIDS::getInstance()->printDebug("IDS Stopping\n");
@@ -87,49 +117,7 @@ bool vmi::VmiIDS::stopIDS(int signum) {
 
 void vmi::VmiIDS::run(void) {
 
-	//
-	// Load Modules by Path Name
-	//
-	try {
-		for(int i = 0 ;  i < this->config.lookup("initialModuleByPath").getLength() ; i++){
-			this->loadSharedObjectsPath(this->config.lookup("initialModuleByPath")[i]);
-		}
-	}catch(libconfig::SettingNotFoundException &e){
-		this->printDebug("No Modules loaded by Path ...\n");
-	}
-
-	//
-	// Load Modules by So Path
-	//
-	try {
-	for(int i = 0 ;  i < this->config.lookup("initialModuleBySoPath").getLength() ; i++){
-			this->loadSharedObject(this->config.lookup("initialModuleBySoPath")[i]);
-		}
-	}catch(libconfig::SettingNotFoundException &e){
-		this->printDebug("No Modules loaded by So Path ...\n");
-	}
-
-	//
-	// Start DetectionModules by Name
-	//
-	std::map<int, DetectionThread*> runModules;
-	try {
-		for(int i = 0 ;  i < this->config.lookup("runModules").getLength() ; i++){
-			libconfig::Setting &modulesSetting = this->config.lookup("runModules")[i];
-			int seconds = modulesSetting["secondsBetweenRun"];
-			std::cout << "Module with " << seconds << " Second per Run" << std::endl;
-			DetectionThread *thread = new DetectionThread(seconds);
-			for(int j = 0 ;  j < modulesSetting["modules"].getLength() ; j++){
-				std::string module = modulesSetting["modules"][j];
-				std::cout << "enqueueing Module " << module << std::endl;
-				thread->enqueueModule(modulesSetting["modules"][j]);
-			}
-			runModules[seconds] = thread;
-			thread->start();
-		}
-	}catch(libconfig::SettingNotFoundException &e){
-		this->printDebug("No Modules started ...\n");
-	}
+	this->initVmiIDS();
 
 	while(this->vmiRunning){
 		this->sleep(1000);
@@ -178,20 +166,6 @@ bool vmi::VmiIDS::loadSharedObject(std::string path) {
 	return true;
 }
 
-void vmi::VmiIDS::enqueueModule(DetectionModule *module) {
-	if(module == NULL) return;
-	pthread_mutex_lock(&detectionModuleMutex);
-	detectionModules[module->getName()] = module;
-	pthread_mutex_unlock(&detectionModuleMutex);
-}
-
-void vmi::VmiIDS::enqueueModule(SensorModule *module) {
-	if(module == NULL) return;
-	pthread_mutex_lock(&sensorModuleMutex);
-	sensorModules[module->getName()] = module;
-	pthread_mutex_unlock(&sensorModuleMutex);
-}
-
 bool vmi::VmiIDS::enqueueDetectionModule(std::string detectionModuleName) {
 	bool success = false;
 	detectionModuleName.c_str();
@@ -222,28 +196,6 @@ bool vmi::VmiIDS::dequeueDetectionModule(std::string detectionModuleName) {
 	pthread_mutex_unlock(&activeDetectionModuleMutex);
 */
 	return success;
-}
-
-vmi::SensorModule *vmi::VmiIDS::getSensorModule(std::string sensorModuleName) {
-    if(this->sensorModules.find(sensorModuleName) == this->sensorModules.end()){
-    	return NULL;
-    }
-   	return this->sensorModules[sensorModuleName];
-}
-
-vmi::DetectionModule *vmi::VmiIDS::getDetectionModule(std::string detectionModuleName) {
-    if(this->detectionModules.find(detectionModuleName) == this->detectionModules.end()){
-    	return NULL;
-    }
-   	return this->detectionModules[detectionModuleName];
-}
-
-libconfig::Setting *vmi::VmiIDS::getSetting(std::string settingName){
-	try {
-		return &(this->config.lookup(settingName));
-	}catch(libconfig::SettingNotFoundException &e){
-			return NULL;
-	}
 }
 
 void vmi::VmiIDS::collectThreadLevel() {

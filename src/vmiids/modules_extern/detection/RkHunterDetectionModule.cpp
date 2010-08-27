@@ -28,7 +28,7 @@
 #define TEXTCYAN =		"\033[0;36m"
 #define TEXTWHITE = 	"\033[0;37m"
 
-ADDMODULE(RkHunterDetectionModule);
+LOADMODULE(RkHunterDetectionModule);
 
 RkHunterDetectionModule::RkHunterDetectionModule() :
 	DetectionModule("RkHunterDetectionModule") {

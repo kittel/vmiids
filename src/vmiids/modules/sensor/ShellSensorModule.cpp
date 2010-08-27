@@ -12,7 +12,7 @@
 #include <sstream>
 #include <cstdlib>
 
-ADDMODULE(ShellSensorModule);
+LOADMODULE(ShellSensorModule);
 
 ShellSensorModule::ShellSensorModule() :
 	SensorModule("ShellSensorModule"), ConsoleMonitor() {
@@ -37,10 +37,10 @@ ShellSensorModule::ShellSensorModule() :
 		this->loggedin = this->isLoggedin();
 
 		if (!this->loggedin) {
-			debug <<  "Trying to login\n";
+			debug <<  "Trying to login" << std::endl;
 			this->loggedin = this->login(optionUsername, optionPassword);
 		} else {
-			debug << "Already logged in\n";
+			debug << "Already logged in" << std::endl;
 			this->monitorShell = optionMonitorShell.c_str();
 		}
 	}catch(vmi::ConsoleMonitorException &e){

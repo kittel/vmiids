@@ -8,13 +8,14 @@
 #ifndef NOTIFICATIONMODULE_H_
 #define NOTIFICATIONMODULE_H_
 
-#include "Module.h"
+#include "vmiids/Module.h"
+#include "vmiids/util/Mutex.h"
 
 #include <streambuf>
 #include <ostream>
 #include <vector>
 #include <map>
-#include <pthread.h>
+#include <cstring>
 
 namespace vmi {
 
@@ -116,8 +117,8 @@ class NotificationModule : public vmi::Module{
 	private:
 		nullstream nullStream;
 
-		static std::map<std::string, vmi::NotificationModule *> notificationModules;
-		static pthread_mutex_t notificationModuleMutex;
+		static std::map<std::string, vmi::NotificationModule *> modules;
+		static vmi::Mutex mutex;
 
 	public:
 		NotificationModule(std::string moduleName);
@@ -136,33 +137,9 @@ class NotificationModule : public vmi::Module{
 		static void error(std::string module, std::string message);
 		static void critical(std::string module, std::string message);
 		static void alert(std::string module, std::string message);
-};
 
-template<class Module>
-class NotificationModuleLoader{
-private:
-	Module *module;
-public:
-	NotificationModuleLoader(){
-		try {
-			module = new Module();
-			std::cerr << "Loading " << module->getName() << "... ";
-			std::cerr << "Success" << std::endl;
-		} catch (vmi::ModuleException &e) {
-			std::cerr << "Loading Module FAILED" << std::endl;
-			e.printException();
-		} catch (std::exception &e) {
-			std::cerr << "FAILED" << std::endl;
-			std::cerr << e.what() << std::endl;
-		}
-	}
-	~NotificationModuleLoader(){
-		delete module;
-	}
+		static void killInstances();
 };
-
-#define LOADNOTIFICATIONMODULE(classname) \
-	static vmi::NotificationModuleLoader<classname> CONCAT(classname, p);
 
 }
 

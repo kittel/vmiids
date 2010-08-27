@@ -7,7 +7,7 @@
 
 #include "FileContentDetectionModule.h"
 
-ADDMODULE(FileContentDetectionModule);
+LOADMODULE(FileContentDetectionModule);
 
 FileContentDetectionModule::FileContentDetectionModule() :
 			DetectionModule("FileContentDetectionModule") {

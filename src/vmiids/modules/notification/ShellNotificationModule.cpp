@@ -9,7 +9,7 @@
 
 #include "ShellNotificationModule.h"
 
-LOADNOTIFICATIONMODULE(ShellNotificationModule);
+LOADMODULE(ShellNotificationModule);
 
 ShellNotificationModule::ShellNotificationModule() : NotificationModule("ShellNotificationModule"){
 

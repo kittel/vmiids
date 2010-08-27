@@ -10,27 +10,32 @@
 
 #include "Module.h"
 #include "OutputModule.h"
-#include "util/Thread.h"
+#include "vmiids/util/Thread.h"
+
+#include "vmiids/util/Mutex.h"
 
 namespace vmi {
 
 class DetectionModule : public vmi::Module, protected OutputModule, public Thread{
-	protected:
-		bool intrusionDetected;
-	public:
-		DetectionModule(std::string moduleName) :
-			vmi::Module(moduleName),
-			vmi::OutputModule(moduleName){
-			intrusionDetected = false;
-		};
-		virtual ~DetectionModule(){};
+	private:
+		static std::map<std::string, vmi::DetectionModule *> modules;
+		static vmi::Mutex mutex;
 
-		bool getThreadLevel(){ return intrusionDetected; }
+	protected:
+		float intrusionDetected;
+
+	public:
+		DetectionModule(std::string moduleName);
+		virtual ~DetectionModule();
+
+		static vmi::DetectionModule *getDetectionModule(std::string detectionModuleName);
+
+		static void killInstances();
+
+		bool getThreadLevel();
 };
 
 }
-
-#include "Modintern.h"
 
 #endif /* DETECTIONMODULE_H_ */
 

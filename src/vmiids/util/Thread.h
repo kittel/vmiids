@@ -54,6 +54,9 @@ public:
 	void join(){
 		pthread_join(__thisThread, NULL);
 	}
+	void stop(){
+		pthread_cancel(__thisThread);
+	}
 
 	virtual void run(void) = 0;
 

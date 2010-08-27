@@ -10,8 +10,10 @@
 
 #include <string>
 #include <sstream>
-#include <exception>
 #include <iostream>
+
+#include "vmiids/util/Exception.h"
+#include "vmiids/util/Settings.h"
 
 #define STR(s) #s              /*!< Do not interpret s. Return as char* */
 #define QUOTE(s) STR(s)  /*!< In case s contains spaces the STR_MACRO() is wrapped. */
@@ -19,17 +21,16 @@
 
 namespace vmi {
 
-class ModuleException: public std::exception {
+class ModuleException: public Exception {
 protected:
 	std::string message;
 public:
-	ModuleException(){ this->message = ""; }
-	ModuleException(std::string text){ this->message = text; }
+	ModuleException(){};
+	ModuleException(std::string text) : Exception(text){};
 	virtual ~ModuleException() throw(){};
 	virtual const char* what() const throw () {
 		return "Module abort";
 	}
-	virtual void printException(){ std::cerr << what() << ": " << this->message << std::endl; }
 };
 
 class FunctionNotImplementedException: public ModuleException {
@@ -48,25 +49,6 @@ public:
 	}
 };
 
-class OptionNotFoundException: public ModuleException {
-public:
-	OptionNotFoundException(std::string module, std::string setting) : ModuleException() {
-		std::stringstream msg;
-		msg << "Could not parse Option. Please add the following section to the config file:"
-			<< std::endl << module << " = {" << std::endl
-			<< "\t" << setting << " =  \"<value>\";"
-			<< std::endl << "};";
-		this->message = msg.str();
-	}
-	virtual const char* what() const throw () {
-		return "Setting not found";
-	}
-};
-
-#define GETOPTION(option, variable) if(vmi::VmiIDS::getInstance()->getSetting(this->getName()) == NULL || \
-	                                  !vmi::VmiIDS::getInstance()->getSetting(this->getName())->lookupValue(QUOTE(option),variable)){ \
-	                                     throw vmi::OptionNotFoundException(this->getName(), QUOTE(option)); }
-
 class Module{
 	private:
 		std::string moduleName;
@@ -77,6 +59,28 @@ class Module{
 		std::string getName(){ return this->moduleName; };
 };
 
+template<class Module>
+class ModuleLoader{
+private:
+	Module *module;
+public:
+	ModuleLoader(){
+		try {
+			module = new Module();
+		} catch (vmi::ModuleException &e) {
+			std::cerr << "Loading Module FAILED" << std::endl;
+			e.printException();
+		} catch (std::exception &e) {
+			std::cerr << "Loading Module FAILED" << std::endl;
+			std::cerr << e.what() << std::endl;
+		}
+	}
+	~ModuleLoader(){
+	}
+};
+
+#define LOADMODULE(classname) \
+	static vmi::ModuleLoader<classname> CONCAT(classname, p);
 }
 
 #endif /* MODULE_H_ */

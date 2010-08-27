@@ -9,7 +9,7 @@
 
 #include "ExampleDetectionModule.h"
 
-ADDMODULE(ExampleDetectionModule);
+LOADMODULE(ExampleDetectionModule);
 
 ExampleDetectionModule::ExampleDetectionModule() :
 	DetectionModule("ExampleDetectionModule") {

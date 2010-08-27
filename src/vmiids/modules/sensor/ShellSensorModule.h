@@ -16,6 +16,7 @@
 
 #include <map>
 #include <set>
+#include <stdint.h>
 
 typedef struct{
 	uint32_t pid;

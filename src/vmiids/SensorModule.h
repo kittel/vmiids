@@ -11,23 +11,27 @@
 #include "Module.h"
 #include "OutputModule.h"
 
+#include "vmiids/util/Mutex.h"
+
 namespace vmi {
 
 class SensorModule : public vmi::Module, protected OutputModule{
+private:
+	static std::map<std::string, vmi::SensorModule *> modules;
+	static vmi::Mutex mutex;
 public:
-		SensorModule(std::string moduleName) :
-			vmi::Module(moduleName),
-			vmi::OutputModule(moduleName){};
-		virtual ~SensorModule(){};
-		virtual void initSensorModule() = 0;
+		SensorModule(std::string moduleName);
+		virtual ~SensorModule();
+
+		static vmi::SensorModule *getSensorModule(std::string sensorModuleName);
+
+		static void killInstances();
 };
 
 }
 
-#include "Modintern.h"
-
 #define GETSENSORMODULE(variable, modulename) \
-		variable = dynamic_cast<modulename *> (vmi::VmiIDS::getInstance()->getSensorModule(QUOTE(modulename))); \
+		variable = dynamic_cast<modulename *> (vmi::SensorModule::getSensorModule(QUOTE(modulename))); \
 		if (!variable) { \
 			throw vmi::DependencyNotFoundException(QUOTE(modulename)); \
 		}

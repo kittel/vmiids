@@ -7,12 +7,14 @@
 
 #include "NotificationModule.h"
 
+#include "vmiids/util/MutexLocker.h"
+
 #include "VmiIDS.h"
 
 namespace vmi {
 
-std::map<std::string, vmi::NotificationModule *> NotificationModule::notificationModules;
-pthread_mutex_t NotificationModule::notificationModuleMutex = PTHREAD_MUTEX_INITIALIZER;
+std::map<std::string, vmi::NotificationModule *> NotificationModule::modules;
+vmi::Mutex NotificationModule::mutex;
 
 NotificationModule::NotificationModule(std::string moduleName): Module(moduleName) {
 	std::string debugLevelString;
@@ -37,82 +39,80 @@ NotificationModule::NotificationModule(std::string moduleName): Module(moduleNam
 		this->debugLevel = vmi::OUTPUT_INFO;
 	}
 
-	pthread_mutex_lock(&notificationModuleMutex);
-	notificationModules[moduleName] = this;
-	pthread_mutex_unlock(&notificationModuleMutex);
+	mutex.lock();
+	modules[moduleName] = this;
+	mutex.unlock();
 };
 
 NotificationModule::~NotificationModule(){
-	pthread_mutex_lock(&notificationModuleMutex);
+	vmi::MutexLocker lock(&mutex);
 	for (std::map<std::string, NotificationModule*>::iterator it =
-			this->notificationModules.begin(); it
-			!= this->notificationModules.end(); ++it) {
+			this->modules.begin(); it
+			!= this->modules.end(); ++it) {
 		if (it->first.compare(this->getName()) == 0) {
-			this->notificationModules.erase(it);
+			this->modules.erase(it);
 		}
 	}
-	pthread_mutex_unlock(&notificationModuleMutex);
 }
 
 void NotificationModule::debug(std::string module, std::string message){
-	pthread_mutex_lock(&notificationModuleMutex);
+	vmi::MutexLocker lock(&mutex);
 	for (std::map<std::string, NotificationModule*>::iterator it =
-			notificationModules.begin(); it
-			!= notificationModules.end(); ++it) {
+			modules.begin(); it
+			!= modules.end(); ++it) {
 		it->second->doDebug(module, message);
 	}
-	pthread_mutex_unlock(&notificationModuleMutex);
 }
 
 void NotificationModule::info(std::string module, std::string message){
-	pthread_mutex_lock(&notificationModuleMutex);
+	vmi::MutexLocker lock(&mutex);
 	for (std::map<std::string, NotificationModule*>::iterator it =
-			notificationModules.begin(); it
-			!= notificationModules.end(); ++it) {
+			modules.begin(); it
+			!= modules.end(); ++it) {
 		it->second->doInfo(module, message);
 	}
-	pthread_mutex_unlock(&notificationModuleMutex);
 }
 
 void NotificationModule::warn(std::string module, std::string message){
-	pthread_mutex_lock(&notificationModuleMutex);
+	vmi::MutexLocker lock(&mutex);
 	for (std::map<std::string, NotificationModule*>::iterator it =
-			notificationModules.begin(); it
-			!= notificationModules.end(); ++it) {
+			modules.begin(); it
+			!= modules.end(); ++it) {
 		it->second->doWarn(module, message);
 	}
-	pthread_mutex_unlock(&notificationModuleMutex);
 }
 
 void NotificationModule::error(std::string module, std::string message){
-	pthread_mutex_lock(&notificationModuleMutex);
+	vmi::MutexLocker lock(&mutex);
 	for (std::map<std::string, NotificationModule*>::iterator it =
-			notificationModules.begin(); it
-			!= notificationModules.end(); ++it) {
+			modules.begin(); it
+			!= modules.end(); ++it) {
 		it->second->doError(module, message);
 	}
-	pthread_mutex_unlock(&notificationModuleMutex);
 }
 
 void NotificationModule::critical(std::string module, std::string message){
-	pthread_mutex_lock(&notificationModuleMutex);
+	vmi::MutexLocker lock(&mutex);
 	for (std::map<std::string, NotificationModule*>::iterator it =
-			notificationModules.begin(); it
-			!= notificationModules.end(); ++it) {
+			modules.begin(); it
+			!= modules.end(); ++it) {
 		it->second->doCritical(module, message);
 	}
-	pthread_mutex_unlock(&notificationModuleMutex);
 }
 
 void NotificationModule::alert(std::string module, std::string message){
-	pthread_mutex_lock(&notificationModuleMutex);
+	vmi::MutexLocker lock(&mutex);
 	for (std::map<std::string, NotificationModule*>::iterator it =
-			notificationModules.begin(); it
-			!= notificationModules.end(); ++it) {
+			modules.begin(); it
+			!= modules.end(); ++it) {
 		it->second->doAlert(module, message);
 	}
-	pthread_mutex_unlock(&notificationModuleMutex);
 }
 
+void NotificationModule::killInstances(){
+	while (!modules.empty()) {
+		delete modules.begin()->second;
+	}
+}
 
 }

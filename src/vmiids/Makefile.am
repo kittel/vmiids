@@ -23,6 +23,8 @@ vmiids_SOURCES=main.cpp \
 			   DetectionThread.cpp \
 			   $(vmiids_HEADERS) \
 			   NotificationModule.cpp \
+			   DetectionModule.cpp \
+			   SensorModule.cpp \
                ./Debug.h \
                ./ConsoleMonitor.cpp 
                

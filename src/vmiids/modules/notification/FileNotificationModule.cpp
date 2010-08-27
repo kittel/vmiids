@@ -10,7 +10,7 @@
 
 #include <iostream>
 
-LOADNOTIFICATIONMODULE(FileNotificationModule);
+LOADMODULE(FileNotificationModule);
 
 FileNotificationModule::FileNotificationModule() :
 		NotificationModule("FileNotificationModule") {
