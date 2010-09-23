@@ -89,10 +89,6 @@ AC_CONFIG_FILES(src/vmiids/modules/detection/Makefile)
 AC_CONFIG_FILES(src/vmiids/modules/notification/Makefile)
 AC_CONFIG_FILES(src/vmiids/modules/sensor/Makefile)
 AC_CONFIG_FILES(src/vmiids/rpc/Makefile)
-AC_CONFIG_FILES(src/vmiids/modules_extern/Makefile)
-AC_CONFIG_FILES(src/vmiids/modules_extern/detection/Makefile)
-AC_CONFIG_FILES(src/vmiids/modules_extern/notification/Makefile)
-AC_CONFIG_FILES(src/vmiids/modules_extern/sensor/Makefile)
 AC_CONFIG_FILES(src/clientApps/Makefile)
 
 ##########################################################################
@@ -135,6 +131,11 @@ if test $MEMTOOLPATHSET = 1 ; then
     MEMTOOL_CXXFLAGS="-I$with_memtool/include  -I/usr/include/qt4 -I/usr/include/qt4/QtCore"
     MEMTOOL_LDFLAGS="-L$with_memtool/ -lmemtool"
     MEMTOOL_PATH=$with_memtool
+else 
+    # extend the compiler and linker flags according to the path set
+    MEMTOOL_CXXFLAGS="-I/usr/include  -I/usr/include/qt4 -I/usr/include/qt4/QtCore"
+    MEMTOOL_LDFLAGS="-L/usr/lib -lmemtool"
+    MEMTOOL_PATH="/usr/lib"
 fi
 
 ##########################################################################

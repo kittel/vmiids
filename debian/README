@@ -1,0 +1,6 @@
+The Debian Package vmiids
+----------------------------
+
+This package contains VmiIDS, which was developed to detect and analyse rootkits.
+
+ -- Thomas Kittel <kittel@in.tum.de>  Thu, 23 Sep 2010 14:41:56 +0200

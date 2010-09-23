@@ -7,6 +7,8 @@ lib_LTLIBRARIES = libqemumonitorsensormodule.la \
                   libshellsensormodule.la \
                   libmemorysensormodule.la
                   
+libdir = @libdir@/vmiids/modules/sensor
+
 libqemumonitorsensormodule_ladir = $(includedir)/vmiids/modules/sensor
 libqemumonitorsensormodule_la_HEADERS = QemuMonitorSensorModule.h
 libqemumonitorsensormodule_la_SOURCES = $(libqemumonitorsensormodule_la_HEADERS) \

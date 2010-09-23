@@ -1,0 +1,5 @@
+usr/lib/vmiids/rpc/*
+usr/bin/vmiids
+usr/bin/VMIstop
+usr/bin/VMImodule
+etc/vmiids.cfg

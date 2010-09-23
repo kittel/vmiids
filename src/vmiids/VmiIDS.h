@@ -53,8 +53,8 @@ class VmiIDS : public Module, protected OutputModule, public Thread{
 
 		bool loadSharedObject(std::string path);
 
-		bool enqueueDetectionModule(std::string detectionModuleName);
-		bool dequeueDetectionModule(std::string detectionModuleName);
+    bool enqueueDetectionModule(std::string detectionModuleName, uint32_t timeInSeconds = 0);
+		bool dequeueDetectionModule(std::string detectionModuleName, uint32_t timeInSeconds = 0);
 
 		void collectThreadLevel();
 };

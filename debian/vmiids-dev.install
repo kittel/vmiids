@@ -1,0 +1,6 @@
+usr/include/vmiids/util/*
+usr/include/vmiids/modules/notification/*
+usr/include/vmiids/modules/sensor/*
+usr/include/vmiids/rpc/*
+usr/include/vmiids/*.h
+

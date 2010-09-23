@@ -1,0 +1,32 @@
+Source: vmiids
+Section: unknown
+Priority: extra
+Maintainer: Thomas Kittel <kittel@in.tum.de>
+Build-Depends: debhelper (>= 7.0.50~), autotools-dev, libconfig++8-dev, libmemorytool-dev
+Standards-Version: 3.8.4
+Homepage: <insert the upstream URL, if relevant>
+#Vcs-Git: git://git.debian.org/collab-maint/vmiids.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/vmiids.git;a=summary
+
+Package: vmiids
+Architecture: i386 amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}, vmiids-modules
+Description: Virtual Machine Introspection based Intrusion Detection System
+ This Package contains an vmi-based IDS. It was designed to detect and analyse rootkits.
+
+Package: vmiids-dev
+Architecture: i386 amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}, memorytool-dev, vmiids
+Description: Virtual Machine Introspection based Intrusion Detection System 
+ This Package contains an vmi-based IDS. It was designed to detect and analyse rootkits.
+
+Package: vmiids-modules
+Architecture: i386 amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}, memorytool-daemon
+Description: Virtual Machine Introspection based Intrusion Detection System 
+ This Package contains an vmi-based IDS. It was designed to detect and analyse rootkits.
+
+Package: vmiids-doc
+Architecture: all
+Description: documentation for vmiids
+ <insert long description, indented with spaces>

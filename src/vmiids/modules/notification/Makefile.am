@@ -6,6 +6,8 @@ lib_LTLIBRARIES = libshellnotificationmodule.la libfilenotificationmodule.la
 
 noinst_LTLIBRARIES = libbuffernotificationmodule.la
 
+libdir = @libdir@/vmiids/modules/notification
+
 libshellnotificationmodule_ladir = $(includedir)/vmiids/modules/notification
 libshellnotificationmodule_la_HEADERS = ShellNotificationModule.h
 libshellnotificationmodule_la_SOURCES = $(libshellnotificationmodule_la_HEADERS) \

@@ -2,6 +2,8 @@ AM_CPPFLAGS = -Wall -Wextra -Werror @AM_CPPFLAGS@
 AM_CXXFLAGS = -fpic -I $(top_builddir)/src @AM_CXXFLAGS@ -rdynamic
 AM_CFLAGS = -fpic  -I $(top_builddir)/src @AM_CFLAGS@ 
 
+libdir = @libdir@/vmiids/rpc
+
 lib_LTLIBRARIES = libvmiidsrpcclient.la
 
 libvmiidsrpcclient_ladir = $(includedir)/vmiids/rpc

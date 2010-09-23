@@ -166,7 +166,7 @@ bool vmi::VmiIDS::loadSharedObject(std::string path) {
 	return true;
 }
 
-bool vmi::VmiIDS::enqueueDetectionModule(std::string detectionModuleName) {
+bool vmi::VmiIDS::enqueueDetectionModule(std::string detectionModuleName, uint32_t timeInSeconds = 0) {
 	bool success = false;
 	detectionModuleName.c_str();
 /*
@@ -182,7 +182,7 @@ bool vmi::VmiIDS::enqueueDetectionModule(std::string detectionModuleName) {
 	return success;
 }
 
-bool vmi::VmiIDS::dequeueDetectionModule(std::string detectionModuleName) {
+bool vmi::VmiIDS::dequeueDetectionModule(std::string detectionModuleName, uint32_t timeInSeconds = 0) {
 	bool success = false;
 	detectionModuleName.c_str();
 /*	pthread_mutex_lock(&activeDetectionModuleMutex);

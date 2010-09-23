@@ -1,0 +1,4 @@
+usr/lib/vmiids/modules/notification/*
+usr/lib/vmiids/modules/sensor/*
+usr/lib/vmiids/modules/detection/*
+usr/bin/vmiids-clearfscache
