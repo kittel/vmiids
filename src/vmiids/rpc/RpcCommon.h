@@ -13,12 +13,20 @@
 
 namespace vmi {
 
+typedef struct {
+	char *string;
+	int   integer;
+} rpcArgumentStringInt;
+
+bool_t xdr_rpcArgumentStringInt (XDR *xdrs, rpcArgumentStringInt *objp);
+
 typedef enum {
 	ENQUEUEDETECTIONMODULE = 1,
 	DEQUEUEDETECTIONMODULE,
 	RUNDETECTIONMODULE,
 	STOPIDS,
 	LOADSHAREDOBJECT,
+	GETDETECTIONMODULELIST,
 } eRPCFuncs;
 
 #define VMIIDS_RPC 			555555555

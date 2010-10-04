@@ -7,6 +7,8 @@
 
 #include "DetectionThread.h"
 
+#include "vmiids/util/MutexLocker.h"
+
 #include "vmiids/VmiIDS.h"
 
 namespace vmi {
@@ -43,6 +45,11 @@ bool DetectionThread::dequeueModule(std::string moduleName){
 	this->m_detectionModules.erase(moduleName);
 	pthread_mutex_unlock(&threadMutex);
 	return true;
+}
+
+size_t DetectionThread::getModuleCount(){
+	MutexLocker lock(&threadMutex);
+	return this->m_detectionModules.size();
 }
 
 void DetectionThread::run(){

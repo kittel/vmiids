@@ -12,6 +12,10 @@
 #include <rpc/pmap_clnt.h>
 #include <signal.h>
 
+#include <sstream>
+#include <string>
+#include <list>
+
 #include "vmiids/modules/notification/BufferNotificationModule.h"
 #include "vmiids/DetectionModule.h"
 
@@ -87,10 +91,15 @@ void * vmi::RpcServer::stopIDSThreadFunction(void * nothing) {
 void vmi::RpcServer::dispatchRPC(struct svc_req *rqstp, register SVCXPRT *transp){
 	union {
 		const char *char_arg;
+		rpcArgumentStringInt argumentSI;
 	} argument;
 	char *result;
 	static bool_t retbool;
 	static char * returnStringMemory = 0;
+
+	std::list<std::string> detectionModules;
+	std::stringstream string;
+
 	std::string returnString;
 	xdrproc_t _xdr_argument, _xdr_result;
 
@@ -102,24 +111,24 @@ void vmi::RpcServer::dispatchRPC(struct svc_req *rqstp, register SVCXPRT *transp
 		return;
 
 	case ENQUEUEDETECTIONMODULE:
-		_xdr_argument = (xdrproc_t) xdr_wrapstring;
+		_xdr_argument = (xdrproc_t) xdr_rpcArgumentStringInt;
 		_xdr_result = (xdrproc_t) xdr_bool;
 		if (!svc_getargs (transp, (xdrproc_t) _xdr_argument, (caddr_t) &argument)) {
 			svcerr_decode (transp);
 			return;
 		}
-		retbool	= VmiIDS::getInstance()->enqueueDetectionModule(argument.char_arg);
+		retbool	= VmiIDS::getInstance()->enqueueDetectionModule(argument.argumentSI.string, argument.argumentSI.integer);
 		result = (char*) &retbool;
 		break;
 
 	case DEQUEUEDETECTIONMODULE:
-		_xdr_argument = (xdrproc_t) xdr_wrapstring;
+		_xdr_argument = (xdrproc_t) xdr_rpcArgumentStringInt;
 		_xdr_result = (xdrproc_t) xdr_bool;
 		if (!svc_getargs (transp, (xdrproc_t) _xdr_argument, (caddr_t) &argument)) {
 			svcerr_decode (transp);
 			return;
 		}
-		retbool = VmiIDS::getInstance()->dequeueDetectionModule(argument.char_arg);
+		retbool = VmiIDS::getInstance()->dequeueDetectionModule(argument.argumentSI.string, argument.argumentSI.integer);
 		result = (char*) &retbool;
 		break;
 
@@ -160,6 +169,26 @@ void vmi::RpcServer::dispatchRPC(struct svc_req *rqstp, register SVCXPRT *transp
 		}
 		retbool = VmiIDS::getInstance()->loadSharedObject(argument.char_arg);
 		result = (char*) &retbool;
+		break;
+
+	case GETDETECTIONMODULELIST:
+		_xdr_argument = (xdrproc_t) xdr_void;
+		_xdr_result = (xdrproc_t) xdr_wrapstring;
+		if (!svc_getargs (transp, (xdrproc_t) _xdr_argument, (caddr_t) &argument)) {
+			svcerr_decode (transp);
+			return;
+		}
+		detectionModules = vmi::DetectionModule::getListOfDetectionModules();
+		while (!detectionModules.empty()){
+			string << detectionModules.front() << std::endl;
+			detectionModules.pop_front();
+		}
+		returnString = string.str();
+		if(returnStringMemory != NULL) free(returnStringMemory);
+		returnStringMemory = (char *) malloc(returnString.length() + 1);
+		memset(returnStringMemory, 0, returnString.length() + 1);
+		memmove(returnStringMemory,returnString.c_str(), returnString.length());
+		result = (char*) &returnStringMemory;
 		break;
 
 	default:

@@ -26,6 +26,7 @@ librkhunterdetectionmodule_la_SOURCES = RkHunterDetectionModule.h \
 
 libprocesslistdetectionmodule_la_SOURCES = ProcessListDetectionModule.h \
 					ProcessListDetectionModule.cpp 
+libprocesslistdetectionmodule_la_CPPFLAGS = @MEMTOOL_CXXFLAGS@ @QT_CXXFLAGS@ @AM_CPPFLAGS@
 
 libfilelistdetectionmodule_la_SOURCES = FileListDetectionModule.h \
 					FileListDetectionModule.cpp 

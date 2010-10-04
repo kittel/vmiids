@@ -11,6 +11,7 @@
 #include "vmiids/rpc/RpcCommon.h"
 
 #include <string>
+#include <list>
 
 namespace vmi {
 
@@ -29,11 +30,12 @@ public:
 
 	static RpcClient *getInstance();
 
-	bool enqueueDetectionModule(std::string detectionModuleName);
-	bool dequeueDetectionModule(std::string detectionModuleName);
+	bool enqueueDetectionModule(std::string detectionModuleName, uint32_t timeInSeconds = 0);
+	bool dequeueDetectionModule(std::string detectionModuleName, uint32_t timeInSeconds = 0);
 	std::string runSingleDetectionModule(std::string module);
 	bool stopIDS(int signum = 0);
 	bool loadSharedObject(std::string path);
+	std::list<std::string> getListOfDetectionModules(void);
 };
 
 }

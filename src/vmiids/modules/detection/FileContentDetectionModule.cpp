@@ -52,6 +52,6 @@ void FileContentDetectionModule::run() {
 
 		if(fileSha1Sum.compare(shellSha1Sum) != 0)
 			alert << "Different file content in file: \"" << *fileName << "\"" << std::endl;
-
+			intrusionDetected = 1;
 	}
 }

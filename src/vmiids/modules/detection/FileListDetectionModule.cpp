@@ -53,6 +53,8 @@ void FileListDetectionModule::run() {
 		this->qemu->pauseVM();
 	}
 
+	float intrusion = 0;
+
 	//Compare Process Lists
 	std::set<std::string>::iterator s_it;
 	std::set<std::string>::iterator f_it;
@@ -61,6 +63,7 @@ void FileListDetectionModule::run() {
 	for (s_it = shellFileList.begin(); s_it != shellFileList.end(); s_it++) {
 		if (fsFileList.find(*s_it) == fsFileList.end()) {
 			critical << "File not found on FileSystem: " << *s_it << std::endl;
+			intrusion = 0.5;
 		} else {
 			fsFileList.erase(fsFileList.find(*s_it));
 			shellFileList.erase(s_it);
@@ -69,6 +72,7 @@ void FileListDetectionModule::run() {
 
 	for (f_it = fsFileList.begin(); f_it != fsFileList.end(); f_it++){
 		critical << "File not found with find command: " << *f_it << std::endl;
+		intrusion = 0.5;
 	}
 
 	//Compare with results of last run
@@ -76,6 +80,7 @@ void FileListDetectionModule::run() {
 	for (f_it = fsFileList.begin(); f_it != fsFileList.end(); f_it++) {
 		if (this->globalFsFileList.find(*f_it) != this->globalFsFileList.end()) {
 			alert << "Hidden file detected: " << (*f_it) << std::endl;
+			intrusion = 1;
 		}
 	}
 	this->globalFsFileList = fsFileList;
@@ -84,8 +89,9 @@ void FileListDetectionModule::run() {
 	for (s_it = shellFileList.begin(); s_it != shellFileList.end(); s_it++) {
 		if (this->globalShellFileList.find(*s_it) != this->globalShellFileList.end()) {
 			alert << "Virtual file detected: " << (*s_it) << std::endl;
+			intrusion = 1;
 		}
 	}
 	this->globalShellFileList = shellFileList;
-
+	this->intrusionDetected = intrusion;
 }

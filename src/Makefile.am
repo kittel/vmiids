@@ -1,2 +1,1 @@
-SUBDIRS=vmiids clientApps 
-
+SUBDIRS=vmiids clientApps gui

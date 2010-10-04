@@ -14,6 +14,10 @@
 
 #include "vmiids/util/Mutex.h"
 
+#include <string>
+#include <map>
+#include <list>
+
 namespace vmi {
 
 class DetectionModule : public vmi::Module, protected OutputModule, public Thread{
@@ -30,9 +34,11 @@ class DetectionModule : public vmi::Module, protected OutputModule, public Threa
 
 		static vmi::DetectionModule *getDetectionModule(std::string detectionModuleName);
 
+		static std::list<std::string> getListOfDetectionModules();
+
 		static void killInstances();
 
-		bool getThreadLevel();
+		float getThreadLevel();
 };
 
 }

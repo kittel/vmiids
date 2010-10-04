@@ -166,35 +166,26 @@ bool vmi::VmiIDS::loadSharedObject(std::string path) {
 	return true;
 }
 
-bool vmi::VmiIDS::enqueueDetectionModule(std::string detectionModuleName, uint32_t timeInSeconds = 0) {
-	bool success = false;
-	detectionModuleName.c_str();
-/*
-	pthread_mutex_lock(&detectionModuleMutex);
-	pthread_mutex_lock(&activeDetectionModuleMutex);
-	if (detectionModules[detectionModuleName] != NULL) {
-		activeDetectionModules[detectionModuleName] = detectionModules[detectionModuleName];
-		success = true;
+bool vmi::VmiIDS::enqueueDetectionModule(std::string detectionModuleName, uint32_t timeInSeconds) {
+
+	if (runModules.find(timeInSeconds) == runModules.end()){
+		runModules[timeInSeconds] = new DetectionThread(timeInSeconds);
 	}
-	pthread_mutex_unlock(&activeDetectionModuleMutex);
-	pthread_mutex_unlock(&detectionModuleMutex);
-*/
-	return success;
+	return runModules[timeInSeconds]->enqueueModule(detectionModuleName);
 }
 
-bool vmi::VmiIDS::dequeueDetectionModule(std::string detectionModuleName, uint32_t timeInSeconds = 0) {
+bool vmi::VmiIDS::dequeueDetectionModule(std::string detectionModuleName, uint32_t timeInSeconds) {
 	bool success = false;
-	detectionModuleName.c_str();
-/*	pthread_mutex_lock(&activeDetectionModuleMutex);
-	for (std::map<std::string, DetectionModule*>::iterator it =
-			this->activeDetectionModules.begin(); it != this->activeDetectionModules.end(); ++it) {
-		if (it->first.compare(detectionModuleName) == 0) {
-			this->activeDetectionModules.erase(it);
-			success = true;
-		}
+
+	if (runModules.find(timeInSeconds) == runModules.end()){
+		return success;
 	}
-	pthread_mutex_unlock(&activeDetectionModuleMutex);
-*/
+
+	success = runModules[timeInSeconds]->dequeueModule(detectionModuleName);
+	if(runModules[timeInSeconds]->getModuleCount() == 0){
+		delete (runModules[timeInSeconds]);
+		runModules.erase(runModules.find(timeInSeconds));
+	}
 	return success;
 }
 

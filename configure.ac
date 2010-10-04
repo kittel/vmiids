@@ -115,6 +115,24 @@ fi
 ##########################################################################
 
 ##########################################################################
+## compile the VmiIDS Gui, iff qt is available
+##########################################################################
+
+AC_MSG_CHECKING([checking for qt?])
+bnv_try_1="pkg-config --cflags QtCore QtGui"
+AC_TRY_EVAL(bnv_try_1)
+if test x"$ac_status" != x0; then
+   AC_MSG_ERROR([qt not found! Won´t compile Gui])
+fi
+AC_CONFIG_FILES(src/gui/Makefile)
+
+QT_CXXFLAGS=`pkg-config --cflags QtCore QtGui`
+QT_LDFLAGS=`pkg-config --libs QtCore QtGui`
+AC_SUBST(QT_CXXFLAGS)
+AC_SUBST(QT_LDFLAGS)
+AC_MSG_RESULT([yes])
+
+##########################################################################
 # adding the memtool library
 ##########################################################################
 
@@ -128,26 +146,25 @@ AC_ARG_WITH([memtool],
 # if optional parameter used, extend path flags for compliler and linker
 if test $MEMTOOLPATHSET = 1 ; then
     # extend the compiler and linker flags according to the path set
-    MEMTOOL_CXXFLAGS="-I$with_memtool/include  -I/usr/include/qt4 -I/usr/include/qt4/QtCore"
+    MEMTOOL_CXXFLAGS="-I$with_memtool/include"
     MEMTOOL_LDFLAGS="-L$with_memtool/ -lmemtool"
     MEMTOOL_PATH=$with_memtool
 else 
     # extend the compiler and linker flags according to the path set
-    MEMTOOL_CXXFLAGS="-I/usr/include  -I/usr/include/qt4 -I/usr/include/qt4/QtCore"
-    MEMTOOL_LDFLAGS="-L/usr/lib -lmemtool"
+    MEMTOOL_LDFLAGS="-lmemtool"
     MEMTOOL_PATH="/usr/lib"
 fi
 
 ##########################################################################
 ##########################################################################
-# check for XXX library
+# check for memtool library
 ##########################################################################
 
 # store current *FLAGS and merge with AM_*FLAGS for compilation and linker check   
 OLD_CXXFLAGS=$CXXFLAGS;
 OLD_LDFLAGS=$LDFLAGS;
-CXXFLAGS="$AM_CXXFLAGS $CXXFLAGS $MEMTOOL_CXXFLAGS"
-LDFLAGS="$AM_LDFLAGS $LDFLAGS $MEMTOOL_LDFLAGS"
+CXXFLAGS="$AM_CXXFLAGS $CXXFLAGS $MEMTOOL_CXXFLAGS $QT_CXXFLAGS"
+LDFLAGS="$AM_LDFLAGS $LDFLAGS $MEMTOOL_LDFLAGS $QT_LDFLAGS"
 
 # ensure the library to check for is covered by the LIBS variable
 OLD_LIBS=$LIBS
@@ -172,7 +189,7 @@ AC_COMPILE_IFELSE([[#include <memtool/memtool.h>]],
         FOUND_MEMTOOL=0;])
 
 # reset original *FLAGS
-#CXXFLAGS=$OLD_CXXFLAGS
+CXXFLAGS=$OLD_CXXFLAGS
 LDFLAGS=$OLD_LDFLAGS
 LIBS=$OLD_LIBS
 

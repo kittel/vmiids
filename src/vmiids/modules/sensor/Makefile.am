@@ -30,5 +30,5 @@ libmemorysensormodule_ladir = $(includedir)/vmiids/modules/sensor
 libmemorysensormodule_la_HEADERS = MemorySensorModule.h
 libmemorysensormodule_la_SOURCES = $(libmemorysensormodule_la_HEADERS) \
                     MemorySensorModule.cpp
-libmemorysensormodule_la_CPPFLAGS = @AM_CPPFLAGS@
-libmemorysensormodule_la_LDFLAGS = @MEMTOOL_LDFLAGS@ @AM_LDFLAGS@
+libmemorysensormodule_la_CPPFLAGS = @MEMTOOL_CXXFLAGS@ @QT_CXXFLAGS@ @AM_CPPFLAGS@
+libmemorysensormodule_la_LDFLAGS = @MEMTOOL_LDFLAGS@ @QT_LDFLAGS@ @AM_LDFLAGS@

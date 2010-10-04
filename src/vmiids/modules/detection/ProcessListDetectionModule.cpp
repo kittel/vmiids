@@ -48,7 +48,7 @@ void ProcessListDetectionModule::run() {
 	//Compare Process Lists
 	std::map<uint32_t, ShellProcess>::iterator p_it;
 	std::map<uint32_t, MemtoolProcess>::iterator m_it;
-
+	float intrusion = 0;
 
 	//Find process in ps not listed in Memtool
 	for ( m_it=memtoolProcessMap.begin() ; m_it != memtoolProcessMap.end(); m_it++ ){
@@ -56,6 +56,7 @@ void ProcessListDetectionModule::run() {
 			psProcessMap.find((*m_it).first)->second.processName.compare(0, (*m_it).second.processName.length(),
 					(*m_it).second.processName) != 0){
 			critical << "Process not found in ps: PID: " << (*m_it).first << " Proccess: " << (*m_it).second.processName << std::endl;
+			intrusion = 0.5;
 		}else{
 			psProcessMap.erase((*m_it).first);
 			memtoolProcessMap.erase(m_it);
@@ -69,6 +70,7 @@ void ProcessListDetectionModule::run() {
 	    	seenps = true;
 	    	critical << "Process not found in memtool: PID: " << (*p_it).first
 	    			<< " Proccess: " << (*p_it).second.processName << std::endl;
+	    	intrusion = 0.5;
 	    }else{
 	    	psProcessMap.erase(p_it);
 	    }
@@ -84,6 +86,7 @@ void ProcessListDetectionModule::run() {
 						(*p_it).second.processName) == 0) {
 			alert << "Virtual process detected: PID: " << (*p_it).first
 					<< " Proccess: " << (*p_it).second.processName << std::endl;
+			intrusion = 1;
 		}
 	}
 	this->globalPsProcessMap = psProcessMap;
@@ -96,7 +99,10 @@ void ProcessListDetectionModule::run() {
 						(*m_it).second.processName) == 0) {
 			alert << "Hidden process detected: PID: " << (*m_it).first
 					<< " Proccess: " << (*m_it).second.processName << std::endl;
+			intrusion = 1;
 		}
 	}
 	this->globalMemtoolProcessMap = memtoolProcessMap;
+	this->intrusionDetected = intrusion;
+
 }

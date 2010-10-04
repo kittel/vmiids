@@ -33,6 +33,8 @@ public:
 	bool enqueueModule(std::string moduleName);
 	bool dequeueModule(std::string moduleName);
 
+	size_t getModuleCount();
+
 	virtual void run();
 
 	void stopThread();
