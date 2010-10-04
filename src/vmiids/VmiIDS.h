@@ -20,8 +20,19 @@
 #include "DetectionModule.h"
 #include "SensorModule.h"
 
+/**
+ * @namespace vmi
+ *
+ * This is the default namespace for all classes belonging to the VmiIDS framework.
+ * Modules are not neccessarily contained in namespace vmi.
+ */
 namespace vmi {
 
+/**
+ * @class VmiIDS VmiIDS.h "vmiids/VmiIDS.h"
+ *
+ * This class is the main class of the VmiIDS framework.
+ */
 class VmiIDS : public Module, protected OutputModule, public Thread{
 	private:
 		std::map<int, DetectionThread*> runModules;

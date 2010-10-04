@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.65])
-AC_INIT([libvmi], [0.1], [kittel@fs.tum.de])
+AC_INIT([vmiids], [0.1], [kittel@fs.tum.de])
 
 AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE([-Wall])
@@ -76,7 +76,7 @@ DX_XML_FEATURE(OFF)
 DX_PDF_FEATURE(OFF)
 DX_PS_FEATURE(OFF)
 
-DX_INIT_DOXYGEN([$PACKAGE_NAME],[doxygen.cfg])
+DX_INIT_DOXYGEN([$PACKAGE_NAME],[doxygen.cfg], [doc])
 
 ######################################################################
 
@@ -118,12 +118,14 @@ fi
 ## compile the VmiIDS Gui, iff qt is available
 ##########################################################################
 
-AC_MSG_CHECKING([checking for qt?])
+AC_MSG_CHECKING([checking for qt])
 bnv_try_1="pkg-config --cflags QtCore QtGui"
 AC_TRY_EVAL(bnv_try_1)
+AM_CONDITIONAL([COMPILEGUI], [test x"$ac_status" != x0])
 if test x"$ac_status" != x0; then
    AC_MSG_ERROR([qt not found! Won´t compile Gui])
-fi
+else
+AM_CONDITIONAL([COMPILEGUI], [true])
 AC_CONFIG_FILES(src/gui/Makefile)
 
 QT_CXXFLAGS=`pkg-config --cflags QtCore QtGui`
@@ -131,6 +133,7 @@ QT_LDFLAGS=`pkg-config --libs QtCore QtGui`
 AC_SUBST(QT_CXXFLAGS)
 AC_SUBST(QT_LDFLAGS)
 AC_MSG_RESULT([yes])
+fi
 
 ##########################################################################
 # adding the memtool library

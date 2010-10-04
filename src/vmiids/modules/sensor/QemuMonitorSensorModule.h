@@ -71,17 +71,17 @@ migrate [-d] [-b] [-i] uri 			-- migrate to URI (using -d to not wait for comple
 migrate_cancel  				-- cancel the current VM migration
 migrate_set_speed value 			-- set maximum speed (in bytes) for migrations
 migrate_set_downtime value 			-- set maximum tolerated downtime (in seconds) for migrations
-drive_add [[<domain>:]<bus>:]<slot>
+drive_add [[&ltdomain&gt:]&ltbus&gt:]&ltslot&gt
 	[file=file][,if=type][,bus=n]
 	[,unit=m][,media=d][index=i]
 	[,cyls=c,heads=h,secs=s[,trans=t]]
 	[snapshot=on|off][,cache=on|off] 	-- add drive to PCI storage controller
-pci_add auto|[[<domain>:]<bus>:]
-	<slot> nic|storage|host
+pci_add auto|[[&ltdomain&gt:]&ltbus&gt:]&ltslot&gt
+    nic|storage|host
 	[[vlan=n][,macaddr=addr][,model=type]]
 	 [file=file][,if=type][,bus=nr]...
 	[host=02:00.0[,name=string][,dma=none] 	-- hot-add PCI device
-pci_del [[<domain>:]<bus>:]<slot> 		-- hot remove PCI device
+pci_del [[&ltdomain&gt:]&ltbus&gt:]&ltslot&gt 		-- hot remove PCI device
 host_net_add tap|user|socket|vde|dump [options] -- add host VLAN client
 host_net_remove vlan_id name 			-- remove host VLAN client
 hostfwd_add [vlan_id name]
@@ -523,7 +523,7 @@ public:
 	 * \brief add drive to PCI storage controller.
 	 * @param helptext String Buffer in which the result will be returned in.
 	 *
-	 * drive_add [[<domain>:]<bus>:]<slot>
+	 * drive_add [[&ltdomain&gt:]&ltbus&gt:]&ltslot&gt
 	 * 	[file=file][,if=type][,bus=n]
 	 * 	[,unit=m][,media=d][index=i]
 	 * 	[,cyls=c,heads=h,secs=s[,trans=t]]
@@ -535,8 +535,8 @@ public:
 	 * \brief hot-add PCI device.
 	 * @param helptext String Buffer in which the result will be returned in.
 	 *
-	 * pci_add auto|[[<domain>:]<bus>:]
-	 * 	<slot> nic|storage|host
+	 * pci_add auto|[[&ltdomain&gt:]&ltbus&gt:]&ltslot&gt
+	 *  nic|storage|host
 	 * 	[[vlan=n][,macaddr=addr][,model=type]]
 	 * 	 [file=file][,if=type][,bus=nr]...
 	 * 	[host=02:00.0[,name=string][,dma=none] 	-- hot-add PCI device
@@ -547,7 +547,7 @@ public:
 	 * \brief hot remove PCI device.
 	 * @param helptext String Buffer in which the result will be returned in.
 	 *
-	 * pci_del [[<domain>:]<bus>:]<slot> 		-- hot remove PCI device
+	 * pci_del [[&ltdomain&gt:]&ltbus&gt:]&ltslot&gt 		-- hot remove PCI device
 	 */
 	void cmdPci_del(std::string &helptext) throw(vmi::ModuleException);
 

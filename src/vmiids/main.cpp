@@ -5,6 +5,21 @@
  *      Author: tom
  */
 
+
+/**
+ * @mainpage VmiIDS - A vmi-based IDS
+ *
+ * @author Thomas Kittel <kittel@in.tum.de>
+ *
+ * VmiIDS is an Intrusion Detection System based on Virtual Machine introspection.
+ *
+ * Virtual Machine Introspection was first mentioned by Garfinkel and Rosenblum in their paper:
+ *  <a href="http://suif.stanford.edu/papers/vmi-ndss03.pdf">A Virtual Machine Introspection Based Architecture for Intrusion Detection</a>
+ *
+ * The Frameworks main class is @ref vmi::VmiIDS. All classes belonging to the framework are implemented in namespace @ref vmi.
+ *
+ */
+
 #include "vmiids/VmiIDS.h"
 
 #include <signal.h>
@@ -28,8 +43,29 @@ int signal_handler_sigint = 0;
 
 /**
  * Static signal handler function set in main.
- * @param sig_num
- * @param info
+ *
+ * Signal handler with the following functions:<br>
+ * <table border>
+ *  <tr>
+ *     <td><b> Signal </b></td>
+ *     <td><b> Result </b></td>
+ *  </tr>
+ *  <tr>
+ *     <td> SIGINT </td>
+ *     <td> stop framework </td>
+ *  </tr>
+ *  <tr>
+ *     <td> SIGTERM </td>
+ *     <td> stop current thread</td>
+ *  </tr>
+ *  <tr>
+ *     <td> SIGSEGV </td>
+ *     <td> print stacktrace</td>
+ *  </tr>
+ *  </table>
+ *
+ * @param sig_num   Number of signal
+ * @param info      Info about signal generating thread
  * @param ucontext
  */
 void signal_handler(int sig_num, siginfo_t * info, void * ucontext) {
@@ -107,6 +143,9 @@ void signal_handler(int sig_num, siginfo_t * info, void * ucontext) {
 
 /**
  * Main Function
+ *
+ * Registers the signal handler and starts the framework.
+
  * @return
  */
 int main() {
