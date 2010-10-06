@@ -231,7 +231,11 @@ class NotificationModule : public vmi::Module{
 	public:
 		/**
 		 * Constructor
-		 * @param moduleName Name of the Module
+		 *
+		 * The name of the module can be specified by the dynamic classloader provided by
+		 * the module interface (LOADMODULE())
+		 *
+		 * @param moduleName Name of the detectionModule
 		 */
 		NotificationModule(std::string moduleName);
 		/**

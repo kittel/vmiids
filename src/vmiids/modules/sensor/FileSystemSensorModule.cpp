@@ -25,10 +25,6 @@ FileSystemSensorModule::~FileSystemSensorModule() {
 	// TODO Auto-generated destructor stub
 }
 
-void FileSystemSensorModule::initSensorModule() {
-
-}
-
 bool FileSystemSensorModule::fileExists(const std::string absolutePath,
 		struct stat * stFileInfo) {
 

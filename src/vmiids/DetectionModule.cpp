@@ -16,7 +16,7 @@ vmi::Mutex vmi::DetectionModule::mutex;
 
 vmi::DetectionModule::DetectionModule(std::string moduleName) :
 	vmi::Module(moduleName), vmi::OutputModule(moduleName) {
-	intrusionDetected = false;
+	threatLevel = false;
 
 	debug << "Loading Module" << std::endl;
 
@@ -48,7 +48,7 @@ vmi::DetectionModule *vmi::DetectionModule::getDetectionModule(
 }
 
 float vmi::DetectionModule::getThreadLevel() {
-	return intrusionDetected;
+	return threatLevel;
 }
 
 void vmi::DetectionModule::killInstances() {

@@ -84,10 +84,6 @@ void MemorySensorModule::stopMemtool(void){
 	}
 }
 
-void MemorySensorModule::initSensorModule(){
-
-}
-
 void MemorySensorModule::getProcessList(std::map<uint32_t, MemtoolProcess> &memtoolProcessMap){
 	vmi::MutexLocker lock(&mutex);
 	std::string scriptResult;

@@ -103,6 +103,6 @@ void ProcessListDetectionModule::run() {
 		}
 	}
 	this->globalMemtoolProcessMap = memtoolProcessMap;
-	this->intrusionDetected = intrusion;
+	this->threatLevel = intrusion;
 
 }

@@ -54,10 +54,6 @@ ShellSensorModule::~ShellSensorModule() {
 	// TODO Auto-generated destructor stub
 }
 
-void ShellSensorModule::initSensorModule() {
-
-}
-
 bool ShellSensorModule::isLoggedin(void) {
 	std::string searchString;
 	std::string replyString;

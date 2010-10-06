@@ -17,6 +17,18 @@
 #include <map>
 #include <string>
 
+/**
+ * @class RkHunterDetectionModule RkHunterDetectionModule.h "vmiids/modules/detection/RkHunterDetectionModule.h"
+ * @brief Testimplementation to port rkhunter into the VmiIDS framework.
+ * @sa vmi::DetectionModule
+ * @sa QemuMonitorSensorModule
+ * @sa FileSystemSensorModule
+ * @sa ShellSensorModule
+ * @deprecated
+ *
+ * This DetectionModule is a first approach to port RKhunter as a module into the VmiIDS framework.
+ * As the entire Rkhunter is a very large and complicated script the module is currently unfinished.
+ */
 class RkHunterDetectionModule : public vmi::DetectionModule {
 private:
 	QemuMonitorSensorModule * qemu;

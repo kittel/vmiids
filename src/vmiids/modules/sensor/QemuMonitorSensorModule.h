@@ -15,12 +15,17 @@
 #include "vmiids/ConsoleMonitor.h"
 
 /*!
- * \class QemuMonitorSensorModule QemuMonitorSensorModule.h
+ * \class QemuMonitorSensorModule QemuMonitorSensorModule.h "vmiids/modules/sensor/QemuMonitorSensorModule.h"
  *
  * \brief Parser for the QEmu Monitor Console.
+ * @sa vmi::SensorModule
+ * @sa vmi::ConsoleMonitor
+ * @sa http://wiki.qemu.org/download/qemu-doc.html#pcsys_005fmonitor
  *
- * The normal way to communicate with the QEmu Hypervisor is
- * the QEmu Monitor Console. \sa http://wiki.qemu.org/download/qemu-doc.html#pcsys_005fmonitor<p>
+ * The normal way to communicate with the QEmu VMM is the QEmu Monitor Console.
+ * The Qemu monitor is an interface to derive information about the monitored machines hardware state.<p>
+ *
+ * This class is a C++ wrapper for the QEmu Monitor.<p>
  *
  * At the time of implementation the following commands were available:
  *
@@ -29,7 +34,7 @@
  help|? [cmd] 					-- show the help
 commit device|all 				-- commit changes to the disk images (if -snapshot is used) or backing files
 info [subcommand] 				-- show various information about the system state
-q|quit  					-- quit the emulator
+q|quit  					 -- quit the emulator
 eject [-f] device 				-- eject a removable medium (use -f to force it)
 change device filename [format]		 	-- change a removable medium, optional format
 screendump filename 				-- save screen into PPM image 'filename'
@@ -148,13 +153,17 @@ info roms              -- show roms
 
 class QemuMonitorSensorModule: public vmi::SensorModule , public vmi::ConsoleMonitor {
 private:
-	vmi::Mutex mutex;
+	vmi::Mutex mutex; //!< Mutex to handle multithreaded execution
 
 public:
+	/**
+	 * Constructor
+	 */
 	QemuMonitorSensorModule();
+	/**
+	 * Destructor
+	 */
 	virtual ~QemuMonitorSensorModule();
-
-	void initSensorModule();
 
 	/**
 	 * \brief Function to get the current vm state.

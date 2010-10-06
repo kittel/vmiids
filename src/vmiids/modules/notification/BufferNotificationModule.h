@@ -12,14 +12,34 @@
 
 #include <sstream>
 
+/**
+ * @class BufferNotificationModule BufferNotificationModule.h "vmiids/modules/notification/BufferNotificationModule.h"
+ * @brief Output to a buffer
+ * @sa vmi::NotificationModule
+ *
+ * This module is built to store the frameworks output in an internal buffer.
+ * The buffer can be received by using the getBuffer() function.
+ */
 class BufferNotificationModule: public vmi::NotificationModule {
 private:
 	std::stringstream stream;
 
 public:
+	/**
+	 * Constructor
+	 */
 	BufferNotificationModule();
+	/**
+	 * Destructor
+	 */
 	virtual ~BufferNotificationModule();
 
+	/**
+	 * Receive a buffer containing the currently recorded data.
+	 * When the buffer is requested by a user the internal buffer is flushed.
+	 *
+	 * @return String containing the currently recorded data.
+	 */
 	std::string getBuffer();
 
 	virtual void doDebug(std::string module, std::string message);

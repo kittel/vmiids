@@ -32,10 +32,6 @@ QemuMonitorSensorModule::~QemuMonitorSensorModule() {
 	// TODO Auto-generated destructor stub
 }
 
-void QemuMonitorSensorModule::initSensorModule(){
-
-}
-
 bool QemuMonitorSensorModule::isRunning() throw(vmi::ModuleException){
 	debug << "isRunning called" << std::endl;
 	std::string string;

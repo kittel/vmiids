@@ -18,7 +18,7 @@ FileListDetectionModule::FileListDetectionModule() :
 
 	GETOPTION(directory, this->directory);
 
-	while(directory.size() > 1 &&directory[directory.size()-1] == '/')
+	while(directory.size() > 1 && directory[directory.size()-1] == '/')
 		directory.erase(directory.size()-1);
 
 }
@@ -93,5 +93,5 @@ void FileListDetectionModule::run() {
 		}
 	}
 	this->globalShellFileList = shellFileList;
-	this->intrusionDetected = intrusion;
+	this->threatLevel = intrusion;
 }
