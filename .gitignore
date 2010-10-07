@@ -18,7 +18,7 @@ compile
 install-sh
 libtool
 ltmain.sh
-m4/
+m4/*-m4
 missing
 stamp-h1
 

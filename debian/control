@@ -16,7 +16,7 @@ Description: Virtual Machine Introspection based Intrusion Detection System
 
 Package: vmiids-dev
 Architecture: i386 amd64
-Depends: ${shlibs:Depends}, ${misc:Depends}, memorytool-dev, vmiids
+Depends: ${shlibs:Depends}, ${misc:Depends}, libmemorytool-dev, vmiids
 Description: Virtual Machine Introspection based Intrusion Detection System 
  This Package contains an vmi-based IDS. It was designed to detect and analyse rootkits.
 
