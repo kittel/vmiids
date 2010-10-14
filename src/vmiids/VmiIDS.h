@@ -42,7 +42,7 @@ namespace vmi {
  */
 class VmiIDS : public Module, protected OutputModule, public Thread{
 	private:
-		std::map<int, DetectionThread*> runModules; //!< Map of different detection module schedules.
+		static std::map<int, DetectionThread*> runModules; //!< Map of different detection module schedules.
 
 		static VmiIDS *instance;  //!< Instance of the singleton class.
 		RpcServer rpcServer;      //!< Instance of the rpc server thread.
