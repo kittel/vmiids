@@ -74,7 +74,7 @@ float vmi::DetectionModule::getGlobalThreatLevel() {
 	for (std::map<std::string, DetectionModule*>::iterator it =
 			modules.begin(); it
 			!= modules.end(); ++it) {
-		threatLevel += (it->second)->getThreadLevel();
+		threatLevel += (it->second)->getThreatLevel();
 	}
 	return threatLevel / modules.size();
 }
