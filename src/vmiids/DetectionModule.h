@@ -106,7 +106,13 @@ class DetectionModule : public vmi::Module, protected OutputModule, public Threa
 		 * Request the threadLevel of the current DetectionModule.
 		 * @return Thread level calculated by the current detection module.
 		 */
-		float getThreadLevel();
+		float getThreatLevel();
+
+		/**
+		 * Request the threadLevel of the current DetectionModule.
+		 * @return Thread level calculated by the current detection module.
+		 */
+		static float getGlobalThreatLevel();
 };
 
 }

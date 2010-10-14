@@ -190,4 +190,5 @@ bool vmi::VmiIDS::dequeueDetectionModule(std::string detectionModuleName, uint32
 }
 
 void vmi::VmiIDS::collectThreadLevel() {
+	info << "The global threat level is: " << DetectionModule::getGlobalThreatLevel();
 }

@@ -57,7 +57,7 @@ MemorySensorModule::MemorySensorModule() :
     if (memtool->isDaemonRunning() && memtool->connectToDaemon() == 0) {
 		debug << "Memtool running" << std::endl;
 		debug << "Trying to load memdump..."
-				<< ((memtool->memDumpLoad("/dev/vda")) ? "Success" : "Failed") << std::endl;
+				<< ((memtool->memDumpLoad("this->memdumpFile")) ? "Success" : "Failed") << std::endl;
 	}
 }
 
@@ -115,7 +115,7 @@ void MemorySensorModule::getProcessList(std::map<uint32_t, MemtoolProcess> &memt
 		currentLine = scriptResult.substr(oldNewlineSeparator, newlineSeparator - oldNewlineSeparator);
 		MemtoolProcess process;
 		process.pid = atoi(currentLine.substr(5, 8).c_str());
-		process.processName = currentLine.substr(23, 17);
+		process.processName = currentLine.substr(31, 17);
 		position1 = process.processName.find("\"");
 		process.processName = process.processName.substr(0, position1);
 		memtoolProcessMap.insert(std::pair<uint32_t, MemtoolProcess>(process.pid, process));

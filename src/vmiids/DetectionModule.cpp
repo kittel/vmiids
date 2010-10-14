@@ -47,7 +47,7 @@ vmi::DetectionModule *vmi::DetectionModule::getDetectionModule(
 	return modules[moduleName];
 }
 
-float vmi::DetectionModule::getThreadLevel() {
+float vmi::DetectionModule::getThreatLevel() {
 	return threatLevel;
 }
 
@@ -66,6 +66,17 @@ std::list<std::string> vmi::DetectionModule::getListOfDetectionModules() {
 	}
 	detectionModules.sort();
 	return detectionModules;
+}
+
+float vmi::DetectionModule::getGlobalThreatLevel() {
+	vmi::MutexLocker lock(&mutex);
+	float threatLevel = 0;
+	for (std::map<std::string, DetectionModule*>::iterator it =
+			modules.begin(); it
+			!= modules.end(); ++it) {
+		threatLevel += (it->second)->getThreadLevel();
+	}
+	return threatLevel / modules.size();
 }
 
 }

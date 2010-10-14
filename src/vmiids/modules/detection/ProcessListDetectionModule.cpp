@@ -33,6 +33,9 @@ void ProcessListDetectionModule::run() {
 	std::map<uint32_t, MemtoolProcess> memtoolProcessMap;
 	this->memory->getProcessList(memtoolProcessMap);
 
+	//Erase swapper process shown in memtool
+	memtoolProcessMap.erase((uint32_t) 0);
+
 	if (!isRunning) {
 		this->qemu->resumeVM();
 	}
@@ -50,7 +53,7 @@ void ProcessListDetectionModule::run() {
 	std::map<uint32_t, MemtoolProcess>::iterator m_it;
 	float intrusion = 0;
 
-	//Find process in ps not listed in Memtool
+	//Find process in Memtool not listed in ps
 	for ( m_it=memtoolProcessMap.begin() ; m_it != memtoolProcessMap.end(); m_it++ ){
 		if(psProcessMap.find((*m_it).first) == psProcessMap.end() ||
 			psProcessMap.find((*m_it).first)->second.processName.compare(0, (*m_it).second.processName.length(),
@@ -63,7 +66,7 @@ void ProcessListDetectionModule::run() {
 		}
 	}
 
-	//Find process in memtool not listed in ps
+	//Find process in ps not listed in Memtool
 	bool seenps = false;
 	for ( p_it=psProcessMap.begin() ; p_it != psProcessMap.end(); p_it++ ){
 		if(!seenps && (*p_it).second.processName.compare(0,2,"ps") != 0){
