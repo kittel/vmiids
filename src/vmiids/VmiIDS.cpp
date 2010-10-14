@@ -23,6 +23,7 @@
 #include "NotificationModule.h"
 
 vmi::VmiIDS* vmi::VmiIDS::instance = NULL;
+std::map<int, vmi::DetectionThread*> vmi::VmiIDS::runModules;
 
 vmi::VmiIDS::VmiIDS() :
 		 vmi::Module("VmiIDS"), vmi::OutputModule("VmiIDS"),
@@ -124,9 +125,10 @@ void vmi::VmiIDS::run(void) {
 	}
 	//Delete Threads afterwards
 	while (!runModules.empty()) {
-		if(runModules.begin()->second != NULL)
-			delete (runModules.begin()->second);
-		runModules.erase(runModules.begin());
+		std::map<int, DetectionThread*>::iterator it = runModules.begin();
+		if((*it).second != NULL)
+			delete ((*it).second);
+		runModules.erase(it);
 	}
 	return;
 }

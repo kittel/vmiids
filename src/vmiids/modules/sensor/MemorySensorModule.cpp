@@ -57,7 +57,7 @@ MemorySensorModule::MemorySensorModule() :
     if (memtool->isDaemonRunning() && memtool->connectToDaemon() == 0) {
 		debug << "Memtool running" << std::endl;
 		debug << "Trying to load memdump..."
-				<< ((memtool->memDumpLoad("this->memdumpFile")) ? "Success" : "Failed") << std::endl;
+				<< ((memtool->memDumpLoad(this->memdumpFile.c_str())) ? "Success" : "Failed") << std::endl;
 	}
 }
 
